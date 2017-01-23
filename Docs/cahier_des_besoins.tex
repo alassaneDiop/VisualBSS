@@ -69,20 +69,26 @@
 		
 		\subsection{Réferences}
 			\begin{itemize}
-				\item L'article \cite{Oli16} donne un aperçu sur les différentes interfaces à implémenter dans notre logiciel. Ce sera le document sur lequel nous nous reposerons le plus.
+				\item L'article \cite{Oli16} introduit clairement les problèmes rencontrés des systèmes de vélos en libre service. Notament des problèmes d'équilibrage, de consommation de carburant pour les véhicule faisant la navette pour rééquilibrer les stations de vélos. On peut y puiser une grande source d'informations pour réliser notre interface graphique. Ce sera le document sur lequel nous nous reposerons le plus.
 
 				\item L'article \cite{Ali14} explique comment détecter les stations les plus connectées. Donne un aperçu sur comment utiliser des filtres (date, lieu, heure...).
 
 				\item \cite{BC16} est un article sur les systèmes de partage de vélos. Il parle de l'application FunFEM qui permet de visualiser des données afin de juger de l'efficacité de ces systèmes.
 
-				\item \cite{BSM17} est une application en ligne, qui permet de visualiser le nombre de bornes disponible dans une ville ainsi que le nombre de vélos disponible sur celle-ci.
+				\item \cite{BSM17} est une application en ligne, qui permet de visualiser en temps réel des statistique sur des bornes disponible dans une ville séléctionnée.  Elle indique également le nombre de vélos disponible dans le monde en temps réel.
 
 				\item L'article \cite{BW} de Ben Wellington, nous donne un bel aperçu sur comment l'analyse statistique des données sur les utilisateurs du système de vélos en libre service peut être utilisé. Il montre comment les societés qui mettent à disposition les vélos dans la ville de New York, pourraient augmenter leurs revenus grâce à une analyse des trajets des utilisateurs.
+
+				\item \cite{JL} Recherches réalalisés sur la manière d'optimiser l'équilibrage des stations de vélos en libre service. Un des problémes avec les stations de vélos est la gestion de l'équilibrage du nombre de  vélos dans chaque stations. Il explique comment prédire à l'aide de données, un épuisement de vélos dans certaine stations. Ainsi, à l'aide d'analyses d'une multitude de données sur la météo ou l'age des utilisateurs par exemple, il est possible de d'optimiser la répartition des vélos et de faire des prédictions.
+
+				\item Vidéo postée par Oliveira G \cite{state_station}, qui présente l'interface graphique de l'application web. Les différentes visualisation son principalement portées sur l'analyse statistique des stations dans une ville donnée
+
+				\item Vidéo postée par Oliveira G \cite{trips}, qui présente cette fois une interface portée sur l'analyse des trajets. On peut séléctionner différent type de filtres.
 
 			\end{itemize}
 			
 	\section{Expression des besoins}
-		Cette section fournie une déscription detailée des fonctionnalités du logiciel.
+		Cette section fournie une déscription detailée des fonctionnalités du logiciel aussi bien fonctionnels que non fonctionnels.
 		\subsection{Besoins fonctionnels}
 			Visualiser la carte d’une ville choisie par l'utilisateur.\\*
 			Charger des trajets depuis un fichier (les formats acceptés seront définis ultérieurement).\\*
@@ -95,27 +101,28 @@
 			Il doit aussi être bien documenté, l'architecture doit permettre d'étendre facilement de nouveaux systèmes de visualisation ainsi que de nouvelles fonctionnalités.\\*
 			Il faut que l'application dispose d'une bonne base afin que le code soit repris et amélioré par une autre équipe.
 
-	\section{Contraintes}
-		\begin{itemize}
-			\item Langage : C++14 pour concilier la performance (afin de gérer des centaines de miliers de trjets) et la lisibilité.
-			\item Framework Qt pour l'interface graphique : c'est aussi un éditeur de d'interaface graphique qui permet de créer l'interface graphique à la manière WYSIWIG.
-			\item L'API OpenGL pour le rendu des nombreux trajets.
-			\item C++14, Qt et OpenGL permettent également la portabilité sous Linux, MacOS et Windows.
-		\end{itemize}
+		\subsection{Contraintes}
+			\begin{itemize}
+				\item Langage : C++14 pour concilier la performance (afin de gérer des centaines de miliers de trjets) et la lisibilité.
+				\item Framework Qt pour l'interface graphique : c'est aussi un éditeur de d'interaface graphique qui permet de créer l'interface graphique à la manière WYSIWIG.
+				\item L'API OpenGL pour le rendu des nombreux trajets.
+				\item C++14, Qt et OpenGL permettent également la portabilité sous Linux, MacOS et Windows.
+			\end{itemize}
 
 	\section{Les livrables}
-		Une fois le delai passé, le code source bien commenté ainsi qu'un fichier exécutable sera remis. En plus de cela une documentation détaillée sur la manière d'utilisée le logiciel sera mis à disposition.
+		Le mercredi 5 avril, tout le code source bien commenté, ainsi qu'un fichier exécutable sera remis. Une documentation détaillée sur la manière d'utilisée le logiciel acompagnera le code source.
 
 	\section{Prototypes}
-		\begin{figure}[!ht]
-		\includegraphics[scale=1.2]{proto_interface1.png}
-		\caption{Prototype d'interface graphique.}
-		\end{figure}
+		% A modifier
+		% \begin{figure}[!ht]
+		% \includegraphics[scale=1.2]{proto_interface1.png}
+		% \caption{Prototype d'interface graphique.}
+		% \end{figure}
 
-		\begin{figure}[!ht]
-		\includegraphics{use_case_1.png}
-		\caption{Diagramme de cas d'utilisation.}
-		\end{figure}
+		% \begin{figure}[!ht]
+		% \includegraphics{use_case_1.png}
+		% \caption{Diagramme de cas d'utilisation.}
+		% \end{figure}
 
 	\bibliography{bibliographie}
 
