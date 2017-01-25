@@ -53,7 +53,7 @@
 			Il est réalisé par quatre étudiants de première année de master informatique, dans le cadre d'une UE de projet de programmation.
 
 		\subsection{Objectifs}
-			Ce logiciel doit permettre la visualisation des trajets des systèmes de vélos en libre service. En utilisant les données mise à disposition par les villes et par des données récuperables sur le web, on peut récuperer les informations sur les trajets des utilisateurs dans une ville donnée. Ainsi, grâce à des filtres, on peut choisir quelle information on veut visualiser.\\
+			Ce logiciel doit permettre la visualisation des trajets des systèmes de vélos en libre service. En utilisant les données mise à disposition par les villes et par des données récupérables sur le web, on peut récupérer les informations sur les trajets des utilisateurs dans une ville donnée. Ainsi, grâce à des filtres, on peut choisir quelle information on veut visualiser.\\
 			Le logiciel est destiné aux personnes souhaitant analyser les trajets d'un système de vélos en libre service, grâce à des données libres. Il peut permettre l'analyse statistique des trajets, comme connaître le temps moyen d'un trajet des utilisateurs par exemple.
 
 		\subsection{Définitions, acronymes}
@@ -63,7 +63,7 @@
 				\item[$\bullet$] CSV : Comma Separated Value, c'est un format de fichier
 				\item[$\bullet$] JSON : format de fichier
 				\item[$\bullet$] Qt : Est un framework très populaire pour le développement d'interfaces graphiques
-				\item[$\bullet$] Doxygene : Outil permettant générer de la documentation, en html, en latex ou XML par exemple.
+				\item[$\bullet$] Doxygene : Outil permettant de générer de la documentation, en html, en latex ou XML par exemple.
 			\end{itemize}
 
 		\subsection{Description de l'existant}
@@ -84,9 +84,9 @@
 
 				\item L'article \cite{BW} de Ben Wellington, nous donne un bel aperçu sur la manière dont l'analyse statistique des données sur les utilisateurs du système de vélos en libre service peut être utilisée. Il montre comment les sociétés qui mettent à disposition les vélos dans la ville de New York pourraient augmenter leurs revenus grâce à une analyse des trajets des utilisateurs.
 
-				\item \cite{JL} Recherches réalalisées sur la manière d'optimiser l'équilibrage des stations de vélos en libre service. Un des problèmes avec les stations de vélos est la gestion de l'équilibrage du nombre de  vélos dans chaque stations. Il explique comment prédire à l'aide de données un épuisement de vélos dans certaine stations. Ainsi, à l'aide d'analyses d'une multitude de données sur la météo ou l'âge des utilisateurs par exemple, il est possible de d'optimiser la répartition des vélos et de faire des prédictions.
+				\item \cite{JL} Recherches réalalisées sur la manière d'optimiser l'équilibrage des stations de vélos en libre service. Un des problèmes avec les stations de vélos est la gestion de l'équilibrage du nombre de  vélos dans chaque station. Il explique comment prédire à l'aide de données un épuisement de vélos dans certaines stations. Ainsi, à l'aide d'analyses d'une multitude de données sur la météo ou l'âge des utilisateurs par exemple, il est possible de d'optimiser la répartition des vélos et de faire des prédictions.
 
-				\item Vidéo postée par Oliveira G \cite{state_station}, qui présente l'interface graphique de l'application web. Les différentes visualisation son principalement portées sur l'analyse statistique des stations dans une ville donnée.
+				\item Vidéo postée par Oliveira G \cite{state_station}, qui présente l'interface graphique de l'application web. Les différentes visualisations sont principalement portées sur l'analyse statistique des stations dans une ville donnée.
 
 				\item Vidéo postée par Oliveira G \cite{trips}, qui présente cette fois une interface portée sur l'analyse des trajets. On peut séléctionner différents types de filtres.
 
@@ -95,7 +95,7 @@
 			
 
 	\section{Expression des besoins}
-		Cette section fournie une description detaillée des besoins de l'utilisateur aussi bien fonctionnels que non-fonctionnels.
+		Cette section fournit une description detaillée des besoins de l'utilisateur aussi bien fonctionnels que non-fonctionnels.
 
 		\begin{figure}[!ht]
 		\includegraphics[scale=.5]{maquette.png}
@@ -108,7 +108,7 @@
 
 		La fenêtre au centre s'appelle la matrice de chronologie des trajets ("trips timeline matrix").
 		C'est un tableau à double-entrées qui représente les trajets par stations dans le temps.
-		Dans chaque cellule, il y a de petites étoiles rouges-bleues pour répresenter les trajets d'une stations.
+		Dans chaque cellule, il y a de petites étoiles rouges-bleues pour répresenter les trajets d'une station.
 		Une ligne symbolise donc l'activité d'une station, elle est illustrée au cours du temps à intervalle régulier.\par
 
 		Enfin, la fenêtre de droite va contenir les contrôles (tirettes, menu déroulants, cases à cocher...) pour modifier les paramètres de filtrage.
@@ -122,14 +122,14 @@
 
 		Ensuite, il a la possibilité de filtrer les trajets qu'il souhaite visualiser selon plusieurs critères :\\
 			-selon la période : un jour particulier, un jour de la semaine, le weekend, les jours ouvrés\\
-			-selon le type de trajet : les départs, les arrivées, les trajets cycliques
-			-selon la fréquence d'utilisation des vélos
-			-selon la durée des trajets, leurs distances, leurs directions
+			-selon le type de trajet : les départs, les arrivées, les trajets cycliques\\
+			-selon la fréquence d'utilisation des vélos\\
+			-selon la durée des trajets, leurs distances, leurs directions\\
 		Lorsqu'un paramètre de filtrage est modifié, la chronologie des trajets est rafraîchie.\par
 
-		-Une fois que l'utlisateur a filtré les trajets selon ses besoins, il peut intéragir avec la map pour la faire défiler ou en modifier le niveau de zoom.\\
+		Une fois que l'utlisateur a filtré les trajets selon ses besoins, il peut intéragir avec la map pour la faire défiler ou en modifier le niveau de zoom.\\
 		Il peut aussi intéragir avec la chronologie des trajets en sélectionnant les trajets de stations particulières.\\
-		Les trajets des stations selectionées sont affichées sur la map.\\
+		Les trajets des stations selectionées sont affichés sur la map.\\
 		Il peut enfin lancer l'animation de la chronologie en appuyant sur un bouton "play" : l'activité d'utilisation défile dans le temps.
 		\end{figure}
 		\newpage
@@ -146,14 +146,14 @@
 					\item lorsque l'utilisateur passe sa souris sur une station de la map, la ligne associée à la station est surlignée en noir dans la matrice de chronologie des trajets
 					\item lorsque l'utilisateur passe sa souris sur une station de la matrice de chronologie des trajets, la station est surlignée en noir sur la map
 					\item L'utilisateur pourra faire un zoom avant ou un zoom arrière grâce à des boutons destinés à cet effet.
-					\item Il pourra aussi se déplacer dans la carte, à gauche, à droite, en haut et en bas. Il réalisera cette action soit en appuyant sur des boutons, soit grâce à un système de glisser/déposer, afin de permettre une translation et se deplacer dans la carte.
+					\item Il pourra aussi se déplacer dans la carte, à gauche, à droite, en haut et en bas. Il réalisera cette action soit en appuyant sur des boutons, soit grâce à un système de glisser/déposer, afin de permettre une translation et se déplacer dans la carte.
 				\end{itemize}
 
 			\subsubsection{Matrice de la chronologie des trajets}
 				\begin{itemize}
 					\item axe horizontal : temps en heure (une colonne pour chaque heure)
 					\item axe vertical : stations (une ligne pour chaque station)
-					\item les stations sont représentées dans des cellules par des petites étoiles (les lignes étant les trajets, représentés avec leurs directions et leurs longueurs)
+					\item les stations sont représentées dans des cellules par des petites étoiles (les lignes étant les trajets, représentés avec leurs directions et leur longueur)
 					\item arrivées en rouge
 					\item départs en bleu
 					\item trajets cycliques par des cercles transparents dont le rayon est proportionnel à la distance du trajet
@@ -165,24 +165,24 @@
 				\end{itemize}
 
 			\subsubsection{Interface de selection de filtres}
-				\textbf{Possibilité de pouvoir filtrer dans le temps}\\
+				\textbf{Possibilité de pouvoir filtrer dans le temps}\par
 					\begin{itemize}
 						\item un mois et son année : menu déroulant avec choix chargés à partir de fichiers données
 						\item un jour précis : entrée du jour du mois (un entier compris 1 et 31) dans un champ de texte 
-						\item jour de la semaine/jours ouvrés/weekend
+						\item jour de la semaine/jours ouvrés/weekend\\
 					\end{itemize}
 
-				\textbf{Possibilité de filtrer selon les propriétés des trajets}\\
+				\textbf{Possibilité de filtrer selon les propriétés des trajets}\par
 					\begin{itemize}
 						\item arrivées : si cochée, affiche (en rouge) les trajets arrivants, sur la map ainsi que dans la chronologie des trajets
 						\item départs : si cochée, affiche (bleu) les trajets partant, sur la map ainsi que dans la chronologie des trajets
 						\item trajets cycliques : si cochée, affiche (par un cercle gris transparent dont le rayon est proportionnel à la longueur du trajet) les trajets cycliques, dans la chronologie des trajets
 						\item durées des trajets : si cochée, prend en compte la durée des trajets
-						\item longueurs des trajets : si cochée, prend en compte la longueur des trajets (les longueurs des traits des trajets dans chaque cellule de la chronologie des trajets sont relatifs au trajet le plus long), sinon, tous les  traits sont de même longueur
-						\item interruptions/pannes : si cochée, encadre les stations, dans la chronologie des trajets, en rouge s'il n'y a plus de places de libres ("full outage"), en bleu s'il n'y a plus de vélos libres ("empty outage")
+						\item longueurs des trajets : si cochée, prend en compte la longueur des trajets (les longueurs des traits des trajets dans chaque cellule de la chronologie des trajets sont relatives au trajet le plus long), sinon, tous les  traits sont de même longueur
+						\item interruptions/pannes : si cochée, encadre les stations, dans la chronologie des trajets, en rouge s'il n'y a plus de places de libres ("full outage"), en bleu s'il n'y a plus de vélos libres ("empty outage")\\
 					\end{itemize}
 
-				\textbf{Filtrer selon des valeurs entières comprises dans un intervalle bornée par une valeur minimale et une valeur maximale}\\
+				\textbf{Filtrer selon des valeurs entières comprises dans un intervalle borné par une valeur minimale et une valeur maximale}\par
 					\begin{itemize}
 						\item longueur (en mètres) : min = 0, max = 14000
 						\item durée (en minutes) : min = 0; max = 120 
@@ -198,8 +198,8 @@
 
 			\subsubsection{Affichage des trajets}
 				\begin{itemize}
-					\item Les trajets seront affichés sur la carte par des courbes depuis le points de depart du trajet jusqu'au point d'arrivé.
-					\item Les points de départs seront de couleurs rouge et les points d'arrivés seront de couleurs jaune.
+					\item Les trajets seront affichés sur la carte par des courbes depuis le points de départ du trajet jusqu'au point d'arrivée.
+					\item Les points de départs seront de couleur rouge et les points d'arrivées seront de couleur jaune.
 				\end{itemize}
 
 			% \subsubsection{Les filtres}
@@ -210,19 +210,27 @@
 			\subsubsection{Performances}
 				\begin{itemize}
 					\item Afin d'assurer la fiabilité du logiciel, des tests unitaires seront réalisés avec Banditcpp. 
+					\item L'application doit s’exécuter rapidement sur une carte graphique Quadro K2000M :
+					\begin{itemize}
+						\item Lors de la lecture du fichier
+						\item Lors de l'affichage des données
+						\item Lors de l'application des divers filtres
+						\item Lors du déplacement sur la carte
+					\end{itemize}
 				\end{itemize}
 
 			\subsubsection{Dévelopement}
 				\begin{itemize}
-					\item Le code devra être très bien documenté, Doxygen, est un outil qui permet la generation de documentation. Un manuel latex sera généré.
-					\item La dernière version de Qt sera utilisé, à l'heure actuelle, c'est la version 5.8 stable.
-					\item Pour le rendu graphique, la version d'OpenGL doit être superieur à la version 3.2. Ainsi, aucune fonctions obsolétes ne sera utilisées.
+					\item Le code devra être très bien documenté, Doxygen, est un outil qui permet la génération de documentation. Un manuel latex sera généré.
+					\item La dernière version de Qt sera utilisée, à l'heure actuelle, c'est la version 5.8 stable.
+					\item Pour le rendu graphique, la version d'OpenGL doit être superieure à la version 3.2. Ainsi, aucune fonction obsoléte ne sera utilisée.
 					\item Le code C++ sera compilable avec le compilateur g++ 5.9.
+					\item L'application devra forcément tourner sur une carte NVIDIA.
 				\end{itemize}
 	\newpage
 
 	\section{Les livrables}
-		Le mercredi 5 avril, tout le code source bien commenté, ainsi qu'un fichier exécutable sera remis. Une documentation détaillée sur la manière d'utilisée le logiciel acompagnera le code source.
+		Le mercredi 5 avril, tout le code source bien commenté, ainsi qu'un fichier exécutable sera remis. Une documentation détaillée sur la manière d'utiliser le logiciel accompagnera le code source.
 	\newpage
 
 	\bibliography{bibliographie}
