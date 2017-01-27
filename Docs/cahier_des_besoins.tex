@@ -46,8 +46,6 @@
 	\tableofcontents \newpage
 
 	\section{Introduction}
-		Cette section a pour but de décrire et donner un aperçu sur le contenu de ce document d'analyse des besoins. Il présente aussi les recherches et ce qui a déjà été fait sur ce sujet.
-
 		\subsection{Contexte}
 			Le projet consiste en la réalisation d’un logiciel de visualisation de trajets d'un système de vélos en libre service. 
 			Il est réalisé par quatre étudiants de première année de master informatique, dans le cadre d'une UE de projet de programmation.
@@ -61,7 +59,7 @@
 			\begin{itemize}
 				\item[$\bullet$] BSS : bike sharing system, système de vélos en libre service
 				\item[$\bullet$] CSV : Comma Separated Value, c'est un format de fichier
-				\item[$\bullet$] JSON : format de fichier
+				\item[$\bullet$] JSON : Java Script Object Notation, format de fichier
 				\item[$\bullet$] Qt : Est un framework très populaire pour le développement d'interfaces graphiques
 				\item[$\bullet$] Doxygene : Outil permettant de générer de la documentation, en html, en latex ou XML par exemple.
 			\end{itemize}
@@ -103,7 +101,7 @@
 		\medskip
 		Elle se décompose principalement en trois parties.\par
 
-		La fenêtre à gauche illustre la map de la ville avec les stations selectionnées.
+		La fenêtre à gauche illustre la carte de la ville avec les stations selectionnées.
 		C'est elle qui va dessiner les trajets filtrés et selectionnés par l'utilisateur.\par
 
 		La fenêtre au centre s'appelle la matrice de chronologie des trajets ("trips timeline matrix").
@@ -115,7 +113,7 @@
 		\end{figure}
 
 		\begin{figure}[!ht]
-		\includegraphics[scale=1]{Use_case_1.png}
+		\includegraphics[scale=1]{use_case_1.png}
 		\caption{diagramme de cas d'utilisation du logiciel de Bike Sharing System (BSS)}
 		\medskip
 		L'utilisateur commence par charger les données des trajets pour une ville de son choix.\par
@@ -127,9 +125,9 @@
 			-selon la durée des trajets, leurs distances, leurs directions\\
 		Lorsqu'un paramètre de filtrage est modifié, la chronologie des trajets est rafraîchie.\par
 
-		Une fois que l'utlisateur a filtré les trajets selon ses besoins, il peut intéragir avec la map pour la faire défiler ou en modifier le niveau de zoom.\\
+		Une fois que l'utlisateur a filtré les trajets selon ses besoins, il peut intéragir avec la carte pour la faire défiler ou en modifier le niveau de zoom.\\
 		Il peut aussi intéragir avec la chronologie des trajets en sélectionnant les trajets de stations particulières.\\
-		Les trajets des stations selectionées sont affichés sur la map.\\
+		Les trajets des stations selectionées sont affichés sur la carte.\\
 		Il peut enfin lancer l'animation de la chronologie en appuyant sur un bouton "play" : l'activité d'utilisation défile dans le temps.
 		\end{figure}
 		\newpage
@@ -137,14 +135,14 @@
 		\subsection{Besoins fonctionnels}
 			\subsubsection{Visualisation de la carte de la ville}
 				\begin{itemize}
-					\item fenêtre pour visualiser les trajets de manière géographique avec une map
-					\item map d'une ville chargée avec OpenStreetMap
-					\item la map affiche uniquement les stations de la ville lorsqu'il y a des stations sélectionnées dans la matrice de chronologie, elle n'affiche que celles-ci (ainsi que les trajets qui y sont associés)
+					\item fenêtre pour visualiser les trajets de manière géographique avec une carte
+					\item carte d'une ville chargée avec OpenStreetMap
+					\item la carte affiche uniquement les stations de la ville lorsqu'il y a des stations sélectionnées dans la matrice de chronologie, elle n'affiche que celles-ci (ainsi que les trajets qui y sont associés)
 					\item les trajets sont dessinés par des courbes avec un dégradé de deux couleurs
 					\item les départs sont dessinés du cyan (station d'origine) vers le bleu (station de destination) dans le sens horaire
 					\item les arrivées sont dessinées du rouge (station d'origine) vers le jaune (station de destination) dans le sens anti-horaire
-					\item lorsque l'utilisateur passe sa souris sur une station de la map, la ligne associée à la station est surlignée en noir dans la matrice de chronologie des trajets
-					\item lorsque l'utilisateur passe sa souris sur une station de la matrice de chronologie des trajets, la station est surlignée en noir sur la map
+					\item lorsque l'utilisateur passe sa souris sur une station de la carte, la ligne associée à la station est surlignée en noir dans la matrice de chronologie des trajets
+					\item lorsque l'utilisateur passe sa souris sur une station de la matrice de chronologie des trajets, la station est surlignée en noir sur la carte
 					\item L'utilisateur pourra faire un zoom avant ou un zoom arrière grâce à des boutons destinés à cet effet.
 					\item Il pourra aussi se déplacer dans la carte, à gauche, à droite, en haut et en bas. Il réalisera cette action soit en appuyant sur des boutons, soit grâce à un système de glisser/déposer, afin de permettre une translation et se déplacer dans la carte.
 				\end{itemize}
@@ -160,7 +158,7 @@
 					\item les stations pour lesquelles il n’y a plus de places disponibles (“full outage”) sont encadrées en rouge
 					\item les stations pour lesquelles il n’y a plus de vélos libres (“empty outage”) sont encadrées en bleu
 					\item possibilité de sélectionner les stations avec la souris, selon une intervalle horaire
-					\item les stations sélectionnées dans cette fenêtre sont visibles sur la map, avec les trajets qui y sont associés
+					\item les stations sélectionnées dans cette fenêtre sont visibles sur la carte, avec les trajets qui y sont associés
 					\item possibilité de dérouler, sur 24 heures, l'activité des emprunts des vélos en lançant l'animation (en appuyant sur le bouton play)
 				\end{itemize}
 
@@ -174,8 +172,8 @@
 
 				\textbf{Possibilité de filtrer selon les propriétés des trajets}\par
 					\begin{itemize}
-						\item arrivées : si cochée, affiche (en rouge) les trajets arrivants, sur la map ainsi que dans la chronologie des trajets
-						\item départs : si cochée, affiche (bleu) les trajets partant, sur la map ainsi que dans la chronologie des trajets
+						\item arrivées : si cochée, affiche (en rouge) les trajets arrivants, sur la carte ainsi que dans la chronologie des trajets
+						\item départs : si cochée, affiche (bleu) les trajets partant, sur la carte ainsi que dans la chronologie des trajets
 						\item trajets cycliques : si cochée, affiche (par un cercle gris transparent dont le rayon est proportionnel à la longueur du trajet) les trajets cycliques, dans la chronologie des trajets
 						\item durées des trajets : si cochée, prend en compte la durée des trajets
 						\item longueurs des trajets : si cochée, prend en compte la longueur des trajets (les longueurs des traits des trajets dans chaque cellule de la chronologie des trajets sont relatives au trajet le plus long), sinon, tous les  traits sont de même longueur
@@ -184,10 +182,10 @@
 
 				\textbf{Filtrer selon des valeurs entières comprises dans un intervalle borné par une valeur minimale et une valeur maximale}\par
 					\begin{itemize}
-						\item longueur (en mètres) : min = 0, max = 14000
-						\item durée (en minutes) : min = 0; max = 120 
-						\item direction (en degrés) : min = 0, max = 360
-						\item flux d'origine-destination : min = 0, max = 1000
+						\item longueur (en mètres)
+						\item durée (en minutes)
+						\item direction (en degrés)
+						\item flux d'origine-destination
 					\end{itemize}
 
 		\subsection{Besoins non fonctionnels}
@@ -199,7 +197,6 @@
 			\subsubsection{Affichage des trajets}
 				\begin{itemize}
 					\item Les trajets seront affichés sur la carte par des courbes depuis le points de départ du trajet jusqu'au point d'arrivée.
-					\item Les points de départs seront de couleur rouge et les points d'arrivées seront de couleur jaune.
 				\end{itemize}
 
 			% \subsubsection{Les filtres}
@@ -238,11 +235,7 @@
 				\end{itemize}
 
 			\vspace*{\fill} 
-			http://www.banditcpp.org/\\http ://www.stack.nl/ dimitri/doxygen/index.html
-	\newpage
-
-	\section{Les livrables}
-		Avant le mercredi 5 avril, tout le code source bien commenté, ainsi qu'un fichier exécutable sera remis. Une documentation détaillée sur la manière d'utiliser le logiciel accompagnera le code source.
+			http://www.banditcpp.org/\\http ://www.stack.nl/ dimitri/doxygen/index.html\\ https://www.qt.io/
 	\newpage
 
 	\bibliography{bibliographie}
