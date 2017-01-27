@@ -209,28 +209,40 @@
 
 			\subsubsection{Performances}
 				\begin{itemize}
-					\item Afin d'assurer la fiabilité du logiciel, des tests unitaires seront réalisés avec Banditcpp. 
-					\item L'application doit s’exécuter rapidement sur une carte graphique Quadro K2000M :
-					\begin{itemize}
-						\item Lors de la lecture du fichier
-						\item Lors de l'affichage des données
-						\item Lors de l'application des divers filtres
-						\item Lors du déplacement sur la carte
+					\item Afin d’assurer la fiabilité du logiciel, des tests unitaires seront réalisés avec Banditcpp.\\
+						"Bandit est un framework pour C++ 11 développé pour faire des tests unitaires. Bandit est l’en-tête seulement, donc il n’est pas nécessaire de compilation supplémentaire avant de pouvoir commencer à l’utiliser. Bandit a été testé avec les compilateurs suivants : GCC 4.5, GCC 4.6, GCC 4.7, GCC 4.8, Clang 3.2, VS2012.\\
+						Bandit est libéré sous licence MIT. Bandit est livré avec un projet cmake pour générer des auto-tests bandit." (http://www.banditcpp.org/)\\
+
+					\item L'application devra en priorité, tourner aussi sur une carte NVIDIA, elle doit aussi, sur	demande du client, s’exécuter sur une carte graphique Quadro K2000M.\\
+						L’application sera implémentée sur les machines du CREMI puis nous allons la tester sur	l’ordinateur du client afin de pouvoir juger de la rapidité et de la fluidité de notre programme.\\
+						Du point de vue de la vitesse, on peut s’attendre à ce que 20 à 30 images par seconde puissent être affichées.\\
+						On peut distinguer plusieurs attentes de rapidité en fonction des fonctionnalités :
+						\begin{itemize}
+							\item Lors de la lecture du fichier, le délai d’attente peut être long car il y a beaucoup de données à charger, on peut estimer ce délai à quelques secondes voire quelques minutes.
+							\item Lors de l’application des divers filtres,le délai dois être assez court car l’application de ces filtres est assez récurrente.
+							\item Lors du déplacement sur la carte et donc du rafraîchissement des données de celle-ci, le programme doit tourner en temps réel et on ne doit pas sentir de latence lors du déplacement sur la carte. Le délai doit donc être très court (dans l’ordre des millisecondes).
+						\end{itemize}
 					\end{itemize}
-				\end{itemize}
 
 			\subsubsection{Dévelopement}
 				\begin{itemize}
-					\item Le code devra être très bien documenté, Doxygen, est un outil qui permet la génération de documentation. Un manuel latex sera généré.
+					\item Le code devra être très bien documenté, pour cela on utilisera Doxygen.\\
+						" Doxygen est l’outil standard de facto pour générer de la documentation à partir de sources C++ annotées, mais il prend également en charge d’autres langages de programmation	populaires.\\
+						Il peut générer un navigateur de documentation en ligne (en HTML) et/ou un manuel de référence hors ligne à partir d’un ensemble de fichiers sources documentés. Il est également possible de générer des résultats en format RTF (MS-Word), PostScript, PDF hypertexte, HTML compressé et pages de manuel Unix. La documentation est extraite directement des sources, ce qui rend beaucoup plus facile de conserver la documentation conforme au code	source.\\
+						Doxygen est développé sous Mac OS X et Linux, mais est configuré pour être très portable." (http ://www.stack.nl/ dimitri/doxygen/index.html)\\
+						Un manuel latex sera généré.						
+					
 					\item La dernière version de Qt sera utilisée, à l'heure actuelle, c'est la version 5.8 stable.
 					\item Pour le rendu graphique, la version d'OpenGL doit être superieure à la version 3.2. Ainsi, aucune fonction obsoléte ne sera utilisée.
 					\item Le code C++ sera compilable avec le compilateur g++ 5.9.
-					\item L'application devra forcément tourner sur une carte NVIDIA.
 				\end{itemize}
+
+			\vspace*{\fill} 
+			http://www.banditcpp.org/\\http ://www.stack.nl/ dimitri/doxygen/index.html
 	\newpage
 
 	\section{Les livrables}
-		Le mercredi 5 avril, tout le code source bien commenté, ainsi qu'un fichier exécutable sera remis. Une documentation détaillée sur la manière d'utiliser le logiciel accompagnera le code source.
+		Avant le mercredi 5 avril, tout le code source bien commenté, ainsi qu'un fichier exécutable sera remis. Une documentation détaillée sur la manière d'utiliser le logiciel accompagnera le code source.
 	\newpage
 
 	\bibliography{bibliographie}
