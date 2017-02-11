@@ -4,9 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui concurrent
+QT       += core gui concurrent opengl
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
 TARGET = Pdp_Velos
 TEMPLATE = app
@@ -20,7 +20,10 @@ SOURCES += main.cpp\
     trip.cpp \
     datafilereader.cpp \
     xmldatafilereader.cpp \
-    csvdatafilereader.cpp
+    csvdatafilereader.cpp \
+    map.cpp \
+    matrixopenglwidget.cpp \
+    timeline.cpp
 
 HEADERS  += mainwindow.h \
     model.h \
@@ -29,6 +32,9 @@ HEADERS  += mainwindow.h \
     trip.h \
     datafilereader.h \
     xmldatafilereader.h \
-    csvdatafilereader.h
+    csvdatafilereader.h \
+    map.h \
+    matrixopenglwidget.h \
+    timeline.h
 
 FORMS    += mainwindow.ui
