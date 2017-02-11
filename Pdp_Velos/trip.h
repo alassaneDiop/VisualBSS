@@ -36,6 +36,7 @@ public:
     static qreal calculateDirection(const Station& s1, const Station& s2);
 
     operator QString() const;
+    bool operator ==(const Trip& trip) const;
 
 private:
     bool m_isValid;

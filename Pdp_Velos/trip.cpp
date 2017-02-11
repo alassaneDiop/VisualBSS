@@ -26,6 +26,17 @@ Trip::operator QString() const
     return result;
 }
 
+bool Trip::operator ==(const Trip& trip) const
+{
+    return getStartStation() == trip.getStartStation()
+            && getEndStation() == trip.getEndStation()
+            && getStartDateTime() == trip.getStartDateTime()
+            && getEndDateTime() == trip.getEndDateTime()
+            && getDuration() == trip.getDuration()
+            && qFuzzyCompare(getDistance() + 1, trip.getDistance() + 1)
+            && qFuzzyCompare(getDirection() + 1, trip.getDirection() + 1);
+}
+
 bool Trip::isValid(const Trip& t)
 {
     return t.getStartStation().isValid() && t.getEndStation().isValid()

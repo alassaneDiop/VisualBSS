@@ -9,7 +9,7 @@ XmlDataFileReader::XmlDataFileReader(const QString& filename) :
 
 }
 
-bool XmlDataFileReader::readData(QSet<Trip>& data) const
+int XmlDataFileReader::readData(QSet<Station>& stations, QSet<Trip>& trips) const
 {
     /*QFile file(DataFileReader::getFilename());
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))

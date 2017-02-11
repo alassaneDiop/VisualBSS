@@ -22,6 +22,7 @@ public:
     inline qreal getLongitude() const { return m_longitude; }
 
     operator QString() const;
+    bool operator ==(const Station& station) const;
 
     static bool isValid(const Station& s);
     static bool isNull(const Station& s);

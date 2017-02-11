@@ -18,6 +18,13 @@ Station::operator QString() const
     return result;
 }
 
+bool Station::operator ==(const Station& station) const
+{
+    return getName() == station.getName()
+            && qFuzzyCompare(getLatitude() + 1, station.getLatitude() + 1)
+            && qFuzzyCompare(getLongitude() + 1, station.getLongitude() + 1);
+}
+
 bool Station::isValid(const Station& s)
 {
     return !isNull(s);

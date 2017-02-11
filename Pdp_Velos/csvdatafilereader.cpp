@@ -15,14 +15,15 @@ CsvDataFileReader::CsvDataFileReader(const QString& filename) :
 
 }
 
-bool CsvDataFileReader::readData(QSet<Trip>& trips) const
+int CsvDataFileReader::readData(QSet<Station>& stations, QSet<Trip>& trips) const
 {
     QFile file(DataFileReader::getFilename());
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return false;
+        return -1;
     else
     {
         trips.clear();
+        int result = 0;
 
         QStringList lines = QString(file.readAll()).split('\n');
         file.close();
@@ -30,15 +31,19 @@ bool CsvDataFileReader::readData(QSet<Trip>& trips) const
         if (!lines.isEmpty())
         {
             lines.removeFirst();
-
-            QFuture<Trip> future = QtConcurrent::mapped(lines, parseTrip);
-            future.waitForFinished();
-            for (const Trip& trip : future)
+            for (const QString& line : lines)
+            {
+                const Trip trip = parseTrip(line);
                 if (trip.isValid())
+                {
                     trips.insert(trip);
+                    stations.insert(trip.getStartStation());
+                    stations.insert(trip.getEndStation());
+                }
+            }
         }
 
-        return true;
+        return result;
     }
 }
 

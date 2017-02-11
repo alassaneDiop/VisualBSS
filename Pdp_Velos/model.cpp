@@ -8,10 +8,10 @@ Model::Model(QObject* parent) : QObject(parent)
 
 }
 
-bool Model::loadData(const QString& filename)
+int Model::loadData(const QString& filename)
 {
     const DataFileReader* dataFileReader = new CsvDataFileReader(filename);
-    const bool result = dataFileReader->readData(m_trips);
+    const int result = dataFileReader->readData(m_stations, m_trips);
     delete dataFileReader;
     return result;
 }

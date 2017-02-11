@@ -7,7 +7,7 @@ Filter::Filter(QObject *parent) : QObject(parent)
     showOutgoingTrips = true;
     showCyclicTrips = true;
     showTripsDistances = true;
-    order = CYCLIC_TRIPS;
+    order = bss::Order::CYCLIC_TRIPS;
     /**********************/
 }
 
@@ -89,7 +89,7 @@ bool Filter::setShowTripsDistances(const bool showTripsDistances)
     return true;
 }
 
-bool Filter::setOrder(const Order order)
+bool Filter::setOrder(const bss::Order order)
 {
     if (this->order != order)
     {

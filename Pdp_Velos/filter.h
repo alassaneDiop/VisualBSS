@@ -11,9 +11,6 @@
 
 namespace bss {
 class Filter;
-enum Order;
-}
-
 enum Order
 {
     INCOMING_TRIPS,
@@ -21,6 +18,9 @@ enum Order
     CYCLIC_TRIPS,
     DISTANCE
 };
+}
+
+
 
 class Filter : public QObject
 {
@@ -35,7 +35,7 @@ public:
     inline bool getShowOutgoingTrips() const { return showOutgoingTrips; }
     inline bool getShowCyclicTrips() const { return showCyclicTrips; }
     inline bool getShowTripsDistances() const { return showTripsDistances; }
-    inline Order getOrder() const { return order; }
+    inline bss::Order getOrder() const { return order; }
     inline QTime getMaxDuration() const { return maxDuration; }
     inline QTime getMinDuration() const { return minDuration; }
     inline qreal getMaxDistance() const { return maxDistance; }
@@ -48,7 +48,7 @@ public:
     bool setShowOutgoingTrips(const bool showOutgoingTrips);
     bool setShowCyclicTrips(const bool showCyclicTrips);
     bool setShowTripsDistances(const bool showTripsDistances);
-    bool setOrder(const Order order);
+    bool setOrder(const bss::Order order);
     bool setMaxDuration(QTime maxDuration);
     bool setMinDuration(QTime minDuration);
     bool setMaxDistance(qreal maxDistance);
@@ -62,7 +62,7 @@ private:
     bool showOutgoingTrips;
     bool showCyclicTrips;
     bool showTripsDistances;
-    Order order;
+    bss::Order order;
     QTime maxDuration;
     QTime minDuration;
     qreal maxDistance;
