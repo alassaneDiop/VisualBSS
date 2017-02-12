@@ -11,7 +11,7 @@ class CsvDataFileReader : public DataFileReader
 {
 public:
     CsvDataFileReader(const QString& m_filename);
-    virtual int readData(QSet<Station>& stations, QSet<Trip>& trips) const override;
+    virtual int readData(QSet<Trip>& trips) const override;
 
     static QDate parseDate(const QString& dateString);
     static QTime parseTime(const QString& timeString);

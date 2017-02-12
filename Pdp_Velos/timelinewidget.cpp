@@ -1,6 +1,6 @@
-#include "timeline.h"
+#include "timelinewidget.h"
 
-TimeLine::TimeLine(QWidget *parent)
+TimeLineWidget::TimeLineWidget(QWidget *parent)
 {
     this->setFixedHeight(m_widgetHeight);
     QPalette pal = palette();
@@ -9,17 +9,17 @@ TimeLine::TimeLine(QWidget *parent)
     this->setPalette(pal);
 }
 
-int TimeLine::getTimeLineLength()
+int TimeLineWidget::getLength()
 {
     return m_timeLineWidth;
 }
 
-int TimeLine::getTimeLineOffsetX()
+int TimeLineWidget::getOffsetX()
 {
     return m_timeLineOffsetX;
 }
 
-void TimeLine::paintEvent(QPaintEvent *event)
+void TimeLineWidget::paintEvent(QPaintEvent *event)
 {
     QPainter painter;
     m_timeLineWidth = this->width() - 2 * m_timeLineOffsetX;

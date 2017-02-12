@@ -9,12 +9,18 @@
 #include "QWheelEvent"
 #include "qdebug.h"
 
-class Map : public QOpenGLWidget, protected QOpenGLFunctions
+#include "qlist.h"
+#include "qpoint.h"
+#include "station.h"
+#include "trip.h"
+
+
+class MapGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
 public:
-    Map(QWidget* p = 0);
-    ~Map();
+    MapGLWidget(QWidget* p = 0);
+    ~MapGLWidget();
 protected:
     void initializeGL();
     void resizeGL(int width, int height);
@@ -52,12 +58,18 @@ public:
         return r * cos(inclination);
     }
 
+public slots:
+    void onDataLoaded(const QList<Station>& stations, const QList<Trip>& trips);
+
 private:
     float m_zoom;
     bool m_leftMouseButtonPressed;
     float m_translationOffsetX;
     float m_translationOffsetY;
     QPointF m_previousMousePos;
+
+    QList<QPointF> m_stationsPos;
+    QList<QRectF> m_trips;
 };
 
 #endif // OPENGLWIDGET_H

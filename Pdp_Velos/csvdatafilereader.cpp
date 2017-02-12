@@ -15,7 +15,7 @@ CsvDataFileReader::CsvDataFileReader(const QString& filename) :
 
 }
 
-int CsvDataFileReader::readData(QSet<Station>& stations, QSet<Trip>& trips) const
+int CsvDataFileReader::readData(QSet<Trip>& trips) const
 {
     QFile file(DataFileReader::getFilename());
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -28,21 +28,33 @@ int CsvDataFileReader::readData(QSet<Station>& stations, QSet<Trip>& trips) cons
         QStringList lines = QString(file.readAll()).split('\n');
         file.close();
 
+        /// pour accelerer les tests on charge les i lignes du fichier
+        // TODO: enelever le i = 200;
+        int i = 200;
         if (!lines.isEmpty())
         {
             lines.removeFirst();
-            for (const QString& line : lines)
+// debut de section parallele
+            /*for (const QString& line : lines)
             {
                 const Trip trip = parseTrip(line);
                 if (trip.isValid())
                 {
+// debut de section critique
                     trips.insert(trip);
-                    stations.insert(trip.getStartStation());
-                    stations.insert(trip.getEndStation());
+                    result++;
+// debut de section critique
                 }
-            }
+                i--;
+//                if (i == 0)
+//                    break;
+            }*/
+            QList<Trip> f = QtConcurrent::blockingMapped(lines, parseTrip);
+            for (const Trip& t : f)
+                if (t.isValid())
+                trips.insert(t);
         }
-
+// debut de section parallele
         return result;
     }
 }

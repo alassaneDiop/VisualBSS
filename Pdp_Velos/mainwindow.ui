@@ -18,7 +18,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="Map" name="map"/>
+       <widget class="MapGLWidget" name="mapwidget"/>
       </item>
       <item>
        <widget class="QWidget" name="widget" native="true">
@@ -41,10 +41,10 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="TimeLine" name="timeline" native="true"/>
+            <widget class="TimeLineWidget" name="timeline" native="true"/>
            </item>
            <item>
-            <widget class="MatrixOpenGLWidget" name="openGLWidget"/>
+            <widget class="MatrixGLWidget" name="timelinematrixwidget"/>
            </item>
           </layout>
          </item>
@@ -78,20 +78,20 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>MatrixOpenGLWidget</class>
+   <class>MapGLWidget</class>
    <extends>QOpenGLWidget</extends>
-   <header>matrixopenglwidget.h</header>
+   <header>mapglwidget.h</header>
   </customwidget>
   <customwidget>
-   <class>TimeLine</class>
+   <class>MatrixGLWidget</class>
+   <extends>QOpenGLWidget</extends>
+   <header>matrixglwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TimeLineWidget</class>
    <extends>QWidget</extends>
-   <header>timeline.h</header>
+   <header>timelinewidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Map</class>
-   <extends>QOpenGLWidget</extends>
-   <header>map.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

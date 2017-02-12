@@ -8,13 +8,13 @@
 #include "qbrush.h"
 #include "qdebug.h"
 
-class TimeLine : public QWidget
+class TimeLineWidget : public QWidget
 {
     Q_OBJECT
 public:
-    TimeLine(QWidget *parent = 0);
-    int getTimeLineLength();
-    int getTimeLineOffsetX();
+    TimeLineWidget(QWidget *parent = 0);
+    int getLength();
+    int getOffsetX();
 
 protected:
     void paintEvent(QPaintEvent *event);

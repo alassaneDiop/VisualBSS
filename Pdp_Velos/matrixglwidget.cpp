@@ -1,16 +1,16 @@
-#include "matrixopenglwidget.h"
+#include "matrixglwidget.h"
 
 #include <QGuiApplication>
-#include <qstring.h>
+//#include <qstring.h>
 
-static void DEBUG(QString m)
-{
-#ifdef QT_DEBUG
-    qDebug() << m.toStdString().c_str();
-#endif
-}
+//static void DEBUG(QString m)
+//{
+//#ifdef QT_DEBUG
+//    qDebug() << m.toStdString().c_str();
+//#endif
+//}
 
-MatrixOpenGLWidget::MatrixOpenGLWidget(QWidget* p) : QOpenGLWidget(p)
+MatrixGLWidget::MatrixGLWidget(QWidget* p) : QOpenGLWidget(p)
 {
     m_matrixViewWidth = this->width() - 2 * m_matrixOffsetX;
 
@@ -20,30 +20,29 @@ MatrixOpenGLWidget::MatrixOpenGLWidget(QWidget* p) : QOpenGLWidget(p)
     m_dragSelectionBorderWidth = 1;
 }
 
-MatrixOpenGLWidget::~MatrixOpenGLWidget()
+MatrixGLWidget::~MatrixGLWidget()
 {
 
 }
 
-void MatrixOpenGLWidget::initializeGL()
+void MatrixGLWidget::initializeGL()
 {
     initializeOpenGLFunctions();
     glClearColor(1.f, 1.f, 1.f, 1.f);
 }
 
-void MatrixOpenGLWidget::resizeGL(int width, int height)
+void MatrixGLWidget::resizeGL(int width, int height)
 {
     m_matrixViewWidth = this->width() - 2 * m_matrixOffsetX;
 }
 
-void MatrixOpenGLWidget::paintGL()
+void MatrixGLWidget::paintGL()
 {
     drawDirections();
     drawDragSelection();
-    DEBUG("HELLO WORLD");
 }
 
-void MatrixOpenGLWidget::drawDragSelection()
+void MatrixGLWidget::drawDragSelection()
 {
     QPainter painter;
     painter.begin(this);
@@ -65,28 +64,51 @@ void MatrixOpenGLWidget::drawDragSelection()
     painter.end();
 }
 
-void MatrixOpenGLWidget::drawDirections()
+void MatrixGLWidget::drawDirections()
 {
     QPainter painter(this);
     int intervalLength = m_matrixViewWidth / m_numberOfInterval;
 
     QElapsedTimer timer;
     timer.start();
-    for (int i = 0; i < 10; ++i)
+
+
+    int j = 0;
+    foreach (Station s, m_stations)
     {
-        for (int j = 0; j < 24; ++j)
+        j++;
+        for (int i =0; i < 24; ++i)
         {
+            /// Les cercles sont hard codés, juste pour le teste d'affichage
             painter.setBrush(QColor(100, 100, 100, 128));
-            painter.drawEllipse(QPoint(
-                                    m_matrixOffsetX + j * intervalLength + (m_stationCircleSize / 2),
-                                    m_translationValue + i * 30 + m_stationCircleSize),
-                                m_stationCircleSize, m_stationCircleSize);
+                        painter.drawEllipse(QPoint(
+                                                m_matrixOffsetX + i * intervalLength + (m_stationCircleSize / 2),
+                                                m_translationValue + j * 30 + m_stationCircleSize),
+                                            m_stationCircleSize, m_stationCircleSize);
         }
     }
+
     qDebug() << "drawDirections: The slow operation took" << timer.elapsed() << "milliseconds";
 }
 
-void MatrixOpenGLWidget::wheelEvent(QWheelEvent* event)
+void MatrixGLWidget::onDataLoaded(const QList<Station>& stations, const QList<Trip>& trips)
+{
+    foreach (Station s, stations)
+    {
+        m_stations.append(s);
+    }
+    qDebug() << "m_stations size " << m_stations.size();
+
+    foreach (Trip t, trips)
+    {
+        m_trips.append(t);
+    }
+
+    qDebug() << "m_trip size" << m_trips.size();
+    update();
+}
+
+void MatrixGLWidget::wheelEvent(QWheelEvent* event)
 {
     int numDegrees = event->delta() / 8;
     int numSteps = numDegrees / 15;
@@ -100,7 +122,7 @@ void MatrixOpenGLWidget::wheelEvent(QWheelEvent* event)
     qDebug() <<  "Wheel event";
 }
 
-void MatrixOpenGLWidget::mouseMoveEvent(QMouseEvent* event)
+void MatrixGLWidget::mouseMoveEvent(QMouseEvent* event)
 {
     if (m_leftMouseButtonPressed)
     {
@@ -115,7 +137,7 @@ void MatrixOpenGLWidget::mouseMoveEvent(QMouseEvent* event)
     qDebug() <<  "move";
 }
 
-void MatrixOpenGLWidget::mousePressEvent(QMouseEvent* event)
+void MatrixGLWidget::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -139,7 +161,7 @@ void MatrixOpenGLWidget::mousePressEvent(QMouseEvent* event)
     }
 }
 
-void MatrixOpenGLWidget::mouseReleaseEvent(QMouseEvent* event)
+void MatrixGLWidget::mouseReleaseEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -150,7 +172,7 @@ void MatrixOpenGLWidget::mouseReleaseEvent(QMouseEvent* event)
     }
 }
 
-void MatrixOpenGLWidget::mouseDoubleClickEvent(QMouseEvent* event)
+void MatrixGLWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
     qDebug() << "double click";
 }

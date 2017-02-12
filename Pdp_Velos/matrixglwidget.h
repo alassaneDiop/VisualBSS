@@ -9,13 +9,15 @@
 #include "QWheelEvent"
 #include "qdebug.h"
 #include "qscrollarea.h"
+#include "trip.h"
+#include "station.h"
 
-class MatrixOpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
+class MatrixGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
 public:
-    MatrixOpenGLWidget(QWidget* p = 0);
-    ~MatrixOpenGLWidget();
+    MatrixGLWidget(QWidget* p = 0);
+    ~MatrixGLWidget();
 
 protected:
     void initializeGL();
@@ -33,6 +35,8 @@ public:
     void drawDragSelection();
     void drawDirections();
 
+public slots:
+    void onDataLoaded(const QList<Station>& stations, const QList<Trip>& trips);
 
 private:
     // Display
@@ -50,5 +54,8 @@ private:
 
     bool m_drawRectangle;
     int m_dragSelectionBorderWidth;
+
+    QList<Station> m_stations;
+    QList<Trip> m_trips;
 };
 #endif // MATRIXOPENGLWIDGET_H

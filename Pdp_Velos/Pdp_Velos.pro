@@ -21,9 +21,9 @@ SOURCES += main.cpp\
     datafilereader.cpp \
     xmldatafilereader.cpp \
     csvdatafilereader.cpp \
-    map.cpp \
-    matrixopenglwidget.cpp \
-    timeline.cpp
+    timelinewidget.cpp \
+    matrixglwidget.cpp \
+    mapglwidget.cpp
 
 HEADERS  += mainwindow.h \
     model.h \
@@ -33,8 +33,8 @@ HEADERS  += mainwindow.h \
     datafilereader.h \
     xmldatafilereader.h \
     csvdatafilereader.h \
-    map.h \
-    matrixopenglwidget.h \
-    timeline.h
+    timelinewidget.h \
+    matrixglwidget.h \
+    mapglwidget.h
 
 FORMS    += mainwindow.ui
