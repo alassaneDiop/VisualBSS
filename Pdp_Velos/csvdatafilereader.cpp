@@ -35,7 +35,7 @@ int CsvDataFileReader::readData(QSet<Trip>& trips) const
         {
             lines.removeFirst();
 // debut de section parallele
-            /*for (const QString& line : lines)
+            for (const QString& line : lines)
             {
                 const Trip trip = parseTrip(line);
                 if (trip.isValid())
@@ -46,13 +46,9 @@ int CsvDataFileReader::readData(QSet<Trip>& trips) const
 // debut de section critique
                 }
                 i--;
-//                if (i == 0)
-//                    break;
-            }*/
-            QList<Trip> f = QtConcurrent::blockingMapped(lines, parseTrip);
-            for (const Trip& t : f)
-                if (t.isValid())
-                trips.insert(t);
+                if (i == 0)
+                    break;
+            }
         }
 // debut de section parallele
         return result;
