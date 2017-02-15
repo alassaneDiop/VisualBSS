@@ -1,6 +1,7 @@
 #ifndef MATRIXOPENGLWIDGET_H
 #define MATRIXOPENGLWIDGET_H
 
+#include <vector>
 #include "qopenglwidget.h"
 #include "qopenglfunctions.h"
 #include "qmath.h"
@@ -11,6 +12,7 @@
 #include "qscrollarea.h"
 #include "trip.h"
 #include "station.h"
+
 
 class MatrixGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -28,6 +30,8 @@ protected:
     void mousePressEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
     void mouseDoubleClickEvent(QMouseEvent* event);
+    void initPoint();
+    std::vector<QPoint> hit();
 //    void keyPressEvent(QKeyEvent* event);
 //    void keyReleaseEvent(QKeyEvent* event);
 
@@ -45,12 +49,14 @@ private:
     int m_matrixViewWidth;
     int m_stationCircleSize = 10;
 
+    std::vector<QPoint> m_ellipses;
+
     bool m_leftMouseButtonPressed;
     QPointF m_previousMousePos;
     int m_translationValue;
 
     QPointF m_topLeftSelectionRectangle;
-    QPointF m_bottomRightSelectionRectanle;
+    QPointF m_bottomRightSelectionRectangle;
 
     bool m_drawRectangle;
     int m_dragSelectionBorderWidth;
