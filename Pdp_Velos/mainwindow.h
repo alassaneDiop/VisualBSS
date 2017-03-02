@@ -26,7 +26,7 @@ private:
     QSet<const Trip*> m_selection;
     Station* m_highlight;
 
-public slots:
+private slots:
     void onDataLoaded(const QList<const Station*>& stations);
     void onFilteredTripsChanged(const QList<const Trip*>& filteredTrips);
     void onSelectionChanged(const QList<const Trip*>& selection);
