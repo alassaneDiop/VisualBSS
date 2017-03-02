@@ -11,17 +11,13 @@ MainWindow::MainWindow(QWidget *parent) :
     showMaximized();
     ui->setupUi(this);
 
-    showMaximized();
-    ui->setupUi(this);
-
     m_model = &Model();
     connect(m_model, &Model::dataLoaded, this, &MainWindow::onDataLoaded);
 
     const QString filename = "../2013-07 - Citi Bike trip data.csv";
     QElapsedTimer timer;
     timer.start();
-    const int result = m_model->loadData(filename);
-    if (result >= 0)
+    if (m_model->loadData(filename))
         qDebug() << "Time to load" << result << "trips from the file in" << timer.elapsed() << "milliseconds";
     else
         qDebug() << "ERROR WHILE LOADING FILE" << filename;
