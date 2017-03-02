@@ -1,36 +1,157 @@
 #include "station.h"
+#include "trip.h"
 
-Station::Station(const QString& name, const qreal latitude, const qreal longitude) :
-    m_name(QString(name)),
-    m_latitude(latitude),
-    m_longitude(longitude)
+Station::Station() :
+    m_isValid(false),
+    m_isNull(true),
+    m_latitude(0),
+    m_longitude(0),
+    m_minTripsDistance(0),
+    m_avgTripsDistance(0),
+    m_maxTripsDistance(0),
+    m_originDesinationFlow(0)
 {
-    m_isValid = isValid(*this);
-    m_isNull = isNull(*this);
+
 }
 
-Station::operator QString() const
+Station::Station(const QString& name, const qreal latitude, const qreal longitude) :
+    m_name(name), m_latitude(latitude), m_longitude(longitude)
+{
+    if (m_name.isEmpty())
+    {
+        m_isNull = true;
+        m_isValid = false;
+    }
+    else
+    {
+        m_isNull = false;
+        m_isValid = true;
+        m_minTripsDuration = calculateMinTripsDuration();
+        m_avgTripsDuration = calculateAvgTripsDuration(),
+        m_maxTripsDuration = calculateMaxTripsDuration();
+        m_minTripsDistance = calculateMinTripsDistance();
+        m_avgTripsDistance = calculateAvgTripsDistance();
+        m_maxTripsDistance = calculateMaxTripsDistance();
+        m_originDesinationFlow = calculateOriginDesinationFlow();
+    }
+}
+
+QSet<const Trip*>::iterator Station::insertIncomingTrip(const Trip* trip)
+{
+    if (!(trip && trip->isValid()))
+        return QSet<const Trip*>::iterator();
+    else
+    {
+        const QSet<const Trip*>::iterator end = m_incomingTrips.end();
+        if (end ==  m_incomingTrips.insert(trip))
+            onTripInserted(trip);
+
+        return end;
+    }
+}
+
+QSet<const Trip*>::iterator Station::insertOutgoingTrip(const Trip* trip)
+{
+    if (!(trip && trip->isValid()))
+        return QSet<const Trip*>::iterator();
+    else
+    {
+        const QSet<const Trip*>::iterator end = m_outgoingTrips.end();
+        if (end ==  m_outgoingTrips.insert(trip))
+            onTripInserted(trip);
+
+        return end;
+    }
+}
+
+qreal Station::distance(const Station* to) const
+{
+    // TODO : distance
+    return 0;
+}
+
+qreal Station::direction(const Station* to) const
+{
+    // TODO : direction
+    return 0;
+}
+
+bool Station::operator==(const Station& other) const
+{
+    return (getName() == other.getName());
+}
+
+QString Station::toString() const
 {
     QString result;
+    result += "name : " + getName() + '\t';
     result += "latitude : " + QString:: number(getLatitude()) + '\t';
-    result += "longitude : " + QString:: number(getLongitude()) + '\t';
-    result += "name : " + getName();
+    result += "longitude : " + QString:: number(getLongitude());
     return result;
 }
 
-bool Station::operator ==(const Station& station) const
+void Station::onTripInserted(const Trip* trip)
 {
-    return getName() == station.getName()
-            && qFuzzyCompare(getLatitude() + 1, station.getLatitude() + 1)
-            && qFuzzyCompare(getLongitude() + 1, station.getLongitude() + 1);
+    // TODO : onTripInserted
+    if (trip)
+    {
+        if (m_minTripsDuration > trip->getDuration())
+            m_minTripsDuration = trip->getDuration();
+
+        if (m_maxTripsDuration > trip->getDuration())
+            m_maxTripsDuration = trip->getDuration();
+
+        m_minTripsDistance = qMin(getMinTripsDistance(), trip->getDistance());
+        m_maxTripsDistance = qMax(getMaxTripsDistance(), trip->getDistance());
+
+        // a verifier
+        const int tripsCount = getIncomingTrips().size() + getOutgoingTrips().size();
+        const int ms = ((tripsCount - 1) * getAvgTripsDuration().msec() + trip->getDuration().msec()) / tripsCount;
+        m_avgTripsDuration = QTime(0, 0, 0).addMSecs(ms);
+        m_avgTripsDistance = ((tripsCount - 1) * getAvgTripsDistance() + trip->getDistance()) / tripsCount;
+        m_originDesinationFlow++;
+    }
 }
 
-bool Station::isValid(const Station& s)
+QTime Station::calculateMinTripsDuration() const
 {
-    return !isNull(s);
+    // TODO : calculateMinTripsDuration
+    return QTime();
 }
 
-bool Station::isNull(const Station& s)
+QTime Station::calculateAvgTripsDuration() const
 {
-    return s.getName().isEmpty();
+    // TODO : calculateAvgTripsDuration
+    return QTime();
 }
+
+QTime Station::calculateMaxTripsDuration() const
+{
+    // TODO : calculateMaxTripsDuration
+    return QTime();
+}
+
+qreal Station::calculateMinTripsDistance() const
+{
+    // TODO : calculateMinTripsDistance
+    return 0;
+}
+
+qreal Station::calculateAvgTripsDistance() const
+{
+    // TODO : calculateAvgTripsDistance
+    return 0;
+}
+
+qreal Station::calculateMaxTripsDistance() const
+{
+    // TODO : calculateMaxTripsDistance
+    return 0;
+}
+
+int Station::calculateOriginDesinationFlow() const
+{
+    // TODO : calculateOriginDesinationFlow
+    return 0;
+}
+

@@ -1,17 +1,14 @@
 #include "mainwindow.h"
 #include <QApplication>
 
-#include "model.h"
-
 #include "qdebug.h"
 
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
-    Model model;
-    MainWindow w(0, &model);
-
+    MainWindow w;
     w.show();
+
     return a.exec();
 }

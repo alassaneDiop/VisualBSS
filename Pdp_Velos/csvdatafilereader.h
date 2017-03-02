@@ -7,18 +7,14 @@ namespace bss {
 class CsvDataFileReader;
 }
 
+
+class Station;
 class CsvDataFileReader : public DataFileReader
 {
 public:
-    CsvDataFileReader(const QString& m_filename);
-    virtual int readData(QSet<Trip>& trips) const override;
-
-    static QDate parseDate(const QString& dateString);
-    static QTime parseTime(const QString& timeString);
-    static QDateTime parseDateTime(const QString& dateTimeString);
-
-    static Station parseStation(const QString& stationName, const QString& latitudeString, const QString& longitudeString);
-    static Trip parseTrip(QString line);
+    CsvDataFileReader(const QString& filename);
+    virtual ~CsvDataFileReader();
+    virtual QSet<const Station*> readData(bool* ok = nullptr) const override;
 };
 
 #endif // CSVDATAFILEREADER_H

@@ -3,35 +3,38 @@
 
 #include <QObject>
 #include <QSet>
-#include "trip.h"
-#include "iterator"
 
 namespace bss {
 class Model;
+// TODO : enum SortOrder
+enum SortOrder
+{
+    DEPARTURES,
+    ARRIVALS,
+    CYCLES,
+    DISTANCE,
+    DURATION
+};
 }
 
+class Station;
 class Model : public QObject
 {
     Q_OBJECT
 public:
     explicit Model(QObject* parent = 0);
 
-    int loadData(const QString& filename);
-
-    inline QList<Station> getStations() const { return m_stations.values(); }
-    inline QList<Trip> getTrips() const { return m_trips.values(); }
-
-    static QSet<Station> getStationsFromTrip(const Trip& trip);
-    static QSet<Station> getStationsFromTrips(const QList<Trip>& trips);
+    inline QList<const Station*> getStations() const { return m_stations.values(); }
+    bool loadData(const QString& filename);
 
 private:
-    QSet<Station> m_stations;
-    QSet<Trip> m_trips;
+    QSet<const Station*> m_stations;
 
 signals:
-    void dataLoaded(const QList<Station>& stations, const QList<Trip>& trips);
+    void dataLoaded(const QList<const Station*>& stations);
 
 public slots:
+
 };
 
 #endif // MODEL_H

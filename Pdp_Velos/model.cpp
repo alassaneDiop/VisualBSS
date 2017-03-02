@@ -3,39 +3,22 @@
 
 #include "csvdatafilereader.h"
 
-Model::Model(QObject* parent) : QObject(parent)
+Model::Model(QObject* parent) :
+    QObject(parent)
 {
 
 }
 
-int Model::loadData(const QString& filename)
+bool Model::loadData(const QString& filename)
 {
-    const DataFileReader* dataFileReader = new CsvDataFileReader(filename);
-    const int result = dataFileReader->readData(m_trips);
-    delete dataFileReader;
-
-    if (result >= 0)
+    const DataFileReader* dataFileReader = &CsvDataFileReader(filename);
+    bool ok;
+    m_stations = dataFileReader->readData(&ok);
+    if (!ok)
+        return false;
+    else
     {
-        m_stations = getStationsFromTrips(getTrips());
-        emit dataLoaded(getStations(), getTrips());
+        emit dataLoaded(getStations());
+        return true;
     }
-
-    return result;
-}
-
-QSet<Station> Model::getStationsFromTrip(const Trip& trip)
-{
-    QSet<Station> stations;
-    stations.insert(trip.getStartStation());
-    stations.insert(trip.getEndStation());
-    return stations;
-}
-
-QSet<Station> Model::getStationsFromTrips(const QList<Trip>& trips)
-{
-    QSet<Station> stations;
-    for (const Trip& trip : trips)
-        stations += getStationsFromTrip(trip);
-
-    return stations;
 }
