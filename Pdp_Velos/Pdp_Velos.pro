@@ -21,9 +21,9 @@ SOURCES += main.cpp\
     datafilereader.cpp \
     xmldatafilereader.cpp \
     csvdatafilereader.cpp \
-    timelinewidget.cpp \
     matrixglwidget.cpp \
-    mapglwidget.cpp
+    mapglwidget.cpp \
+    timelinewidget.cpp
 
 HEADERS  += mainwindow.h \
     model.h \
@@ -38,3 +38,5 @@ HEADERS  += mainwindow.h \
     mapglwidget.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES +=

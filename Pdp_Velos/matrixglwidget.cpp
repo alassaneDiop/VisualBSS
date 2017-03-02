@@ -1,14 +1,15 @@
 #include "matrixglwidget.h"
 
 #include <QGuiApplication>
-//#include <qstring.h>
+#include <QtMath>
+#include <QDebug>
+#include <QWheelEvent>
+#include <QPainter>
+#include <QElapsedTimer>
 
-//static void DEBUG(QString m)
-//{
-//#ifdef QT_DEBUG
-//    qDebug() << m.toStdString().c_str();
-//#endif
-//}
+#include "trip.h"
+#include "station.h"
+
 
 MatrixGLWidget::MatrixGLWidget(QWidget* p) : QOpenGLWidget(p)
 {
@@ -74,10 +75,10 @@ void MatrixGLWidget::drawDirections()
 
     for (QPoint i : m_ellipses)
     {
-            painter.setBrush(QColor(100, 100, 100, 128));
-            painter.drawEllipse(QPoint(
-                                    m_matrixOffsetX + i.x() * intervalLength + (m_stationCircleSize / 2),
-                                    m_translationValue + i.y() + m_stationCircleSize), m_stationCircleSize, m_stationCircleSize);
+        painter.setBrush(QColor(100, 100, 100, 128));
+        painter.drawEllipse(QPoint(
+                                m_matrixOffsetX + i.x() * intervalLength + (m_stationCircleSize / 2),
+                                m_translationValue + i.y() + m_stationCircleSize), m_stationCircleSize, m_stationCircleSize);
     }
 
 

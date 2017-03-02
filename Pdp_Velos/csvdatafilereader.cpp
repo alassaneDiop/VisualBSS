@@ -30,7 +30,7 @@ int CsvDataFileReader::readData(QSet<Trip>& trips) const
 
         /// pour accelerer les tests on charge les i lignes du fichier
         // TODO: enelever le i = 200;
-        int i = 200;
+//        int i = 200;
         if (!lines.isEmpty())
         {
             lines.removeFirst();
@@ -45,9 +45,9 @@ int CsvDataFileReader::readData(QSet<Trip>& trips) const
                     result++;
 // debut de section critique
                 }
-                i--;
-                if (i == 0)
-                    break;
+//                i--;
+//                if (i == 0)
+//                    break;
             }
         }
 // debut de section parallele

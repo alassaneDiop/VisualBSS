@@ -1,7 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "qdebug.h"
-#include "qtimer.h"
+
+#include <QDebug>
+#include <QElapsedTimer>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -34,7 +35,7 @@ MainWindow::MainWindow(QWidget* parent, Model* m):
         if (result >= 0)
             qDebug() << "Time to load" << result << "trips from the file in" << timer.elapsed() << "milliseconds";
         else
-            qDebug() << "ERROR";
+            qDebug() << "ERROR WHILE LOADING FILE" << filename;
     }
 }
 

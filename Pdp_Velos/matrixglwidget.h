@@ -1,18 +1,15 @@
 #ifndef MATRIXOPENGLWIDGET_H
 #define MATRIXOPENGLWIDGET_H
 
-#include <vector>
-#include "qopenglwidget.h"
-#include "qopenglfunctions.h"
-#include "qmath.h"
-#include "qpainter.h"
-#include "qelapsedtimer.h"
-#include "QWheelEvent"
-#include "qdebug.h"
-#include "qscrollarea.h"
-#include "trip.h"
-#include "station.h"
+#include <QOpenGLWidget>
+#include <QOpenGLFunctions>
 
+
+class QWheelEvent;
+class QMouseEvent;
+class Station;
+class Trip;
+class QPoint;
 
 class MatrixGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -22,7 +19,7 @@ public:
     ~MatrixGLWidget();
 
 protected:
-    void initializeGL();
+    void initializeGL() override;
     void resizeGL(int width, int height);
     void paintGL();
     void wheelEvent(QWheelEvent* event);
@@ -32,8 +29,6 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent* event);
     void initPoint();
     std::vector<QPoint> hit();
-//    void keyPressEvent(QKeyEvent* event);
-//    void keyReleaseEvent(QKeyEvent* event);
 
 public:
     void drawDragSelection();
@@ -43,7 +38,6 @@ public slots:
     void onDataLoaded(const QList<Station>& stations, const QList<Trip>& trips);
 
 private:
-    // Display
     const int m_numberOfInterval = 24;
     const int m_matrixOffsetX = 10;
     int m_matrixViewWidth;

@@ -1,19 +1,18 @@
 #ifndef OPENGLWIDGET_H
 #define OPENGLWIDGET_H
 
-#include "qopenglwidget.h"
-#include "qopenglfunctions.h"
-#include "qmath.h"
-#include "qpainter.h"
-#include "qelapsedtimer.h"
-#include "QWheelEvent"
-#include "qdebug.h"
+#include <QOpenGLWidget>
+#include <QOpenGLFunctions>
+#include <QOpenGLVertexArrayObject>
+#include <QOpenGLBuffer>
 
-#include "qlist.h"
-#include "qpoint.h"
-#include "station.h"
-#include "trip.h"
 
+class Station;
+class Trip;
+class Point;
+class QOpenGLShaderProgram;
+class QOpenGLBuffer;
+class QWheelEvent;
 
 class MapGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -29,47 +28,37 @@ protected:
     void mouseMoveEvent(QMouseEvent* event);
     void mousePressEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
-    void mouseDoubleClickEvent(QMouseEvent* event);
 
 public:
-    void drawStations();
-    void drawTrips();
-
-
-    const float Pi = 3.141592654f;
-
-    float degToRad(float x)
-    {
-        return x / 180 * Pi;
-    }
-
-    float radToDeg(float x)
-    {
-        return x / Pi * 180;
-    }
-
-    int cartesianX(float r, float inclination, float azimut)
-    {
-        return r * sin(inclination) * cos(azimut);
-    }
-
-    int cartesianY(float r, float inclination)
-    {
-        return r * cos(inclination);
-    }
 
 public slots:
     void onDataLoaded(const QList<Station>& stations, const QList<Trip>& trips);
 
 private:
+    void drawStations();
+    void drawTrips();
+
+
     float m_zoom;
     bool m_leftMouseButtonPressed;
     float m_translationOffsetX;
     float m_translationOffsetY;
     QPointF m_previousMousePos;
 
-    QList<QPointF> m_stationsPos;
-    QList<QRectF> m_trips;
+    QVector<float> m_tripsVertices;
+    int m_tripsVerticesCount;
+
+    QVector<float> m_stationsVertices;
+    int m_stationsVerticesCount;
+
+    QOpenGLVertexArrayObject m_tripsVAO;
+    QOpenGLBuffer m_tripsVBO;
+
+    QOpenGLVertexArrayObject m_stationsVAO;
+    QOpenGLBuffer m_stationsVBO;
+
+    QOpenGLShaderProgram* m_shaderProgramStations;
+
 };
 
 #endif // OPENGLWIDGET_H
