@@ -20,6 +20,7 @@ public:
 private:
     Ui::MainWindow* ui;
     Model* m_model;
+
     TripsFilter* m_filter;
     TripsSelector* m_selector;
     QSet<const Trip*> m_filteredTrips;

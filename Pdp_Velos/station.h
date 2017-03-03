@@ -5,12 +5,13 @@
 #include <QString>
 #include <QTime>
 
+#include "trip.h"
+
 namespace bss {
 class Station;
 }
 
 
-class Trip;
 class Station
 {
 public:

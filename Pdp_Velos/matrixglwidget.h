@@ -19,14 +19,13 @@ public:
     ~MatrixGLWidget();
 
 protected:
-    void initializeGL() override;
-    void resizeGL(int width, int height);
-    void paintGL();
-    void wheelEvent(QWheelEvent* event);
-    void mouseMoveEvent (QMouseEvent* event);
-    void mousePressEvent(QMouseEvent* event);
-    void mouseReleaseEvent(QMouseEvent* event);
-    void mouseDoubleClickEvent(QMouseEvent* event);
+    virtual void initializeGL() override;
+    virtual void resizeGL(int width, int height) override;
+    virtual void paintGL() override;
+    virtual void wheelEvent(QWheelEvent* event) override;
+    virtual void mouseMoveEvent (QMouseEvent* event) override;
+    virtual void mousePressEvent(QMouseEvent* event) override;
+    virtual void mouseReleaseEvent(QMouseEvent* event) override;
     void initPoint();
     std::vector<QPoint> hit();
 

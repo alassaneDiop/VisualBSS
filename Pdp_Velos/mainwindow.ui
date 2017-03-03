@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>607</width>
+    <width>981</width>
     <height>680</height>
    </rect>
   </property>
@@ -14,14 +14,11 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_12">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <widget class="QFrame" name="frame">
+     <widget class="QFrame" name="frame_map">
       <property name="frameShape">
        <enum>QFrame::Box</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Plain</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="spacing">
@@ -43,7 +40,7 @@
         <widget class="MapGLWidget" name="mapwidget">
          <property name="minimumSize">
           <size>
-           <width>0</width>
+           <width>200</width>
            <height>0</height>
           </size>
          </property>
@@ -53,7 +50,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="frame">
+     <widget class="QFrame" name="frame_timeline">
       <property name="frameShape">
        <enum>QFrame::Box</enum>
       </property>
@@ -68,8 +65,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>147</width>
-            <height>587</height>
+            <width>321</width>
+            <height>582</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -89,7 +86,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="TimeLineWidget" name="timeline" native="true"/>
+            <widget class="TimeLineWidget" name="widget" native="true"/>
            </item>
            <item>
             <widget class="MatrixGLWidget" name="timelinematrixwidget"/>
@@ -883,8 +880,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>607</width>
-     <height>21</height>
+     <width>981</width>
+     <height>19</height>
     </rect>
    </property>
   </widget>

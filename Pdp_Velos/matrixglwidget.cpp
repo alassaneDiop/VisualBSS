@@ -171,11 +171,6 @@ void MatrixGLWidget::mouseReleaseEvent(QMouseEvent* event)
     }
 }
 
-void MatrixGLWidget::mouseDoubleClickEvent(QMouseEvent* event)
-{
-    qDebug() << "double click";
-}
-
 void MatrixGLWidget::initPoint()
 {
     int j = 0;

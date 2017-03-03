@@ -20,14 +20,15 @@ class MapGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 public:
     MapGLWidget(QWidget* p = 0);
     ~MapGLWidget();
+
 protected:
-    void initializeGL();
-    void resizeGL(int width, int height);
-    void paintGL();
-    void wheelEvent(QWheelEvent* event);
-    void mouseMoveEvent(QMouseEvent* event);
-    void mousePressEvent(QMouseEvent* event);
-    void mouseReleaseEvent(QMouseEvent* event);
+    virtual void initializeGL() override;
+    virtual void resizeGL(int width, int height) override;
+    virtual void paintGL() override;
+    virtual void wheelEvent(QWheelEvent* event) override;
+    virtual void mouseMoveEvent(QMouseEvent* event) override;
+    virtual void mousePressEvent(QMouseEvent* event) override;
+    virtual void mouseReleaseEvent(QMouseEvent* event) override;
 
 public:
 
@@ -37,7 +38,12 @@ public slots:
 private:
     void drawStations();
     void drawTrips();
+    void calculateBoundingBoxStations(const QList<Station>& stations);
+    void calculateTranlsation();
+    void calculalteZoom();
 
+    const float m_translationSensibility = 500.f;
+    QRectF m_boundingBoxStations;
 
     float m_zoom;
     bool m_leftMouseButtonPressed;

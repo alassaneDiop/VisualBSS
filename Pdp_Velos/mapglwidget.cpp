@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QOpenGLShaderProgram>
 #include <QDebug>
+#include <QtGlobal>
 
 #include "station.h"
 #include "trip.h"
@@ -13,10 +14,10 @@
 
 MapGLWidget::MapGLWidget(QWidget* p) : QOpenGLWidget(p)
 {
-    m_zoom = 1.f;
+    m_zoom = 1.0f;
     m_leftMouseButtonPressed = false;
-    m_translationOffsetX = 0;
-    m_translationOffsetY = 0;
+    m_translationOffsetX = 0.f;
+    m_translationOffsetY = 0.f;
 }
 
 MapGLWidget::~MapGLWidget()
@@ -30,7 +31,12 @@ MapGLWidget::~MapGLWidget()
 
 void MapGLWidget::initializeGL()
 {
-    //    initializeOpenGLFunctions();
+    if (!this->isValid())
+    {
+        initializeOpenGLFunctions();
+        qDebug() << "initializeGL OpenGL version:" << this->format().version();
+    }
+
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
     m_shaderProgramStations = new QOpenGLShaderProgram(this->context());
@@ -60,7 +66,11 @@ void MapGLWidget::initializeGL()
 
     m_shaderProgramStations->release();
 
-    qDebug() << "OpenGL version:" << this->format().version();
+
+    if (this->isValid())
+    {
+        qDebug() << "initializeGL OpenGL version:" << this->format().version();
+    }
 }
 
 void MapGLWidget::resizeGL(int width, int height)
@@ -72,14 +82,11 @@ void MapGLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     drawStations();
-    drawTrips();
+    //    drawTrips();
 }
 
 void MapGLWidget::drawStations()
 {
-    QElapsedTimer timer;
-    timer.start();
-
     m_stationsVAO.bind();
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, m_stationsVBO.IndexBuffer);
@@ -87,26 +94,20 @@ void MapGLWidget::drawStations()
     m_stationsVAO.release();
 
     m_shaderProgramStations->bind();
-    {
-        m_stationsVAO.bind();
-        int zoomLoc = m_shaderProgramStations->uniformLocation("zoom");
-        glUniform1f(zoomLoc, m_zoom);
-        int translationLoc = m_shaderProgramStations->uniformLocation("translation");
-        glUniform2f(translationLoc, m_translationOffsetX / 500, m_translationOffsetY / 500);
-        glPointSize(5.f);
-        glDrawArrays(GL_POINTS, 0, m_stationsVerticesCount);
-        m_stationsVAO.release();
-    }
+    m_stationsVAO.bind();
+    qDebug() << "zoom" << m_zoom;
+    //        int zoomLoc = m_shaderProgramStations->uniformLocation("zoom");
+    //        glUniform1f(zoomLoc, m_zoom);
+    //        int translationLoc = m_shaderProgramStations->uniformLocation("translation");
+    //        glUniform2f(translationLoc, m_translationOffsetX, m_translationOffsetY);
+    glPointSize(5.f);
+    glDrawArrays(GL_POINTS, 0, m_stationsVerticesCount);
+    m_stationsVAO.release();
     m_shaderProgramStations->release();
-
-    qDebug() << "drawStations: The slow operation took" << timer.elapsed() << "milliseconds";
 }
 
 void MapGLWidget::drawTrips()
 {
-    QElapsedTimer timer;
-    timer.start();
-
     m_tripsVAO.bind();
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, m_tripsVBO.IndexBuffer);
@@ -114,19 +115,14 @@ void MapGLWidget::drawTrips()
     m_tripsVAO.release();
 
     m_shaderProgramStations->bind();
-    {
-        m_tripsVAO.bind();
-        int zoomLoc = m_shaderProgramStations->uniformLocation("zoom");
-        glUniform1f(zoomLoc, m_zoom);
-        int translationLoc = m_shaderProgramStations->uniformLocation("translation");
-        glUniform2f(translationLoc, m_translationOffsetX / 500, m_translationOffsetY / 500);
-        glDrawArrays(GL_LINES, 0, m_tripsVerticesCount);
-        m_tripsVAO.release();
-    }
-
+    m_tripsVAO.bind();
+    int zoomLoc = m_shaderProgramStations->uniformLocation("zoom");
+    glUniform1f(zoomLoc, m_zoom);
+    int translationLoc = m_shaderProgramStations->uniformLocation("translation");
+    glUniform2f(translationLoc, m_translationOffsetX / 500, m_translationOffsetY / 500);
+    glDrawArrays(GL_LINES, 0, m_tripsVerticesCount);
+    m_tripsVAO.release();
     m_shaderProgramStations->release();
-
-    qDebug() << "drawTrips: The slow operation took" << timer.elapsed() << "milliseconds";
 }
 
 void MapGLWidget::onDataLoaded(const QList<Station>& stations, const QList<Trip>& trips)
@@ -135,15 +131,22 @@ void MapGLWidget::onDataLoaded(const QList<Station>& stations, const QList<Trip>
     m_stationsVertices.clear();
     m_stationsVerticesCount = stations.size();
 
-    for (int i = 0; i < m_stationsVerticesCount; ++i)
+    for (int i = 0; i < stations.size(); ++i)
     {
         m_stationsVertices.push_back(stations.at(i).getLongitude() / 180.f);
         m_stationsVertices.push_back(stations.at(i).getLatitude() / 90.f);
-        //        m_stationsVertices.push_back(-.25f);
-        //        m_stationsVertices.push_back(-.25f);
     }
 
-    initializeOpenGLFunctions();
+    if (!this->isValid())
+    {
+        initializeOpenGLFunctions();
+        this->makeCurrent();
+        qDebug() << "onDataLoaded OpenGL version:" << this->format().version();
+    }
+
+    //    calculateBoundingBoxStations(stations);
+    //    calculateTranlsation();
+    //    calculalteZoom();
 
     m_stationsVBO.bind();
     glBindBuffer(GL_ARRAY_BUFFER, m_stationsVBO.IndexBuffer);
@@ -152,17 +155,15 @@ void MapGLWidget::onDataLoaded(const QList<Station>& stations, const QList<Trip>
 
     qDebug() << "Number of stations" << stations.size();
 
-
     m_tripsVertices.reserve(trips.size() * 2 * 2);
     m_tripsVerticesCount = trips.size() * 2;
 
     for (int i = 0; i < trips.size(); ++i)
     {
-        m_tripsVertices.push_back(trips.at(i).getStartStation().getLongitude() / 180.f);
-        m_tripsVertices.push_back(trips.at(i).getStartStation().getLatitude() / 90.f);
-        m_tripsVertices.push_back(trips.at(i).getEndStation().getLongitude() / 180.f);
-        m_tripsVertices.push_back(-0.7f);
-        //        m_tripsVertices.push_back(trips.at(i).getEndStation().getLatitude() / 90.f);
+        m_tripsVertices.push_back(trips.at(i).getStartStation()->getLongitude() / 180.f);
+        m_tripsVertices.push_back(trips.at(i).getStartStation()->getLatitude() / 90.f);
+        m_tripsVertices.push_back(trips.at(i).getEndStation()->getLongitude() / 180.f);
+        m_tripsVertices.push_back(trips.at(i).getEndStation()->getLatitude() / 90.f);
     }
 
     m_tripsVBO.bind();
@@ -174,12 +175,59 @@ void MapGLWidget::onDataLoaded(const QList<Station>& stations, const QList<Trip>
     update();
 }
 
+void MapGLWidget::calculateBoundingBoxStations(const QList<Station>& stations)
+{
+    float minLatitude = 90;
+    float maxLatitude = -90.f;
+    float minLongitude = 180.f;
+    float maxLongitude = -180.f;
+
+    for (int i = 0; i < m_stationsVertices.size(); ++i)
+    {
+        if (i % 2 == 0)
+        {
+            minLongitude = qMin(minLongitude, m_stationsVertices[i]);
+            maxLongitude = qMax(maxLongitude, m_stationsVertices[i]);
+        }
+        else
+        {
+            minLatitude = qMin(minLatitude, m_stationsVertices[i]);
+            maxLatitude = qMax(maxLatitude, m_stationsVertices[i]);
+        }
+    }
+
+    m_boundingBoxStations = QRectF(minLongitude, maxLatitude, maxLongitude - minLongitude, maxLatitude - minLatitude);
+    qDebug() << minLongitude<< maxLatitude<< maxLongitude<< minLatitude;
+}
+
+void MapGLWidget::calculateTranlsation()
+{
+    QPointF center = m_boundingBoxStations.center();
+
+    m_translationOffsetX = -center.x();
+    m_translationOffsetY = center.y();
+}
+
+void MapGLWidget::calculalteZoom()
+{
+    float x = qMin(m_boundingBoxStations.width(), m_boundingBoxStations.height());
+
+    qDebug() << "Bounding box" << m_boundingBoxStations << x;
+
+    if (x != 0)
+    {
+        m_zoom = 2 / x/100;
+    }
+    qDebug() << "zoom" << m_zoom;
+}
+
 void MapGLWidget::wheelEvent(QWheelEvent* event)
 {
-    // TODO: implementer le zoom
     int numDegrees = event->delta() / 8;
     int numSteps = numDegrees / 15;
-    m_zoom += numSteps * .01f;
+    m_zoom += numSteps * 1.01f;
+
+    qDebug() << "zoom" << m_zoom;
 
     qDebug() <<  "Wheel event";
     update();
@@ -191,8 +239,8 @@ void MapGLWidget::mouseMoveEvent(QMouseEvent* event)
     if (m_leftMouseButtonPressed)
     {
         QPointF currentPos = event->pos();
-        m_translationOffsetX += 1.f / m_zoom * (currentPos.x() - m_previousMousePos.x());
-        m_translationOffsetY += 1.f / m_zoom * (currentPos.y() - m_previousMousePos.y());
+        m_translationOffsetX += 1.f / m_zoom * (currentPos.x() - m_previousMousePos.x()) / m_translationSensibility;
+        m_translationOffsetY += 1.f / m_zoom * (currentPos.y() - m_previousMousePos.y()) / m_translationSensibility;
 
         m_previousMousePos = event->pos();
         update();

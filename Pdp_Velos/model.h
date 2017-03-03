@@ -17,9 +17,9 @@ enum SortOrder
 };
 }
 
+#include "trip.h"
+#include "station.h"
 
-class Trip;
-class Station;
 class Model : public QObject
 {
     Q_OBJECT
