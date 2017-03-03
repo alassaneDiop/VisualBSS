@@ -1,13 +1,10 @@
 #include "csvdatafilereader.h"
-
 #include "trip.h"
 #include "station.h"
 
 #include <QFile>
 #include <QSet>
-#include <QTime>
-#include <QFuture>
-#include <QtConcurrent/QtConcurrent>
+#include <QVector>
 
 CsvDataFileReader::CsvDataFileReader(const QString& filename) :
     DataFileReader(filename)
@@ -15,117 +12,79 @@ CsvDataFileReader::CsvDataFileReader(const QString& filename) :
 
 }
 
-int CsvDataFileReader::readData(QSet<Trip>& trips) const
+QSet<const Station*> CsvDataFileReader::readData(bool* ok) const
 {
     QFile file(DataFileReader::getFilename());
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return -1;
+    {
+        *ok = false;
+        return QSet<const Station*>();
+    }
     else
     {
-        trips.clear();
-        int result = 0;
-
         QStringList lines = QString(file.readAll()).split('\n');
-        file.close();
-
-        /// pour accelerer les tests on charge les i lignes du fichier
-        // TODO: enelever le i = 200;
-//        int i = 200;
         if (!lines.isEmpty())
-        {
             lines.removeFirst();
+
+        file.close();
+        *ok = true;
+
+        /// pour accelerer les tests on seulement i lignes du fichier
+        // TODO: enlever le i = 200;
+        int i = 200;
+
+        QVector<Station> stations;
 // debut de section parallele
-            for (const QString& line : lines)
+        for (QString line : lines)
+        {
+            //const Data data = parseCsvData(line);
+            const QStringList fields = line.remove('"').split(',');
+            if (fields.size() >= 11)
             {
-                const Trip trip = parseTrip(line);
-                if (trip.isValid())
-                {
-// debut de section critique
-                    trips.insert(trip);
-                    result++;
-// debut de section critique
-                }
-//                i--;
-//                if (i == 0)
-//                    break;
+                const QString startDateTimeStr = fields.at(1);
+                const QString endDateTimeStr = fields.at(2);
+                const QString startStationName = fields.at(4);
+                const QString startLatitudeStr = fields.at(5);
+                const QString startLongitudeStr = fields.at(6);
+                const QString endStationName = fields.at(8);
+                const QString endLatitudeStr = fields.at(9);
+                const QString endLongitudeStr = fields.at(10);
+
+                const Station startStation = Station(startStationName, startLatitudeStr.toDouble(), startLongitudeStr.toDouble());
+                const Station endStation = Station(endStationName, endLatitudeStr.toDouble(), endLongitudeStr.toDouble());
+
+                if (!stations.contains(startStation) && startStation.isValid())
+                    stations.append(startStation);
+
+                if (!stations.contains(endStation) && endStation.isValid())
+                    stations.append(endStation);
+
+                const QString dateTimeFormat = "YYYY-MM-dd HH-mm-ss";
+                const QDateTime startDateTime = QDateTime::fromString(startDateTimeStr, dateTimeFormat);
+                const QDateTime endDateTime = QDateTime::fromString(endDateTimeStr, dateTimeFormat);
+                Station* const startStationPtr = &stations[stations.indexOf(startStation)];
+                Station* const endStationPtr = &stations[stations.indexOf(endStation)];
+                const Trip* trip = &Trip(startStationPtr, endStationPtr, startDateTime, endDateTime);
+
+                startStationPtr->insertOutgoingTrip(trip);
+                startStationPtr->insertIncomingTrip(trip);
+                endStationPtr->insertIncomingTrip(trip);
+                endStationPtr->insertOutgoingTrip(trip);
             }
+// debut de section critique                 
+// fin de section critique
+
+            i--;
+            if (i == 0)
+                break;
         }
-// debut de section parallele
+// fin de section parallele
+
+        QSet<const Station*> result;
+        for (const Station station : stations)
+            result.insert(&station);
+
         return result;
-    }
-}
-
-QDate CsvDataFileReader::parseDate(const QString& dateString)
-{
-    const QStringList dateStrings = dateString.split('-');
-    if (dateStrings.size() != 3)
-        return QDate();
-    else
-    {
-        const int y = QString(dateStrings[0]).toInt();
-        const int m = QString(dateStrings[1]).toInt();
-        const int d = QString(dateStrings[2]).toInt();
-        return QDate(y, m, d);
-    }
-}
-
-QTime CsvDataFileReader::parseTime(const QString& timeString)
-{
-    const QStringList timeStrings = timeString.split(':');
-    if (timeStrings.size() != 3)
-        return QTime();
-    else
-    {
-        const int h = QString(timeStrings[0]).toInt();
-        const int m = QString(timeStrings[1]).toInt();
-        const int s = QString(timeStrings[2]).toInt();
-        return QTime(h, m, s);
-    }
-}
-
-QDateTime CsvDataFileReader::parseDateTime(const QString& dateTimeString)
-{
-    const QStringList dateTimeStrings = dateTimeString.split(' ');
-    if (dateTimeStrings.size() != 2)
-        return QDateTime();
-    else
-    {
-        const QDate date = parseDate(dateTimeStrings[0]);
-        const QTime time = parseTime(dateTimeStrings[1]);
-        return QDateTime(date, time);
-    }
-}
-
-Station CsvDataFileReader::parseStation(const QString& stationName, const QString& latitudeString, const QString& longitudeString)
-{
-    const qreal latitude = latitudeString.toDouble();
-    const qreal longitude = longitudeString.toDouble();
-    return Station(stationName, latitude, longitude);
-}
-
-Trip CsvDataFileReader::parseTrip(QString line)
-{
-    const QStringList fields = line.remove('"').split(',');
-    if (fields.size() < 11)
-        return Trip();
-    else
-    {
-        const QString durationString = fields[0];
-        const QString startDateTimeString = fields[1];
-        const QString endDateTimeString = fields[2];
-        const QString startStationName = fields[4];
-        const QString startStationLatitudeString = fields[5];
-        const QString startStationLongitudeString = fields[6];
-        const QString endStationName = fields[8];
-        const QString endStationLatitudeString = fields[9];
-        const QString endStationLongitudeString = fields[10];
-
-        const Station startStation = parseStation(startStationName, startStationLatitudeString, startStationLongitudeString);
-        const Station endStation = parseStation(endStationName, endStationLatitudeString, endStationLongitudeString);
-        const QDateTime startDateTime = parseDateTime(startDateTimeString);
-        const QDateTime endDateTime = parseDateTime(endDateTimeString);
-        const QTime duration = QTime(0, 0, 0).addSecs(durationString.toInt());
-        return Trip(startStation, endStation, startDateTime, endDateTime, duration);
     }
 }
 
