@@ -48,7 +48,6 @@ Trip::Trip(Station* const startStation,
     }
 }
 
-
 QString Trip::toString() const
 {
     QString result;

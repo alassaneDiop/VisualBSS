@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     showMaximized();
     ui->setupUi(this);
 
-    m_model = &Model();
+    m_model = new Model();
     connect(m_model, &Model::dataLoaded, this, &MainWindow::onDataLoaded);
     connect(m_model, &Model::failedToLoadData, this, &MainWindow::onFailedToLoadData);
 
@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     m_model->disconnect();
+    delete m_model;
     delete ui;
 }
 
