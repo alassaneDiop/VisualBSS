@@ -3,6 +3,7 @@
 
 #include "station.h"
 #include <QString>
+#include <QVector>
 
 namespace bss {
 class DataFileReader;
@@ -12,11 +13,15 @@ struct DataFileReadInfo;
 struct DataFileReadInfo
 {
     const bool ok;
-    const int tripsCount;
-    const QSet<const Station*> stations;
-    DataFileReadInfo() : ok(false), tripsCount(0) { }
-    DataFileReadInfo(const bool& ok, const int& tripsCount, const QSet<const Station*> stations) :
-        ok(ok), tripsCount(tripsCount), stations(stations) { }
+    const QVector<Trip> trips;
+    const QVector<Station> stations;
+
+    DataFileReadInfo() : ok(false) { }
+
+    DataFileReadInfo(const bool& ok,
+                     const QVector<Trip>& trips,
+                     const QVector<Station>& stations) :
+        ok(ok), trips(trips), stations(stations) { }
 };
 
 class DataFileReader

@@ -19,8 +19,9 @@ int Model::loadData(const QString& filename)
     }
     else
     {
+        m_trips = info.trips;
         m_stations = info.stations;
-        emit dataLoaded(getStations());
-        return info.tripsCount;
+        emit dataLoaded(m_trips, m_stations);
+        return m_trips.size();
     }
 }

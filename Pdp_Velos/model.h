@@ -2,7 +2,7 @@
 #define MODEL_H
 
 #include <QObject>
-#include <QSet>
+#include <QVector>
 
 namespace bss {
 class Model;
@@ -18,6 +18,7 @@ enum SortOrder
 }
 
 
+class Trip;
 class Station;
 class Model : public QObject
 {
@@ -25,14 +26,16 @@ class Model : public QObject
 public:
     explicit Model(QObject* parent = 0);
 
-    inline QList<const Station*> getStations() const { return m_stations.values(); }
+    /*inline Trip getTrip(const int& i) const { return m_stations.value(i); }
+    inline Station getStation(const int& i) const { return m_stations.value(i); }*/
     int loadData(const QString& filename);
 
 private:
-    QSet<const Station*> m_stations;
+    QVector<Trip> m_trips;
+    QVector<Station> m_stations;
 
 signals:
-    void dataLoaded(const QList<const Station*>& stations);
+    void dataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations);
     void failedToLoadData(const QString& filename);
 
 public slots:

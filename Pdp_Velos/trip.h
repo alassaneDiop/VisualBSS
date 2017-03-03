@@ -17,6 +17,7 @@ public:
          Station* const endStation,
          const QDateTime& startDateTime,
          const QDateTime& endDateTime);
+    ~Trip();
 
     inline bool isValid() const { return m_isValid; }
     inline bool isNull() const { return m_isNull; }

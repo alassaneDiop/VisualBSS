@@ -12,14 +12,11 @@ CsvDataFileReader::CsvDataFileReader(const QString& filename) :
 
 }
 
-QSet<const Station*> CsvDataFileReader::readData(bool* ok) const
+DataFileReadInfo CsvDataFileReader::readData() const
 {
     QFile file(DataFileReader::getFilename());
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        *ok = false;
-        return QSet<const Station*>();
-    }
+        return DataFileReadInfo();
     else
     {
         QStringList lines = QString(file.readAll()).split('\n');
@@ -27,17 +24,12 @@ QSet<const Station*> CsvDataFileReader::readData(bool* ok) const
             lines.removeFirst();
 
         file.close();
-        *ok = true;
 
-        /// pour accelerer les tests on seulement i lignes du fichier
-        // TODO: enlever le i = 200;
-        int i = 200;
-
+        QVector<Trip> trips;
         QVector<Station> stations;
 // debut de section parallele
         for (QString line : lines)
         {
-            //const Data data = parseCsvData(line);
             const QStringList fields = line.remove('"').split(',');
             if (fields.size() >= 11)
             {
@@ -52,7 +44,7 @@ QSet<const Station*> CsvDataFileReader::readData(bool* ok) const
 
                 const Station startStation = Station(startStationName, startLatitudeStr.toDouble(), startLongitudeStr.toDouble());
                 const Station endStation = Station(endStationName, endLatitudeStr.toDouble(), endLongitudeStr.toDouble());
-
+// debut de section critique
                 if (!stations.contains(startStation) && startStation.isValid())
                     stations.append(startStation);
 
@@ -64,27 +56,27 @@ QSet<const Station*> CsvDataFileReader::readData(bool* ok) const
                 const QDateTime endDateTime = QDateTime::fromString(endDateTimeStr, dateTimeFormat);
                 Station* const startStationPtr = &stations[stations.indexOf(startStation)];
                 Station* const endStationPtr = &stations[stations.indexOf(endStation)];
-                const Trip* trip = &Trip(startStationPtr, endStationPtr, startDateTime, endDateTime);
+                const Trip trip = Trip(startStationPtr, endStationPtr, startDateTime, endDateTime);
+                if (trip.isValid())
+                {
+                    trips.append(trip);
+                    if (trip.isCyclic())
+                        startStationPtr->insertCycle(&trip);
+                    else
+                    {
+                        startStationPtr->insertDeparture(&trip);
+                        endStationPtr->insertArrival(&trip);
+                    }
 
-                startStationPtr->insertOutgoingTrip(trip);
-                startStationPtr->insertIncomingTrip(trip);
-                endStationPtr->insertIncomingTrip(trip);
-                endStationPtr->insertOutgoingTrip(trip);
-            }
-// debut de section critique                 
+                    // TODO : retirer
+                    if (trips.size() >= 200)
+                        break;
+                }
 // fin de section critique
-
-            i--;
-            if (i == 0)
-                break;
+            }              
         }
 // fin de section parallele
-
-        QSet<const Station*> result;
-        for (const Station station : stations)
-            result.insert(&station);
-
-        return result;
+        return DataFileReadInfo(true, trips, stations);
     }
 }
 

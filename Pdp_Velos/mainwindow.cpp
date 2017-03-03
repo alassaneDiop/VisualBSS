@@ -31,7 +31,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::onDataLoaded(const QList<const Station*>& stations)
+void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations)
 {
     // TODO : onDataLoaded
 }
