@@ -8,6 +8,10 @@ XmlDataFileReader::XmlDataFileReader(const QString& filename) :
 {
 
 }
+XmlDataFileReader::~XmlDataFileReader()
+{
+
+}
 
 DataFileReadInfo XmlDataFileReader::readData() const
 {   

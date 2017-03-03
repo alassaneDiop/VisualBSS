@@ -6,3 +6,7 @@ DataFileReader::DataFileReader(const QString& filename) :
 
 }
 
+DataFileReader::~DataFileReader()
+{
+
+}
