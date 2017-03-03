@@ -51,7 +51,8 @@ DataFileReadInfo CsvDataFileReader::readData() const
                 if (!stations.contains(endStation) && endStation.isValid())
                     stations.append(endStation);
 
-                const QString dateTimeFormat = "YYYY-MM-dd HH-mm-ss";
+                // TODO : retirer codage dans le dur du format du temps
+                const QString dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
                 const QDateTime startDateTime = QDateTime::fromString(startDateTimeStr, dateTimeFormat);
                 const QDateTime endDateTime = QDateTime::fromString(endDateTimeStr, dateTimeFormat);
                 Station* const startStationPtr = &stations[stations.indexOf(startStation)];
