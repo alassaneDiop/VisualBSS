@@ -10,8 +10,10 @@ Model::Model(QObject* parent) : QObject(parent)
 
 int Model::loadData(const QString& filename)
 {
-    const DataFileReader* dataFileReader = &CsvDataFileReader(filename);
+    const DataFileReader* dataFileReader = new CsvDataFileReader(filename);
     const DataFileReadInfo info = dataFileReader->readData();
+    delete dataFileReader;
+
     if (!info.ok)
     {
         emit failedToLoadData(filename);
