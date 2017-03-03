@@ -3,7 +3,7 @@
 #include "station.h"
 
 #include <QFile>
-#include <QSet>
+#include <QTime>
 #include <QVector>
 
 CsvDataFileReader::CsvDataFileReader(const QString& filename) :
@@ -71,8 +71,8 @@ DataFileReadInfo CsvDataFileReader::readData() const
                     // TODO : retirer
                     if (trips.size() >= 200)
                         break;
-                }
 // fin de section critique
+                }
             }              
         }
 // fin de section parallele
@@ -80,15 +80,22 @@ DataFileReadInfo CsvDataFileReader::readData() const
     }
 }
 
+CsvDataFileReader::~CsvDataFileReader()
+{
+
+}
+
 /*
-"tripduration",
-"starttime",
-"stoptime",
-"start station id",
-"start station name",
-"start station latitude",
-"start station longitude",
-"end station id",
-"end station name",
-"end station latitude",
-"end station longitude",*/
+ * Pour CitiBike:
+ * "tripduration",
+ * "starttime",
+ * "stoptime",
+ * "start station id",
+ * "start station name",
+ * "start station latitude",
+ * "start station longitude",
+ * "end station id",
+ * "end station name",
+ * "end station latitude",
+ * "end station longitude",
+*/
