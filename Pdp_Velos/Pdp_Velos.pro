@@ -15,7 +15,6 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     model.cpp \
-    filter.cpp \
     station.cpp \
     trip.cpp \
     datafilereader.cpp \
@@ -23,11 +22,12 @@ SOURCES += main.cpp\
     csvdatafilereader.cpp \
     matrixglwidget.cpp \
     mapglwidget.cpp \
-    timelinewidget.cpp
+    tripsfilter.cpp \
+    stationsfilter.cpp \
+    tripsselector.cpp
 
 HEADERS  += mainwindow.h \
     model.h \
-    filter.h \
     station.h \
     trip.h \
     datafilereader.h \
@@ -35,7 +35,10 @@ HEADERS  += mainwindow.h \
     csvdatafilereader.h \
     timelinewidget.h \
     matrixglwidget.h \
-    mapglwidget.h
+    mapglwidget.h \
+    tripsfilter.h \
+    stationsfilter.h \
+    tripsselector.h
 
 FORMS    += mainwindow.ui
 
