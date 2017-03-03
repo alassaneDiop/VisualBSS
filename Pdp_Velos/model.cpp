@@ -3,7 +3,8 @@
 #include "csvdatafilereader.h"
 
 
-Model::Model(QObject* parent) : QObject(parent)
+Model::Model(QObject* parent) :
+    QObject(parent)
 {
 
 }

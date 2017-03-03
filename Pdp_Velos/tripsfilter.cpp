@@ -6,7 +6,8 @@ TripsFilter::TripsFilter()
 
 }
 
-TripsFilter::TripsFilter(const FilterParams& params) : m_params(params)
+TripsFilter::TripsFilter(const FilterParams& params) :
+    m_params(params)
 {
 
 }

@@ -5,7 +5,8 @@ StationsFilter::StationsFilter()
 
 }
 
-StationsFilter::StationsFilter(const FilterParams& params) : m_params(params)
+StationsFilter::StationsFilter(const FilterParams& params) :
+    m_params(params)
 {
 
 }
