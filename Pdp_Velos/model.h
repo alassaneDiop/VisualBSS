@@ -17,6 +17,7 @@ enum SortOrder
 };
 }
 
+
 class Station;
 class Model : public QObject
 {
@@ -25,13 +26,14 @@ public:
     explicit Model(QObject* parent = 0);
 
     inline QList<const Station*> getStations() const { return m_stations.values(); }
-    bool loadData(const QString& filename);
+    int loadData(const QString& filename);
 
 private:
     QSet<const Station*> m_stations;
 
 signals:
     void dataLoaded(const QList<const Station*>& stations);
+    void failedToLoadData(const QString& filename);
 
 public slots:
 

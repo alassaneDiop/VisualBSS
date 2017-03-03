@@ -14,7 +14,7 @@ class XmlDataFileReader : public DataFileReader
 public:
     XmlDataFileReader(const QString& filename);
     virtual ~XmlDataFileReader();
-    virtual QSet<const Station*> readData(bool* ok = nullptr) const override;
+    virtual DataFileReadInfo readData() const override;
 };
 
 #endif // XMLDATAFILEREADER_H

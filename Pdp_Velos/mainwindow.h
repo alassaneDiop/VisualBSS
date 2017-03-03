@@ -28,9 +28,20 @@ private:
 
 private slots:
     void onDataLoaded(const QList<const Station*>& stations);
+    void onFailedToLoadData(const QString& filename);
     void onFilteredTripsChanged(const QList<const Trip*>& filteredTrips);
     void onSelectionChanged(const QList<const Trip*>& selection);
     void onHighlightChanged(const Station* highlight);
+
+    void on_comboBox_period_currentIndexChanged(int index);
+    void on_lineEdit_day_editingFinished();
+    void on_comboBox_dayOfWeek_currentIndexChanged(int index);
+    void on_checkBox_arrivals_stateChanged(int arg1);
+    void on_checkBox_departures_stateChanged(int arg1);
+    void on_checkBox_cycles_stateChanged(int arg1);
+    void on_checkBox_duration_stateChanged(int arg1);
+    void on_checkBox_distance_stateChanged(int arg1);
+    void on_comboBox_order_currentIndexChanged(int index);
 };
 
 #endif // MAINWINDOW_H

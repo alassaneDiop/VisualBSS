@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>670</width>
-    <height>700</height>
+    <width>607</width>
+    <height>680</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -68,8 +68,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>210</width>
-            <height>607</height>
+            <width>147</width>
+            <height>587</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -102,7 +102,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="frame_2">
+     <widget class="QFrame" name="frame_controls">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -138,7 +138,7 @@
         <number>3</number>
        </property>
        <item>
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QGroupBox" name="groupBox_period">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -165,7 +165,7 @@
            <number>3</number>
           </property>
           <item>
-           <widget class="QWidget" name="widget" native="true">
+           <widget class="QWidget" name="widget_period" native="true">
             <layout class="QVBoxLayout" name="verticalLayout_13">
              <property name="spacing">
               <number>3</number>
@@ -183,10 +183,10 @@
               <number>6</number>
              </property>
              <item>
-              <widget class="QWidget" name="widget_2" native="true">
+              <widget class="QWidget" name="widget_periodDay" native="true">
                <layout class="QHBoxLayout" name="horizontalLayout">
                 <property name="spacing">
-                 <number>3</number>
+                 <number>12</number>
                 </property>
                 <property name="leftMargin">
                  <number>3</number>
@@ -201,10 +201,10 @@
                  <number>3</number>
                 </property>
                 <item>
-                 <widget class="QWidget" name="widget_3" native="true">
-                  <layout class="QHBoxLayout" name="horizontalLayout_5">
+                 <widget class="QWidget" name="widget_period_2" native="true">
+                  <layout class="QHBoxLayout" name="horizontalLayout_4">
                    <property name="spacing">
-                    <number>3</number>
+                    <number>6</number>
                    </property>
                    <property name="leftMargin">
                     <number>0</number>
@@ -219,14 +219,20 @@
                     <number>0</number>
                    </property>
                    <item>
-                    <widget class="QLabel" name="label_4">
+                    <widget class="QLabel" name="label_period">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="text">
-                      <string>Day</string>
+                      <string>Period</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLineEdit" name="lineEdit_2">
+                    <widget class="QComboBox" name="comboBox_period">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -239,10 +245,10 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QWidget" name="widget_4" native="true">
-                  <layout class="QHBoxLayout" name="horizontalLayout_4">
+                 <widget class="QWidget" name="widget_day" native="true">
+                  <layout class="QHBoxLayout" name="horizontalLayout_5">
                    <property name="spacing">
-                    <number>3</number>
+                    <number>6</number>
                    </property>
                    <property name="leftMargin">
                     <number>0</number>
@@ -257,14 +263,27 @@
                     <number>0</number>
                    </property>
                    <item>
-                    <widget class="QLabel" name="label_3">
+                    <widget class="QLabel" name="label_day">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="text">
-                      <string>Period</string>
+                      <string>Day</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QComboBox" name="comboBox_3"/>
+                    <widget class="QLineEdit" name="lineEdit_day">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </widget>
@@ -273,7 +292,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QWidget" name="widget_13" native="true">
+              <widget class="QWidget" name="widget_dayOfWeek" native="true">
                <layout class="QVBoxLayout" name="verticalLayout_6">
                 <property name="spacing">
                  <number>3</number>
@@ -291,7 +310,7 @@
                  <number>3</number>
                 </property>
                 <item>
-                 <widget class="QComboBox" name="comboBox_2">
+                 <widget class="QComboBox" name="comboBox_dayOfWeek">
                   <item>
                    <property name="text">
                     <string>Monday</string>
@@ -349,7 +368,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_2">
+        <widget class="QGroupBox" name="groupBox_display">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -379,7 +398,7 @@
            <number>6</number>
           </property>
           <item>
-           <widget class="QWidget" name="widget_5" native="true">
+           <widget class="QWidget" name="widget_displayLeft" native="true">
             <layout class="QVBoxLayout" name="verticalLayout_7">
              <property name="spacing">
               <number>3</number>
@@ -397,28 +416,28 @@
               <number>3</number>
              </property>
              <item>
-              <widget class="QCheckBox" name="checkBox">
+              <widget class="QCheckBox" name="checkBox_arrivals">
                <property name="text">
                 <string>Incoming trips</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QCheckBox" name="checkBox_2">
+              <widget class="QCheckBox" name="checkBox_cycles">
                <property name="text">
                 <string>Cyclic trips</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QCheckBox" name="checkBox_3">
+              <widget class="QCheckBox" name="checkBox_distance">
                <property name="text">
                 <string>Trips distance</string>
                </property>
               </widget>
              </item>
              <item>
-              <spacer name="verticalSpacer">
+              <spacer name="verticalSpacer_displayLeft">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
                </property>
@@ -437,7 +456,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="widget_6" native="true">
+           <widget class="QWidget" name="widget_displayRight" native="true">
             <layout class="QVBoxLayout" name="verticalLayout_8">
              <property name="spacing">
               <number>3</number>
@@ -455,21 +474,21 @@
               <number>3</number>
              </property>
              <item>
-              <widget class="QCheckBox" name="checkBox_4">
+              <widget class="QCheckBox" name="checkBox_departures">
                <property name="text">
                 <string>Outgoing trips</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QCheckBox" name="checkBox_5">
+              <widget class="QCheckBox" name="checkBox_duration">
                <property name="text">
-                <string>Trips durations</string>
+                <string>Trips duration</string>
                </property>
               </widget>
              </item>
              <item>
-              <spacer name="verticalSpacer_2">
+              <spacer name="verticalSpacer_displayRight">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
                </property>
@@ -491,7 +510,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_3">
+        <widget class="QGroupBox" name="groupBox_order">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -521,13 +540,39 @@
            <number>6</number>
           </property>
           <item>
-           <widget class="QComboBox" name="comboBox_4"/>
+           <widget class="QComboBox" name="comboBox_order">
+            <item>
+             <property name="text">
+              <string>Trips distance</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Trips duration</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Incoming trips</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Outgoing trips</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Cyclic trips</string>
+             </property>
+            </item>
+           </widget>
           </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_5">
+        <widget class="QGroupBox" name="groupBox_filter">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -557,7 +602,7 @@
            <number>6</number>
           </property>
           <item>
-           <widget class="QWidget" name="widget_7" native="true">
+           <widget class="QWidget" name="widget_distance" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_7">
              <property name="spacing">
               <number>3</number>
@@ -575,21 +620,27 @@
               <number>3</number>
              </property>
              <item>
-              <widget class="QLabel" name="label_5">
+              <widget class="QLabel" name="label_distance">
                <property name="text">
                 <string>Trip distance</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_6">
+              <widget class="QLabel" name="label_minDistance">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>TextLabel</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_7">
+              <widget class="QLabel" name="label_maxDistance">
                <property name="text">
                 <string>TextLabel</string>
                </property>
@@ -599,7 +650,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="widget_8" native="true">
+           <widget class="QWidget" name="widget_duration" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_8">
              <property name="spacing">
               <number>3</number>
@@ -617,21 +668,21 @@
               <number>3</number>
              </property>
              <item>
-              <widget class="QLabel" name="label_8">
+              <widget class="QLabel" name="label_duration">
                <property name="text">
                 <string>Trip duration</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_9">
+              <widget class="QLabel" name="label_minDuration">
                <property name="text">
                 <string>TextLabel</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_10">
+              <widget class="QLabel" name="label_maxDuration">
                <property name="text">
                 <string>TextLabel</string>
                </property>
@@ -641,7 +692,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="widget_9" native="true">
+           <widget class="QWidget" name="widget_direction" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_9">
              <property name="spacing">
               <number>3</number>
@@ -659,21 +710,21 @@
               <number>3</number>
              </property>
              <item>
-              <widget class="QLabel" name="label_11">
+              <widget class="QLabel" name="label_direction">
                <property name="text">
                 <string>Trip direction</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_12">
+              <widget class="QLabel" name="label_minDirection">
                <property name="text">
                 <string>TextLabel</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_13">
+              <widget class="QLabel" name="label_maxDirection">
                <property name="text">
                 <string>TextLabel</string>
                </property>
@@ -683,7 +734,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="widget_10" native="true">
+           <widget class="QWidget" name="widget_odFlow" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_10">
              <property name="spacing">
               <number>3</number>
@@ -701,21 +752,21 @@
               <number>3</number>
              </property>
              <item>
-              <widget class="QLabel" name="label_14">
+              <widget class="QLabel" name="label_odFlow">
                <property name="text">
                 <string>OD flow</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_15">
+              <widget class="QLabel" name="label_minOdFlow">
                <property name="text">
                 <string>TextLabel</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_16">
+              <widget class="QLabel" name="label_maxOdFlow">
                <property name="text">
                 <string>TextLabel</string>
                </property>
@@ -728,7 +779,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_4">
+        <widget class="QGroupBox" name="groupBox_ranking">
          <property name="title">
           <string>Ranking</string>
          </property>
@@ -752,7 +803,7 @@
            <number>6</number>
           </property>
           <item>
-           <widget class="QWidget" name="widget_11" native="true">
+           <widget class="QWidget" name="widget_top" native="true">
             <layout class="QVBoxLayout" name="verticalLayout_11">
              <property name="spacing">
               <number>3</number>
@@ -770,7 +821,7 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QLabel" name="label_17">
+              <widget class="QLabel" name="label_top">
                <property name="text">
                 <string>Top</string>
                </property>
@@ -780,13 +831,13 @@
               </widget>
              </item>
              <item>
-              <widget class="QListView" name="listView"/>
+              <widget class="QListView" name="listView_top"/>
              </item>
             </layout>
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="widget_12" native="true">
+           <widget class="QWidget" name="widget_last" native="true">
             <layout class="QVBoxLayout" name="verticalLayout_12">
              <property name="spacing">
               <number>3</number>
@@ -804,7 +855,7 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QLabel" name="label_18">
+              <widget class="QLabel" name="label_last">
                <property name="text">
                 <string>Last</string>
                </property>
@@ -814,7 +865,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QListView" name="listView_2"/>
+              <widget class="QListView" name="listView__last"/>
              </item>
             </layout>
            </widget>
@@ -832,7 +883,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>670</width>
+     <width>607</width>
      <height>21</height>
     </rect>
    </property>

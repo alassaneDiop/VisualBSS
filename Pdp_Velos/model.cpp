@@ -1,24 +1,26 @@
 #include "model.h"
 #include "datafilereader.h"
-
 #include "csvdatafilereader.h"
 
-Model::Model(QObject* parent) :
-    QObject(parent)
+
+Model::Model(QObject* parent) : QObject(parent)
 {
 
 }
 
-bool Model::loadData(const QString& filename)
+int Model::loadData(const QString& filename)
 {
     const DataFileReader* dataFileReader = &CsvDataFileReader(filename);
-    bool ok;
-    m_stations = dataFileReader->readData(&ok);
-    if (!ok)
-        return false;
+    const DataFileReadInfo info = dataFileReader->readData();
+    if (!info.ok)
+    {
+        emit failedToLoadData(filename);
+        return -1;
+    }
     else
     {
+        m_stations = info.stations;
         emit dataLoaded(getStations());
-        return true;
+        return info.tripsCount;
     }
 }

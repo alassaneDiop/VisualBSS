@@ -14,7 +14,7 @@ class CsvDataFileReader : public DataFileReader
 public:
     CsvDataFileReader(const QString& filename);
     virtual ~CsvDataFileReader();
-    virtual QSet<const Station*> readData(bool* ok = nullptr) const override;
+    virtual DataFileReadInfo readData() const override;
 };
 
 #endif // CSVDATAFILEREADER_H
