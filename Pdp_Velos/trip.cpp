@@ -13,12 +13,13 @@ Trip::Trip() :
 
 }
 
-Trip::Trip(Station* const startStation,
-           Station* const endStation,
+Trip::Trip(Station* const& startStation,
+           Station* const& endStation,
            const QDateTime& startDateTime,
            const QDateTime& endDateTime)
 {
     m_isValid = startDateTime.isValid() && endDateTime.isValid()
+            && (startDateTime <= endDateTime)
             && startStation && startStation->isValid()
             && endStation && endStation->isValid();
 
@@ -33,18 +34,27 @@ Trip::Trip(Station* const startStation,
     {
         m_isNull = false;
         m_isCyclic = (startStation == endStation);
-
-        // TODO : "For cyclic trips, we estimated the distance by multiplying the duration by the average speed of 2.7m/s."
-        m_distance = isCyclic() ? 0 : startStation->distance(endStation);
-
         m_direction = startStation->direction(endStation);
         m_startStation = startStation;
         m_endStation = endStation;
         m_startDateTime = startDateTime;
         m_endDateTime = endDateTime;
 
-        const int msecTo = endDateTime.msecsTo(startDateTime);
+        const int msecTo = startDateTime.msecsTo(endDateTime);
         m_duration = QTime(0, 0, 0).addMSecs(msecTo);
+
+        if (isCyclic())
+        {
+            // TODO : "For cyclic trips, we estimated the distance by multiplying the duration by the average speed of 2.7m/s."
+            m_distance = 0;
+            m_startStation->appendCycle(this);
+        }
+        else
+        {
+            m_distance = startStation->distance(endStation);
+            m_startStation->appendDeparture(this);
+            m_endStation->appendArrival(this);
+        }
     }
 }
 

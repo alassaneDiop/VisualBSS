@@ -32,7 +32,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations)
+void MainWindow::onDataLoaded(QVector<const Trip*>& trips, QVector<const Station*>& stations)
 {
     // TODO : onDataLoaded
 }

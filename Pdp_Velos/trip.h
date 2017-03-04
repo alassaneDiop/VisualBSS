@@ -13,8 +13,8 @@ class Trip
 {
 public:
     Trip();
-    Trip(Station* const startStation,
-         Station* const endStation,
+    Trip(Station* const& startStation,
+         Station* const& endStation,
          const QDateTime& startDateTime,
          const QDateTime& endDateTime);
 

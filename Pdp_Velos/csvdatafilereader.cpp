@@ -12,11 +12,16 @@ CsvDataFileReader::CsvDataFileReader(const QString& filename) :
 
 }
 
-DataFileReadInfo CsvDataFileReader::readData() const
+CsvDataFileReader::~CsvDataFileReader()
+{
+
+}
+
+bool CsvDataFileReader::readData(QVector<const Trip*>& trips, QVector<const Station*>& stations) const
 {
     QFile file(DataFileReader::getFilename());
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return DataFileReadInfo();
+        return false;
     else
     {
         QStringList lines = QString(file.readAll()).split('\n');
@@ -25,8 +30,10 @@ DataFileReadInfo CsvDataFileReader::readData() const
 
         file.close();
 
-        QVector<Trip> trips;
-        QVector<Station> stations;
+        stations.clear();
+        trips.clear();
+        trips.reserve(lines.size());
+
 // debut de section parallele
         for (QString line : lines)
         {
@@ -42,48 +49,48 @@ DataFileReadInfo CsvDataFileReader::readData() const
                 const QString endLatitudeStr = fields.at(9);
                 const QString endLongitudeStr = fields.at(10);
 
-                const Station startStation = Station(startStationName, startLatitudeStr.toDouble(), startLongitudeStr.toDouble());
-                const Station endStation = Station(endStationName, endLatitudeStr.toDouble(), endLongitudeStr.toDouble());
+                Station* const startStation = new Station(startStationName, startLatitudeStr.toDouble(), startLongitudeStr.toDouble());
+                Station* const endStation = new Station(endStationName, endLatitudeStr.toDouble(), endLongitudeStr.toDouble());
+
 // debut de section critique
-                if (!stations.contains(startStation) && startStation.isValid())
+                bool containsStartStation = false;
+                QVector<const Station*>::iterator s = stations.begin();
+                for (s; s < stations.end() && !containsStartStation; ++s)
+                    containsStartStation = (*startStation == **s);
+
+                if (!containsStartStation)
                     stations.append(startStation);
 
-                if (!stations.contains(endStation) && endStation.isValid())
-                    stations.append(endStation);
+                if (*startStation != *endStation)
+                {
+                    bool containsEndStation = false;
+                    QVector<const Station*>::iterator s = stations.begin();
+                    for (s; s < stations.end() && !containsEndStation; ++s)
+                        containsEndStation = (*endStation == **s);
+
+                    if (!containsEndStation)
+                        stations.append(endStation);
+                }
 
                 // TODO : retirer codage dans le dur du format du temps
                 const QString dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
                 const QDateTime startDateTime = QDateTime::fromString(startDateTimeStr, dateTimeFormat);
                 const QDateTime endDateTime = QDateTime::fromString(endDateTimeStr, dateTimeFormat);
-                Station* const startStationPtr = &stations[stations.indexOf(startStation)];
-                Station* const endStationPtr = &stations[stations.indexOf(endStation)];
-                const Trip trip = Trip(startStationPtr, endStationPtr, startDateTime, endDateTime);
-                if (trip.isValid())
-                {
+                const Trip* trip = new Trip(startStation, endStation, startDateTime, endDateTime);
+                if (trip->isValid())
                     trips.append(trip);
-                    if (trip.isCyclic())
-                        startStationPtr->insertCycle(&trip);
-                    else
-                    {
-                        startStationPtr->insertDeparture(&trip);
-                        endStationPtr->insertArrival(&trip);
-                    }
 
-                    // TODO : retirer
-                    if (trips.size() >= 200)
-                        break;
+                // TODO : retirer limite de nombre de trajets
+                if (trips.size() >= 10)
+                    break;
 // fin de section critique
-                }
             }              
         }
 // fin de section parallele
-        return DataFileReadInfo(true, trips, stations);
+
+        trips.squeeze();
+        return true;
     }
-}
-
-CsvDataFileReader::~CsvDataFileReader()
-{
-
 }
 
 /*

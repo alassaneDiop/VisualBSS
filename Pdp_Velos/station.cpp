@@ -25,45 +25,39 @@ Station::Station(const QString& name, const qreal latitude, const qreal longitud
     }
 }
 
-const QSet<const Trip*>::iterator Station::insertArrival(const Trip* trip)
+bool Station::appendArrival(const Trip* trip)
 {
-    if (!(trip && trip->isValid()))
-        return QSet<const Trip*>::iterator();
+    if (!trip || trip->isNull() || m_arrivals.contains(trip))
+        return false;
     else
     {
-        const QSet<const Trip*>::iterator end = m_arrivals.end();
-        if (end ==  m_arrivals.insert(trip))
-            onTripInserted(trip);
-
-        return end;
+        m_arrivals.append(trip);
+        onTripAppended(trip);
+        return true;
     }
 }
 
-const QSet<const Trip*>::iterator Station::insertDeparture(const Trip* trip)
+bool Station::appendDeparture(const Trip* trip)
 {
-    if (!(trip && trip->isValid()))
-        return QSet<const Trip*>::iterator();
+    if (!trip || trip->isNull() || m_departures.contains(trip))
+        return false;
     else
     {
-        const QSet<const Trip*>::iterator end = m_departures.end();
-        if (end ==  m_departures.insert(trip))
-            onTripInserted(trip);
-
-        return end;
+        m_departures.append(trip);
+        onTripAppended(trip);
+        return true;
     }
 }
 
-const QSet<const Trip*>::iterator Station::insertCycle(const Trip* trip)
+bool Station::appendCycle(const Trip* trip)
 {
-    if (!(trip && trip->isValid() && trip->isCyclic()))
-        return QSet<const Trip*>::iterator();
+    if (!trip || trip->isNull() || m_cycles.contains(trip))
+        return false;
     else
     {
-        const QSet<const Trip*>::iterator end = m_cycles.end();
-        if (end ==  m_cycles.insert(trip))
-            onTripInserted(trip);
-
-        return end;
+        m_cycles.append(trip);
+        onTripAppended(trip);
+        return true;
     }
 }
 
@@ -84,6 +78,11 @@ bool Station::operator==(const Station& other) const
     return (getName() == other.getName());
 }
 
+bool Station::operator!=(const Station& other) const
+{
+    return (getName() != other.getName());
+}
+
 QString Station::toString() const
 {
     QString result;
@@ -93,7 +92,7 @@ QString Station::toString() const
     return result;
 }
 
-void Station::onTripInserted(const Trip* trip)
+void Station::onTripAppended(const Trip* trip)
 {
     // TODO : onTripInserted
     if (trip)

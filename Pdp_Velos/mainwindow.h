@@ -28,7 +28,7 @@ private:
     Station* m_highlight;
 
 private slots:
-    void onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations);
+    void onDataLoaded(QVector<const Trip*>& trips, QVector<const Station*>& stations);
     void onFailedToLoadData(const QString& filename);
     void onFilteredTripsChanged(const QList<const Trip*>& filteredTrips);
     void onSelectionChanged(const QList<const Trip*>& selection);

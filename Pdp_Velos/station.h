@@ -1,11 +1,11 @@
 #ifndef STATION_H
 #define STATION_H
 
-#include <QSet>
+#include "trip.h"
+
+#include <QVector>
 #include <QString>
 #include <QTime>
-
-#include "trip.h"
 
 namespace bss {
 class Station;
@@ -16,7 +16,8 @@ class Station
 {
 public:
     Station();
-    Station(const QString& name,
+    Station(//const int& index,
+            const QString& name,
             const qreal latitude,
             const qreal longitude);
 
@@ -34,23 +35,25 @@ public:
     inline int getDeparturesCount() const { return m_departures.size(); }
     inline int getCyclesCount() const { return m_cycles.size(); }
 
-    inline QList<const Trip*> getIncomingTrips() const { return m_arrivals.values(); }
-    inline QList<const Trip*> getOutgoingTrips() const { return m_departures.values(); }
-    inline QList<const Trip*> getCyclicTrips() const { return m_cycles.values(); }
+    inline const QVector<const Trip*>& getIncomingTrips() const { return m_arrivals; }
+    inline const QVector<const Trip*>& getOutgoingTrips() const { return m_departures; }
+    inline const QVector<const Trip*>& getCyclicTrips() const { return m_cycles; }
 
-    const QSet<const Trip*>::iterator insertArrival(const Trip* trip);
-    const QSet<const Trip*>::iterator insertDeparture(const Trip* trip);
-    const QSet<const Trip*>::iterator insertCycle(const Trip* trip);
+    bool appendArrival(const Trip* trip);
+    bool appendDeparture(const Trip* trip);
+    bool appendCycle(const Trip* trip);
 
     qreal distance(const Station* to) const;
     qreal direction(const Station* to) const;
 
     bool operator==(const Station& other) const;
+    bool operator!=(const Station& other) const;
     QString toString() const;
 
 private:
-    void onTripInserted(const Trip* trip);
+    void onTripAppended(const Trip* trip);
 
+    //int m_index;
     bool m_isValid;
     bool m_isNull;
     QString m_name;
@@ -60,9 +63,9 @@ private:
     qreal m_avgTripsDistance = 0;
     qreal m_maxTripsDistance = 0;
     int m_originDesinationFlow = 0;
-    QSet<const Trip*> m_arrivals;
-    QSet<const Trip*> m_departures;
-    QSet<const Trip*> m_cycles;
+    QVector<const Trip*> m_arrivals;
+    QVector<const Trip*> m_departures;
+    QVector<const Trip*> m_cycles;
 };
 
 #endif // STATION_H

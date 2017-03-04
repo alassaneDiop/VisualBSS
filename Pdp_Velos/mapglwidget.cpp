@@ -31,11 +31,10 @@ MapGLWidget::~MapGLWidget()
 
 void MapGLWidget::initializeGL()
 {
-    if (!this->isValid())
-    {
+
         initializeOpenGLFunctions();
         qDebug() << "initializeGL OpenGL version:" << this->format().version();
-    }
+
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
@@ -81,7 +80,7 @@ void MapGLWidget::resizeGL(int width, int height)
 void MapGLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    drawStations();
+//    drawStations();
     //    drawTrips();
 }
 
@@ -137,12 +136,11 @@ void MapGLWidget::onDataLoaded(const QList<Station>& stations, const QList<Trip>
         m_stationsVertices.push_back(stations.at(i).getLatitude() / 90.f);
     }
 
-    if (!this->isValid())
-    {
+
         initializeOpenGLFunctions();
         this->makeCurrent();
         qDebug() << "onDataLoaded OpenGL version:" << this->format().version();
-    }
+
 
     //    calculateBoundingBoxStations(stations);
     //    calculateTranlsation();
