@@ -51,6 +51,7 @@ void MatrixGLWidget::paintGL()
 
 void MatrixGLWidget::drawDragSelection()
 {
+    // FIXME: le rectangle ne s'affiche pas
     QPainter painter;
     painter.begin(this);
 
@@ -136,7 +137,7 @@ void MatrixGLWidget::mouseMoveEvent(QMouseEvent* event)
         m_bottomRightSelectionRectangle.setY(
                     m_bottomRightSelectionRectangle.y() - m_translationValue);
 
-        std::vector<QPoint> out = hit();
+        QVector<QPoint> out = hit();
         qDebug() <<  "out size : " << out.size();
 
         update();
@@ -193,10 +194,10 @@ void MatrixGLWidget::initPoint()
     }
 }
 
-std::vector<QPoint> MatrixGLWidget::hit()
+QVector<QPoint> MatrixGLWidget::hit()
 {
     int intervalLength = m_matrixViewWidth / m_numberOfInterval;
-    std::vector<QPoint> outEllipses;
+    QVector<QPoint> outEllipses;
 
     QRect rectangle(m_topLeftSelectionRectangle.x(),
                     m_topLeftSelectionRectangle.y() + m_translationValue,

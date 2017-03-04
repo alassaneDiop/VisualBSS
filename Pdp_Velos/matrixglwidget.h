@@ -18,6 +18,8 @@ public:
     MatrixGLWidget(QWidget* p = 0);
     ~MatrixGLWidget();
 
+    void loadTripsAndStations(QVector<const Trip*>& trips, QVector<const Station*>& stations);
+
 protected:
     virtual void initializeGL() override;
     virtual void resizeGL(int width, int height) override;
@@ -27,14 +29,11 @@ protected:
     virtual void mousePressEvent(QMouseEvent* event) override;
     virtual void mouseReleaseEvent(QMouseEvent* event) override;
     void initPoint();
-    std::vector<QPoint> hit();
+    QVector<QPoint> hit();
 
-public:
+private:
     void drawDragSelection();
     void drawDirections();
-
-    void loadTripsAndStations(QVector<const Trip*>& trips, QVector<const Station*>& stations);
-
 
 private:
     const int m_numberOfInterval = 24;
@@ -42,7 +41,7 @@ private:
     int m_matrixViewWidth;
     int m_stationCircleSize = 10;
 
-    std::vector<QPoint> m_ellipses;
+    QVector<QPoint> m_ellipses;
 
     bool m_leftMouseButtonPressed;
     QPointF m_previousMousePos;
@@ -56,5 +55,8 @@ private:
 
     QList<const Station*> m_stations;
     QList<const Trip*> m_trips;
+
+
+
 };
 #endif // MATRIXOPENGLWIDGET_H

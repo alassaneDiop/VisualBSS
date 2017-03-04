@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/Shaders">
+        <file>Shaders/map.vert</file>
+        <file>Shaders/stations.frag</file>
+        <file>Shaders/trips.frag</file>
+        <file>Shaders/curves.geom</file>
+    </qresource>
+</RCC>

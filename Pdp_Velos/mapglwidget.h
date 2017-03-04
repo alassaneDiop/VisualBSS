@@ -58,10 +58,10 @@ private:
     QVector<float> m_stationsVertices;
     int m_stationsVerticesCount;
 
-//    QOpenGLVertexArrayObject m_tripsVAO;
+    QOpenGLVertexArrayObject m_tripsVAO;
     QOpenGLBuffer m_tripsVBO;
 
-//    QOpenGLVertexArrayObject m_stationsVAO;
+    QOpenGLVertexArrayObject m_stationsVAO;
     QOpenGLBuffer m_stationsVBO;
 
     QOpenGLShaderProgram* m_shaderProgramStations;

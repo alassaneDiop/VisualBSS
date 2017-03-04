@@ -81,7 +81,7 @@ bool CsvDataFileReader::readData(QVector<const Trip*>& trips, QVector<const Stat
                     trips.append(trip);
 
                 // TODO : retirer limite de nombre de trajets
-                if (trips.size() >= 1000)
+                if (trips.size() >= 100)
                     break;
 // fin de section critique
             }              

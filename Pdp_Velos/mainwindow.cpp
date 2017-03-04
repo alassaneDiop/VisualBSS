@@ -34,7 +34,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::onDataLoaded(QVector<const Trip*>& trips, QVector<const Station*>& stations)
 {
-    qDebug() << "onDataLoaded";
+    qDebug() << "onDataLoaded" << trips.size() << stations.size();
+
     ui->mapwidget->loadTripsAndStations(trips, stations);
     ui->timelinematrixwidget->loadTripsAndStations(trips, stations);
 }
