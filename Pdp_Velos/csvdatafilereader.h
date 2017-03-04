@@ -14,7 +14,11 @@ class CsvDataFileReader : public DataFileReader
 public:
     CsvDataFileReader(const QString& filename);
     virtual ~CsvDataFileReader();
-    virtual bool readData(QVector<const Trip*>& trips, QVector<const Station*>& stations) const override;
+    virtual bool readData(QVector<Trip>& trips, QVector<Station>& stations) const override;
+
+private:
+    // TODO : retirer codage dans le dur du format du temps
+    const QString dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
 };
 
 #endif // CSVDATAFILEREADER_H

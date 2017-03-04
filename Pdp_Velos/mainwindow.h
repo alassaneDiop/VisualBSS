@@ -2,9 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+
 #include "model.h"
 #include "tripsfilter.h"
 #include "tripsselector.h"
+#include "stationsfilter.h"
+#include "stationssorter.h"
+
+#include <QVector>
 
 namespace Ui {
 class MainWindow;
@@ -19,20 +24,23 @@ public:
 
 private:
     Ui::MainWindow* ui;
-    Model* m_model;
 
+    Model* m_model;
     TripsFilter* m_filter;
     TripsSelector* m_selector;
-    QSet<const Trip*> m_filteredTrips;
-    QSet<const Trip*> m_selection;
-    Station* m_highlight;
+    StationsFilter* m_stationsFilter;
+    StationsSorter* m_stationsSorter;
+
+    QVector<int> m_filteredTrips;   // id's of filtered trips
+    QVector<int> m_selection;       // currently selected trips's id's
+    int m_highlight;                // currently highlighted station's id (-1 if there is none)
 
 private slots:
-    void onDataLoaded(QVector<const Trip*>& trips, QVector<const Station*>& stations);
+    void onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations);
     void onFailedToLoadData(const QString& filename);
-    void onFilteredTripsChanged(const QList<const Trip*>& filteredTrips);
-    void onSelectionChanged(const QList<const Trip*>& selection);
-    void onHighlightChanged(const Station* highlight);
+    void onFilteredTripsChanged(const QVector<int>& filteredTrips);
+    void onSelectionChanged(const QVector<int>& selection);
+    void onHighlightChanged(const int& highlight);
 
     void on_comboBox_period_currentIndexChanged(int index);
     void on_lineEdit_day_editingFinished();

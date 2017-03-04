@@ -1,6 +1,7 @@
 #ifndef DATAFILEREADER_H
 #define DATAFILEREADER_H
 
+#include "trip.h"
 #include "station.h"
 #include <QString>
 #include <QVector>
@@ -15,7 +16,7 @@ public:
     DataFileReader(const QString& filename);
     virtual ~DataFileReader();
     inline QString getFilename() const { return m_filename; }
-    virtual bool readData(QVector<const Trip*>& trips, QVector<const Station*>& stations) const = 0;
+    virtual bool readData(QVector<Trip>& trips, QVector<Station>& stations) const = 0;
 
 private:  
     const QString m_filename; 

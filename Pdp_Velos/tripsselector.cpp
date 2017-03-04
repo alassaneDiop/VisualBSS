@@ -22,13 +22,13 @@ QSet<const Trip*> TripsSelector::selectTripsFrom(const QSet<const Trip*>& trips)
     {
         if (trip)
         {
-            const int tripStartHour = trip->getStartDateTime().time().hour();
+            /*const int tripStartHour = trip->getStartDateTime().time().hour();
             const int tripEndHour = trip->getEndDateTime().time().hour();
             if ((tripStartHour >= getParameters().startHour)
                     && (tripEndHour <= getParameters().endHour)
                     && (getParameters().stations.contains(trip->getEndStation())
                         || getParameters().stations.contains(trip->getStartStation())))
-                    selection.insert(trip);
+                    selection.insert(trip);*/
         }
     }
     return selection;

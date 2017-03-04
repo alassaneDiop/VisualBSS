@@ -11,15 +11,6 @@ Model::Model(QObject* parent) :
 
 }
 
-Model::~Model()
-{
-    for (const Trip* t : m_trips)
-        delete t;
-
-    for (const Station* s : m_stations)
-        delete s;
-}
-
 int Model::loadData(const QString& filename)
 {
     const DataFileReader* dataFileReader = new CsvDataFileReader(filename);

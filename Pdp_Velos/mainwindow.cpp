@@ -32,7 +32,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::onDataLoaded(QVector<const Trip*>& trips, QVector<const Station*>& stations)
+void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations)
 {
     qDebug() << "onDataLoaded" << trips.size() << stations.size();
 
@@ -45,17 +45,17 @@ void MainWindow::onFailedToLoadData(const QString& filename)
     // TODO : onFailedToLoadData
 }
 
-void MainWindow::onFilteredTripsChanged(const QList<const Trip*>& filteredTrips)
+void MainWindow::onFilteredTripsChanged(const QVector<int>& filteredTrips)
 {
     // TODO : onFilteredTripsChanged
 }
 
-void MainWindow::onSelectionChanged(const QList<const Trip*>& selection)
+void MainWindow::onSelectionChanged(const QVector<int>& selection)
 {
     // TODO : onSelectionChanged
 }
 
-void MainWindow::onHighlightChanged(const Station* highlight)
+void MainWindow::onHighlightChanged(const int& highlight)
 {
     // TODO : onHighlightChanged
 }
