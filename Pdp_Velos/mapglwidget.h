@@ -32,17 +32,18 @@ protected:
 
 public:
 
-public slots:
-    void onDataLoaded(const QList<Station>& stations, const QList<Trip>& trips);
+    void loadTripsAndStations(QVector<const Trip*>& trips, QVector<const Station*>& stations);
 
 private:
     void drawStations();
     void drawTrips();
-    void calculateBoundingBoxStations(const QList<Station>& stations);
+    void calculateBoundingBoxStations();
     void calculateTranlsation();
     void calculalteZoom();
 
-    const float m_translationSensibility = 500.f;
+    //FIXME: calculer en fonction de la largeur hauteur du widget
+    const float m_translationSensibility = 200.f;
+
     QRectF m_boundingBoxStations;
 
     float m_zoom;
@@ -57,13 +58,14 @@ private:
     QVector<float> m_stationsVertices;
     int m_stationsVerticesCount;
 
-    QOpenGLVertexArrayObject m_tripsVAO;
+//    QOpenGLVertexArrayObject m_tripsVAO;
     QOpenGLBuffer m_tripsVBO;
 
-    QOpenGLVertexArrayObject m_stationsVAO;
+//    QOpenGLVertexArrayObject m_stationsVAO;
     QOpenGLBuffer m_stationsVBO;
 
     QOpenGLShaderProgram* m_shaderProgramStations;
+    QOpenGLShaderProgram* m_shaderProgramTrips;
 
 };
 

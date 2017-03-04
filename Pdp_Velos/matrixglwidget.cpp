@@ -30,6 +30,7 @@ void MatrixGLWidget::initializeGL()
 {
     initializeOpenGLFunctions();
     glClearColor(1.f, 1.f, 1.f, 1.f);
+    qDebug() << "MatrixGLWidget::initializeGL() OpenGL version:" << this->format().version();
 }
 
 void MatrixGLWidget::resizeGL(int width, int height)
@@ -39,8 +40,13 @@ void MatrixGLWidget::resizeGL(int width, int height)
 
 void MatrixGLWidget::paintGL()
 {
-    drawDirections();
-    drawDragSelection();
+//    drawDirections();
+//    drawDragSelection();
+    QPainter p;
+    p.begin(this);
+    p.fillRect(QRect(0, 0, 10, 10), QBrush(QColor(10, 10, 210, 128)));
+    p.end();
+    update();
 }
 
 void MatrixGLWidget::drawDragSelection()
@@ -55,12 +61,15 @@ void MatrixGLWidget::drawDragSelection()
 
     if (m_drawRectangle)
     {
+        QElapsedTimer timer;
+        timer.start();
         painter.fillRect(rectangle, QBrush(QColor(10, 10, 210, 128)));
 
         QPen pen(Qt::black, m_dragSelectionBorderWidth);
         painter.setPen(pen);
 
         painter.drawRect(rectangle);
+        qDebug() << "drawDragSelection: The slow operation took" << timer.elapsed() << "milliseconds";
     }
     painter.end();
 }
@@ -76,24 +85,24 @@ void MatrixGLWidget::drawDirections()
     for (QPoint i : m_ellipses)
     {
         painter.setBrush(QColor(100, 100, 100, 128));
-        painter.drawEllipse(QPoint(
-                                m_matrixOffsetX + i.x() * intervalLength + (m_stationCircleSize / 2),
-                                m_translationValue + i.y() + m_stationCircleSize), m_stationCircleSize, m_stationCircleSize);
+        painter.drawEllipse(QPoint(m_matrixOffsetX + i.x() * intervalLength + (m_stationCircleSize / 2),
+                                   m_translationValue + i.y() + m_stationCircleSize),
+                            m_stationCircleSize, m_stationCircleSize);
     }
 
 
     qDebug() << "drawDirections: The slow operation took" << timer.elapsed() << "milliseconds";
 }
 
-void MatrixGLWidget::onDataLoaded(const QList<Station>& stations, const QList<Trip>& trips)
+void MatrixGLWidget::loadTripsAndStations(QVector<const Trip*>& trips, QVector<const Station*>& stations)
 {
-    foreach (Station s, stations)
+    for (const Station* s: stations)
     {
         m_stations.append(s);
     }
     qDebug() << "m_stations size " << m_stations.size();
 
-    foreach (Trip t, trips)
+    for (const Trip* t: trips)
     {
         m_trips.append(t);
     }
@@ -174,14 +183,13 @@ void MatrixGLWidget::mouseReleaseEvent(QMouseEvent* event)
 void MatrixGLWidget::initPoint()
 {
     int j = 0;
-    foreach (Station s, m_stations)
+    for (const Station* s : m_stations)
     {
         j++;
         for (int i = 0; i < 24; ++i)
         {
             m_ellipses.push_back(QPoint(i, j * 30));
         }
-
     }
 }
 

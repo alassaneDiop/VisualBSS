@@ -33,8 +33,8 @@ public:
     void drawDragSelection();
     void drawDirections();
 
-public slots:
-    void onDataLoaded(const QList<Station>& stations, const QList<Trip>& trips);
+    void loadTripsAndStations(QVector<const Trip*>& trips, QVector<const Station*>& stations);
+
 
 private:
     const int m_numberOfInterval = 24;
@@ -54,7 +54,7 @@ private:
     bool m_drawRectangle;
     int m_dragSelectionBorderWidth;
 
-    QList<Station> m_stations;
-    QList<Trip> m_trips;
+    QList<const Station*> m_stations;
+    QList<const Trip*> m_trips;
 };
 #endif // MATRIXOPENGLWIDGET_H

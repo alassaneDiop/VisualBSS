@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>981</width>
+    <width>1288</width>
     <height>680</height>
    </rect>
   </property>
@@ -40,7 +40,7 @@
         <widget class="MapGLWidget" name="mapwidget">
          <property name="minimumSize">
           <size>
-           <width>200</width>
+           <width>300</width>
            <height>0</height>
           </size>
          </property>
@@ -65,8 +65,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>321</width>
-            <height>582</height>
+            <width>600</width>
+            <height>568</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -89,7 +89,14 @@
             <widget class="TimeLineWidget" name="widget" native="true"/>
            </item>
            <item>
-            <widget class="MatrixGLWidget" name="timelinematrixwidget"/>
+            <widget class="MatrixGLWidget" name="timelinematrixwidget">
+             <property name="minimumSize">
+              <size>
+               <width>600</width>
+               <height>0</height>
+              </size>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -108,7 +115,7 @@
       </property>
       <property name="maximumSize">
        <size>
-        <width>400</width>
+        <width>360</width>
         <height>16777215</height>
        </size>
       </property>
@@ -880,7 +887,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>981</width>
+     <width>1288</width>
      <height>19</height>
     </rect>
    </property>
