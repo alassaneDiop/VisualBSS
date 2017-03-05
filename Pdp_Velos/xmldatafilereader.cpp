@@ -13,7 +13,7 @@ XmlDataFileReader::~XmlDataFileReader()
 
 }
 
-bool XmlDataFileReader::readData(QVector<Trip>& trips, QVector<Station>& stations) const
+bool XmlDataFileReader::readData(QVector<TripData>& tripsData, QVector<StationData>& stationsData) const
 {   
     /*QFile file(DataFileReader::getFilename());
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))

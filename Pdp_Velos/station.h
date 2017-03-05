@@ -10,22 +10,26 @@ class Station;
 struct StationData;
 }
 
+struct TripData;
 struct StationData
 {
     StationData(const int& id = -1,
                 const QString& name = QString(),
                 const qreal& latitude = 0,
-                const qreal& longitude = 0) :
-        id(id), name(name), latitude(latitude), longitude(longitude) { }
+                const qreal& longitude = 0);
+    void appendArrival(const TripData& tripId);
+    void appendDeparture(const TripData& tripId);
+    void appendCycle(const TripData& tripId);
+    void updateAppend(const TripData& tripId);
 
-    int id = -1;
+    int id;
     QString name;
-    qreal latitude = 0;
-    qreal longitude = 0;
+    qreal latitude;
+    qreal longitude;
     int avgTripDurationMsec = 0;
     qreal avgTripDistance = 0;
     qreal maxTripDistance = 0;
-    int originDesinationFlow = 0;
+    int odFlow = 0;
     QVector<int> arrivalsId;
     QVector<int> departuresId;
     QVector<int> cyclesId;
@@ -34,7 +38,7 @@ struct StationData
 class Station
 {
 public:
-    Station();
+    Station() : Station(StationData()) { }
     Station(const StationData& data);
 
     inline int id() const { return m_id; }

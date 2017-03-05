@@ -36,8 +36,8 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
 {
     qDebug() << "onDataLoaded" << trips.size() << stations.size();
 
-    ui->mapwidget->loadTripsAndStations(trips, stations);
-    ui->timelinematrixwidget->loadTripsAndStations(trips, stations);
+    /*ui->mapwidget->loadTripsAndStations(trips, stations);
+    ui->timelinematrixwidget->loadTripsAndStations(trips, stations);*/
 }
 
 void MainWindow::onFailedToLoadData(const QString& filename)

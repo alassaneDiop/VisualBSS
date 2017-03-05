@@ -1,7 +1,13 @@
 #include "trip.h"
 
-Trip::Trip() :
-    Trip(TripData())
+TripData::TripData(const int& id,
+                   const int& startId,
+                   const int& endId,
+                   const bool& isCyclic,
+                   const QDateTime& startDateTime,
+                   const QDateTime& endDateTime) :
+    id(id), startId(startId), endId(endId), isCyclic(isCyclic),
+    startDateTime(startDateTime), endDateTime(endDateTime)
 {
 
 }
@@ -15,7 +21,7 @@ Trip::Trip(const TripData& data) :
     m_distance(data.distance),
     m_startDateTime(data.startDateTime),
     m_endDateTime(data.endDateTime),
-    m_duration(QTime(data.durationMsec))
+    m_duration(QTime().addMSecs(data.durationMsec))
 {
     if (isCyclic())
     {

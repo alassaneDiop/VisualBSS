@@ -13,8 +13,10 @@ struct TripData
 {
     TripData(const int& id = -1,
              const int& startId = -1,
-             const int& endId = -1) :
-        id(id), startId(startId), endId(endId) { }
+             const int& endId = -1,
+             const bool& isCyclic = false,
+             const QDateTime& startDateTime = QDateTime(),
+             const QDateTime& endDateTime = QDateTime());
     int id;
     int startId;
     int endId;
@@ -29,7 +31,7 @@ struct TripData
 class Trip
 {
 public:
-    Trip();
+    Trip() : Trip(TripData()) { }
     Trip(const TripData& data);
 
     inline int id() const { return m_id; }

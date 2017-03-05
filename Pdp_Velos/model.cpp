@@ -2,9 +2,6 @@
 #include "datafilereader.h"
 #include "csvdatafilereader.h"
 
-#include "trip.h"
-#include "station.h"
-
 Model::Model(QObject* parent) :
     QObject(parent)
 {
@@ -13,8 +10,10 @@ Model::Model(QObject* parent) :
 
 int Model::loadData(const QString& filename)
 {
+    QVector<TripData> tripsData;
+    QVector<StationData> stationsData;
     const DataFileReader* dataFileReader = new CsvDataFileReader(filename);
-    const bool ok = dataFileReader->readData(m_trips, m_stations);
+    const bool ok = dataFileReader->readData(tripsData, stationsData);
     delete dataFileReader;
 
     if (!ok)
@@ -24,6 +23,16 @@ int Model::loadData(const QString& filename)
     }
     else
     {
+        m_trips.clear();
+        m_trips.reserve(tripsData.size());
+        for (const TripData data : tripsData)
+            m_trips.append(Trip(data));
+
+        m_stations.clear();
+        m_stations.reserve(stationsData.size());
+        for (const StationData data : stationsData)
+            m_stations.append(StationData(data));
+
         emit dataLoaded(m_trips, m_stations);
         return m_trips.size();
     }
