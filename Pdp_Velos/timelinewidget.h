@@ -8,8 +8,8 @@ class TimeLineWidget : public QWidget
     Q_OBJECT
 public:
     TimeLineWidget(QWidget *parent = 0);
-    int getLength() const;
-    int getOffsetX() const;
+    int length() const;
+    int offsetX() const;
 
 protected:
     void paintEvent(QPaintEvent *event);

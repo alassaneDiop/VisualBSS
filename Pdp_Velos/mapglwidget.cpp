@@ -8,8 +8,8 @@
 #include <QDebug>
 #include <QtGlobal>
 
-#include "station.h"
-#include "trip.h"
+
+#include "stationrenderer.h"
 
 
 MapGLWidget::MapGLWidget(QWidget* p) : QOpenGLWidget(p)
@@ -18,16 +18,17 @@ MapGLWidget::MapGLWidget(QWidget* p) : QOpenGLWidget(p)
     m_leftMouseButtonPressed = false;
     m_translationOffsetX = 0.f;
     m_translationOffsetY = 0.f;
+
+    m_stationRenderer = new StationRenderer();
 }
 
 MapGLWidget::~MapGLWidget()
 {
     m_tripsVBO.destroy();
     m_tripsVAO.destroy();
-    m_stationsVBO.destroy();
-    m_stationsVAO.destroy();
     delete m_shaderProgramStations;
     delete m_shaderProgramTrips;
+    delete m_stationRenderer;
 }
 
 void MapGLWidget::initializeGL()
@@ -37,27 +38,19 @@ void MapGLWidget::initializeGL()
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);
     glEnable(GL_MULTISAMPLE);
 
+
     m_shaderProgramStations = new QOpenGLShaderProgram(this->context());
-    m_shaderProgramStations->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/Shaders/map.vert");
-    m_shaderProgramStations->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/Shaders/stations.frag");
+    m_shaderProgramStations->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/map.vert");
+    m_shaderProgramStations->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/shaders/stations.frag");
     m_shaderProgramStations->link();
     m_shaderProgramStations->bind();
-
-    m_stationsVBO.create();
-    m_stationsVBO.setUsagePattern(QOpenGLBuffer::StaticDraw);
-    m_stationsVBO.bind();
-
-    m_stationsVAO.create();
-    m_stationsVAO.bind();
-    m_stationsVAO.release();
-    m_stationsVBO.release();
     m_shaderProgramStations->release();
 
 
     m_shaderProgramTrips = new QOpenGLShaderProgram();
-    m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/Shaders/map.vert");
-    //    m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Geometry, ":/Shaders/Shaders/curves.geom");
-    m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/Shaders/trips.frag");
+    m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/map.vert");
+    //    m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Geometry, ":/Shaders/shaders/curves.geom");
+    m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/shaders/trips.frag");
     m_shaderProgramTrips->link();
     m_shaderProgramTrips->bind();
 
@@ -84,25 +77,19 @@ void MapGLWidget::paintGL()
     glClear(GL_COLOR_BUFFER_BIT);
 
     drawStations();
-    drawTrips();
+//    drawTrips();
 }
 
 void MapGLWidget::drawStations()
 {
     m_shaderProgramStations->bind();
 
-    m_stationsVAO.bind();
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, m_stationsVBO.IndexBuffer);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
     int zoomLoc = m_shaderProgramStations->uniformLocation("zoom");
     glUniform1f(zoomLoc, m_zoom);
     int translationLoc = m_shaderProgramStations->uniformLocation("translation");
     glUniform2f(translationLoc, m_translationOffsetX, m_translationOffsetY);
-    glPointSize(5.f);
-    glDrawArrays(GL_POINTS, 0, m_stationsVerticesCount);
-    m_stationsVAO.release();
+
+    m_stationRenderer->draw();
 
     m_shaderProgramStations->release();
 }
@@ -124,120 +111,60 @@ void MapGLWidget::drawTrips()
     glUniform1f(zoomLoc, m_zoom);
     int translationLoc = m_shaderProgramTrips->uniformLocation("translation");
     glUniform2f(translationLoc, m_translationOffsetX, m_translationOffsetY);
-    glPointSize(5.f);
     glDrawArrays(GL_LINES, 0, m_tripsVerticesCount);
     m_tripsVAO.release();
 
     m_shaderProgramTrips->release();
 }
 
-void MapGLWidget::loadTripsAndStations(QVector<const Trip*>& trips, QVector<const Station*>& stations)
-{    
-    // for x and y;
-    int tupleSize = 2;
 
-    //*************************************************************************
-    // STATIONS
-    // ************************************************************************
-
-    m_stationsVertices.reserve(stations.size() * tupleSize);
-    m_stationsVertices.clear();
-    m_stationsVerticesCount = stations.size();
-
-    for (const Station* s : stations)
-    {
-        m_stationsVertices.push_back(s->longitude() / 180.f);
-        m_stationsVertices.push_back(s->latitude() / 90.f);
-    }
-
-    //        qDebug() << m_stationsVertices[i++] << m_stationsVertices[i++];
-
-    calculateBoundingBoxStations();
-    calculateTranlsation();
-    calculalteZoom();
-
+void MapGLWidget::loadStationsData(const QVector<float> data, unsigned int verticesCount)
+{
     initializeOpenGLFunctions();
-    this->makeCurrent();
-
-    m_stationsVBO.bind();
-    glBindBuffer(GL_ARRAY_BUFFER, m_stationsVBO.IndexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, m_stationsVertices.size() * sizeof(float),
-                 m_stationsVertices.data(), GL_STATIC_DRAW);
-    m_stationsVBO.release();
-
-    //*************************************************************************
-    // END STATIONS
-    // ************************************************************************
-
-    //*************************************************************************
-    // TRIPS
-    // ************************************************************************
-
-    // 1 trip has 2 points (start/end)
-    int vertexPerTrip = 2;
-    int tupleColor = 3;
-
-    m_tripsVertices.reserve(trips.size() * tupleSize * vertexPerTrip * tupleColor);
-    m_tripsVerticesCount = trips.size() * vertexPerTrip;
-
-    for (const Trip* t : trips)
-    {
-<<<<<<< .mine
-        /*m_tripsVertices.push_back(trips.at(i).getStartStation()->getLongitude() / 180.f);
-        m_tripsVertices.push_back(trips.at(i).getStartStation()->getLatitude() / 90.f);
-        m_tripsVertices.push_back(trips.at(i).getEndStation()->getLongitude() / 180.f);
-        m_tripsVertices.push_back(trips.at(i).getEndStation()->getLatitude() / 90.f);*/
-=======
-        m_tripsVertices.append((float)(t->getStartStation()->getLongitude() / 180.f));
-        m_tripsVertices.append((float)(t->getStartStation()->getLatitude() / 90.f));
-
-        m_tripsVertices.append(1.f);
-        m_tripsVertices.append(0.f);
-        m_tripsVertices.append(0.f);
-
-        m_tripsVertices.append((float)(t->getEndStation()->getLongitude() / 180.f));
-        m_tripsVertices.append((float)(t->getEndStation()->getLatitude() / 90.f));
-
-        m_tripsVertices.append(0.f);
-        m_tripsVertices.append(0.f);
-        m_tripsVertices.append(1.f);
-
-        //        qDebug() << m_tripsVertices[i++] << m_tripsVertices[i++] << m_tripsVertices[i++] << m_tripsVertices[i++];
->>>>>>> .r41
-    }
-
-    m_tripsVBO.bind();
-    glBindBuffer(GL_ARRAY_BUFFER, m_tripsVBO.IndexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, m_tripsVertices.size() * sizeof(float),
-                 m_tripsVertices.data(), GL_STATIC_DRAW);
-    m_tripsVBO.release();
-
-    //*************************************************************************
-    // END TRIPS
-    // ************************************************************************
+    m_stationRenderer->sendData(data, verticesCount);
     update();
 }
 
-void MapGLWidget::calculateBoundingBoxStations()
+void MapGLWidget::loadTripsData(const QVector<float> data, unsigned int verticesCount)
+{
+    initializeOpenGLFunctions();
+    m_tripsVerticesCount= verticesCount;
+    m_tripsVBO.bind();
+    glBindBuffer(GL_ARRAY_BUFFER, m_tripsVBO.IndexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
+    m_tripsVBO.release();
+
+    update();
+}
+
+void MapGLWidget::centerView(const QVector<float> data)
+{
+    calculateBoundingBoxStations(data);
+    calculateTranslation();
+    calculateZoom();
+}
+
+void MapGLWidget::calculateBoundingBoxStations(const QVector<float> data)
 {
     float minLatitude = 90;
     float maxLatitude = -90.f;
     float minLongitude = 180.f;
     float maxLongitude = -180.f;
 
-    for (int i = 0; i < m_stationsVertices.size(); ++i)
+    // Iterate on x
+    for (int i = 0; i < data.size(); i += 2)
     {
-        if (i % 2 == 0)
-        {
-            minLongitude = qMin(minLongitude, m_stationsVertices[i]);
-            maxLongitude = qMax(maxLongitude, m_stationsVertices[i]);
-        }
-        else
-        {
-            minLatitude = qMin(minLatitude, m_stationsVertices[i]);
-            maxLatitude = qMax(maxLatitude, m_stationsVertices[i]);
-        }
+        minLongitude = qMin(minLongitude, data[i]);
+        maxLongitude = qMax(maxLongitude, data[i]);
     }
+
+    // Iterate on y
+    for (int i = 1; i < data.size(); i += 2)
+    {
+        minLatitude = qMin(minLatitude, data[i]);
+        maxLatitude = qMax(maxLatitude, data[i]);
+    }
+
 
     m_boundingBoxStations = QRectF(minLongitude, maxLatitude,
                                    maxLongitude - minLongitude,
@@ -245,7 +172,7 @@ void MapGLWidget::calculateBoundingBoxStations()
     //    qDebug() << m_boundingBoxStations;
 }
 
-void MapGLWidget::calculateTranlsation()
+void MapGLWidget::calculateTranslation()
 {
     QPointF center = m_boundingBoxStations.center();
 
@@ -253,7 +180,7 @@ void MapGLWidget::calculateTranlsation()
     m_translationOffsetY = center.y();
 }
 
-void MapGLWidget::calculalteZoom()
+void MapGLWidget::calculateZoom()
 {
     float x = qMax(m_boundingBoxStations.width(), m_boundingBoxStations.height());
 

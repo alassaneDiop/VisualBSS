@@ -73,6 +73,7 @@ bool CsvDataFileReader::readData(QVector<TripData>& tripsData, QVector<StationDa
         const QDateTime startDateTime = QDateTime::fromString(startDateTimeStr, dateTimeFormat);
         const QDateTime endDateTime = QDateTime::fromString(endDateTimeStr, dateTimeFormat);
 
+
         const bool isCyclic = (startName == endName);
         TripData tripData = TripData(tripId, startId, endId, isCyclic, startDateTime, endDateTime);
         tripData.durationMsec = startDateTime.msecsTo(endDateTime);
@@ -87,8 +88,8 @@ bool CsvDataFileReader::readData(QVector<TripData>& tripsData, QVector<StationDa
         tripsData.append(tripData);
 
         // TODO : a retirer
-        if (tripsData.size() >= 20)
-            break;
+//        if (tripsData.size() >= 1000)
+//            break;
     }
 
     stationsData = stationsDataMap.values().toVector();

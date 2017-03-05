@@ -34,10 +34,59 @@ MainWindow::~MainWindow()
 
 void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations)
 {
-    qDebug() << "onDataLoaded" << trips.size() << stations.size();
+    qDebug() << "onDataLoaded" << "Trip number" << trips.size() << "Station number" << stations.size();
 
-    /*ui->mapwidget->loadTripsAndStations(trips, stations);
-    ui->timelinematrixwidget->loadTripsAndStations(trips, stations);*/
+    // for x and y;
+    int tuplePositionSize = 2;
+    // 1 trip has 2 points (start/end)
+    int pointPerTrip = 2;
+    // R, G, B
+    int tupleColorSize = 3;
+
+    QVector<float> tripsVertices;
+    tripsVertices.reserve(trips.size() * tuplePositionSize * pointPerTrip * tupleColorSize);
+    int tripsVerticesCount = trips.size() * pointPerTrip;
+
+    float maxLongitude = 180.f;
+    float maxLatitude = 90.f;
+
+    for (const Trip t : trips)
+    {
+        int startStationId = t.startStationId();
+        const Station startStation = m_model->station(startStationId);
+
+        tripsVertices.append((float) (startStation.longitude() / maxLongitude));
+        tripsVertices.append((float) (startStation.latitude() / maxLatitude));
+
+        tripsVertices.append(1.f);
+        tripsVertices.append(0.f);
+        tripsVertices.append(0.f);
+
+
+        int endStationId = t.endStationId();
+        const Station endStation = m_model->station(endStationId);
+
+        tripsVertices.append((float) (endStation.longitude() / maxLongitude));
+        tripsVertices.append((float) (endStation.latitude() / maxLatitude));
+
+        tripsVertices.append(0.f);
+        tripsVertices.append(0.f);
+        tripsVertices.append(1.f);
+    }
+
+    QVector<float> stationsVertices;
+    stationsVertices.reserve(stations.size() * tuplePositionSize);
+    int stationsVerticesCount = stations.size();
+
+    for (const Station s : stations)
+    {
+        stationsVertices.push_back(s.longitude() / maxLongitude);
+        stationsVertices.push_back(s.latitude() / maxLatitude);
+    }
+
+    ui->mapwidget->loadTripsData(tripsVertices, tripsVerticesCount);
+    ui->mapwidget->loadStationsData(stationsVertices, stationsVerticesCount);
+    ui->mapwidget->centerView(stationsVertices);
 }
 
 void MainWindow::onFailedToLoadData(const QString& filename)

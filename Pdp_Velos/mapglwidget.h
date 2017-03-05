@@ -6,9 +6,9 @@
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
 
+#include "stationrenderer.h"
 
-class Station;
-class Trip;
+
 class Point;
 class QOpenGLShaderProgram;
 class QOpenGLBuffer;
@@ -31,15 +31,16 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent* event) override;
 
 public:
-
-    void loadTripsAndStations(QVector<const Trip*>& trips, QVector<const Station*>& stations);
+    void loadTripsData(const QVector<float> data, unsigned int verticesCount);
+    void loadStationsData(const QVector<float> data, unsigned int verticesCount);
+    void centerView(const QVector<float> data);
 
 private:
     void drawStations();
     void drawTrips();
-    void calculateBoundingBoxStations();
-    void calculateTranlsation();
-    void calculalteZoom();
+    void calculateTranslation();
+    void calculateZoom();
+    void calculateBoundingBoxStations(const QVector<float> data);
 
     //FIXME: calculer en fonction de la largeur hauteur du widget
     const float m_translationSensibility = 200.f;
@@ -52,21 +53,18 @@ private:
     float m_translationOffsetY;
     QPointF m_previousMousePos;
 
+    // TODO: enlever par la suite
     QVector<float> m_tripsVertices;
     int m_tripsVerticesCount;
 
-    QVector<float> m_stationsVertices;
-    int m_stationsVerticesCount;
-
+    // TODO: enlever par la suite
     QOpenGLVertexArrayObject m_tripsVAO;
     QOpenGLBuffer m_tripsVBO;
-
-    QOpenGLVertexArrayObject m_stationsVAO;
-    QOpenGLBuffer m_stationsVBO;
 
     QOpenGLShaderProgram* m_shaderProgramStations;
     QOpenGLShaderProgram* m_shaderProgramTrips;
 
+    StationRenderer* m_stationRenderer;
 };
 
 #endif // OPENGLWIDGET_H

@@ -11,12 +11,12 @@ TimeLineWidget::TimeLineWidget(QWidget *parent)
     this->setPalette(pal);
 }
 
-int TimeLineWidget::getLength() const
+int TimeLineWidget::length() const
 {
     return m_timeLineLength;
 }
 
-int TimeLineWidget::getOffsetX() const
+int TimeLineWidget::offsetX() const
 {
     return m_timeLineOffsetX;
 }
