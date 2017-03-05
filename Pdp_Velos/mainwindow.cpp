@@ -84,8 +84,8 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
         stationsVertices.push_back(s.latitude() / maxLatitude);
     }
 
-    ui->mapwidget->loadTripsData(tripsVertices, tripsVerticesCount);
     ui->mapwidget->loadStationsData(stationsVertices, stationsVerticesCount);
+    ui->mapwidget->loadTripsData(tripsVertices, tripsVerticesCount);
     ui->mapwidget->centerView(stationsVertices);
 }
 

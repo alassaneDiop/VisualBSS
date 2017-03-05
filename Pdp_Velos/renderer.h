@@ -15,16 +15,12 @@ class Renderer : public QOpenGLFunctions
 
 protected:
     Renderer();
-
     virtual ~Renderer();
-
     virtual void draw() = 0;
-
-public:
-
-protected:
     void bindVAO();
     void releaseVAO();
+
+
     QOpenGLVertexArrayObject*   m_VAO;
     QOpenGLBuffer*              m_VBO;
 

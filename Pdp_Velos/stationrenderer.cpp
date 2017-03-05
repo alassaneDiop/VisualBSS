@@ -24,9 +24,10 @@ void StationRenderer::draw()
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO->IndexBuffer);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
 
-//    glEnableVertexAttribArray(1);
+//    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
+
 //    glBindBuffer(GL_ARRAY_BUFFER, m_VBO->IndexBuffer);
-//    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
+//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
 
     glPointSize(5.f);
     glDrawArrays(GL_POINTS, 0, m_verticesCount);
@@ -39,12 +40,8 @@ void StationRenderer::sendData(const QVector<float> &data, unsigned int vertices
     initializeOpenGLFunctions();
     m_verticesCount = verticesCount;
 
-    m_VBO->bind();
-
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO->IndexBuffer);
     glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
-
-    m_VBO->release();
 }
 
 void StationRenderer::drawFilledCircle(unsigned int triangleAmount, unsigned int radius)

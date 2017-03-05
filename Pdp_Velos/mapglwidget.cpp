@@ -77,7 +77,7 @@ void MapGLWidget::paintGL()
     glClear(GL_COLOR_BUFFER_BIT);
 
     drawStations();
-//    drawTrips();
+    drawTrips();
 }
 
 void MapGLWidget::drawStations()
@@ -121,6 +121,7 @@ void MapGLWidget::drawTrips()
 void MapGLWidget::loadStationsData(const QVector<float> data, unsigned int verticesCount)
 {
     initializeOpenGLFunctions();
+    m_stationRenderer->createVAO();
     m_stationRenderer->sendData(data, verticesCount);
     update();
 }
@@ -129,10 +130,9 @@ void MapGLWidget::loadTripsData(const QVector<float> data, unsigned int vertices
 {
     initializeOpenGLFunctions();
     m_tripsVerticesCount= verticesCount;
-    m_tripsVBO.bind();
+
     glBindBuffer(GL_ARRAY_BUFFER, m_tripsVBO.IndexBuffer);
     glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
-    m_tripsVBO.release();
 
     update();
 }
