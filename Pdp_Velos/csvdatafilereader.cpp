@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QTime>
 #include <QVector>
+#include <QMap>
 
 CsvDataFileReader::CsvDataFileReader(const QString& filename) :
     DataFileReader(filename)
@@ -17,80 +18,82 @@ CsvDataFileReader::~CsvDataFileReader()
 
 }
 
-bool CsvDataFileReader::readData(QVector<const Trip*>& trips, QVector<const Station*>& stations) const
+bool CsvDataFileReader::readData(QVector<TripData>& tripsData, QVector<StationData>& stationsData) const
 {
     QFile file(DataFileReader::getFilename());
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;
-    else
+
+    QStringList lines = QString(file.readAll()).split('\n');
+    if (!lines.isEmpty())
+        lines.removeFirst();
+
+    file.close();
+
+    QMap<QString, StationData> stationsDataMap;
+    tripsData.clear();
+    tripsData.reserve(lines.size());
+
+    for (QString line : lines)
     {
-        QStringList lines = QString(file.readAll()).split('\n');
-        if (!lines.isEmpty())
-            lines.removeFirst();
+        const QStringList fields = line.remove('"').split(',');
+        if (fields.size() < 11)
+            continue;
 
-        file.close();
+        const QString startDateTimeStr = fields.at(1);
+        const QString endDateTimeStr = fields.at(2);
+        const QString startName = fields.at(4);
+        const QString startLatitudeStr = fields.at(5);
+        const QString startLongitudeStr = fields.at(6);
+        const QString endName = fields.at(8);
+        const QString endLatitudeStr = fields.at(9);
+        const QString endLongitudeStr = fields.at(10);
 
-        stations.clear();
-        trips.clear();
-        trips.reserve(lines.size());
+        if (startName.isEmpty() || endName.isEmpty())
+            continue;
 
-// debut de section parallele
-        for (QString line : lines)
+        auto f = [&stationsDataMap](const QString& name, const QString& latitudeStr, const QString& longitudeStr)
         {
-            const QStringList fields = line.remove('"').split(',');
-            if (fields.size() >= 11)
+            if (stationsDataMap.contains(name))
+                return stationsDataMap.value(name).id;
+            else
             {
-                const QString startDateTimeStr = fields.at(1);
-                const QString endDateTimeStr = fields.at(2);
-                const QString startStationName = fields.at(4);
-                const QString startLatitudeStr = fields.at(5);
-                const QString startLongitudeStr = fields.at(6);
-                const QString endStationName = fields.at(8);
-                const QString endLatitudeStr = fields.at(9);
-                const QString endLongitudeStr = fields.at(10);
+                const int id = stationsDataMap.size();
+                const qreal lat = latitudeStr.toDouble();
+                const qreal lon = longitudeStr.toDouble();
+                stationsDataMap.insert(name, StationData(id, name, lat, lon));
+                return id;
+            }
+        };
 
-                Station* const startStation = new Station(startStationName, startLatitudeStr.toDouble(), startLongitudeStr.toDouble());
-                Station* const endStation = new Station(endStationName, endLatitudeStr.toDouble(), endLongitudeStr.toDouble());
+        const int startId = f(startName, startLatitudeStr, startLongitudeStr);
+        const int endId = f(endName, endLatitudeStr, endLongitudeStr);
+        const int tripId = tripsData.size();
 
-// debut de section critique
-                bool containsStartStation = false;
-                QVector<const Station*>::iterator s = stations.begin();
-                for (s; s < stations.end() && !containsStartStation; ++s)
-                    containsStartStation = (*startStation == **s);
+        const QDateTime startDateTime = QDateTime::fromString(startDateTimeStr, dateTimeFormat);
+        const QDateTime endDateTime = QDateTime::fromString(endDateTimeStr, dateTimeFormat);
 
-                if (!containsStartStation)
-                    stations.append(startStation);
-
-                if (*startStation != *endStation)
-                {
-                    bool containsEndStation = false;
-                    QVector<const Station*>::iterator s = stations.begin();
-                    for (s; s < stations.end() && !containsEndStation; ++s)
-                        containsEndStation = (*endStation == **s);
-
-                    if (!containsEndStation)
-                        stations.append(endStation);
-                }
-
-                // TODO : retirer codage dans le dur du format du temps
-                const QString dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
-                const QDateTime startDateTime = QDateTime::fromString(startDateTimeStr, dateTimeFormat);
-                const QDateTime endDateTime = QDateTime::fromString(endDateTimeStr, dateTimeFormat);
-                const Trip* trip = new Trip(startStation, endStation, startDateTime, endDateTime);
-                if (trip->isValid())
-                    trips.append(trip);
-
-                // TODO : retirer limite de nombre de trajets
-                if (trips.size() >= 100)
-                    break;
-// fin de section critique
-            }              
+        const bool isCyclic = (startName == endName);
+        TripData tripData = TripData(tripId, startId, endId, isCyclic, startDateTime, endDateTime);
+        tripData.durationMsec = startDateTime.msecsTo(endDateTime);
+        if (isCyclic)
+            stationsDataMap[startName].appendCycle(tripId);
+        else
+        {
+            stationsDataMap[startName].appendDeparture(tripId);
+            stationsDataMap[endName].appendArrival(tripId);
         }
-// fin de section parallele
 
-        trips.squeeze();
-        return true;
+        tripsData.append(tripData);
+
+        // TODO : a retirer
+        if (tripsData.size() >= 20)
+            break;
     }
+
+    stationsData = stationsDataMap.values().toVector();
+    tripsData.squeeze();
+    return true;
 }
 
 /*

@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     mapglwidget.cpp \
     tripsfilter.cpp \
     stationsfilter.cpp \
-    tripsselector.cpp
+    tripsselector.cpp \
+    stationssorter.cpp
 
 HEADERS  += mainwindow.h \
     model.h \
@@ -39,7 +40,8 @@ HEADERS  += mainwindow.h \
     mapglwidget.h \
     tripsfilter.h \
     stationsfilter.h \
-    tripsselector.h
+    tripsselector.h \
+    stationssorter.h
 
 FORMS    += mainwindow.ui
 
@@ -47,4 +49,3 @@ DISTFILES +=
 
 RESOURCES += \
     resources.qrc
-

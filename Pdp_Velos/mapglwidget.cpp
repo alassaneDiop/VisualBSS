@@ -146,8 +146,8 @@ void MapGLWidget::loadTripsAndStations(QVector<const Trip*>& trips, QVector<cons
 
     for (const Station* s : stations)
     {
-        m_stationsVertices.push_back(s->getLongitude() / 180.f);
-        m_stationsVertices.push_back(s->getLatitude() / 90.f);
+        m_stationsVertices.push_back(s->longitude() / 180.f);
+        m_stationsVertices.push_back(s->latitude() / 90.f);
     }
 
     //        qDebug() << m_stationsVertices[i++] << m_stationsVertices[i++];
@@ -182,6 +182,12 @@ void MapGLWidget::loadTripsAndStations(QVector<const Trip*>& trips, QVector<cons
 
     for (const Trip* t : trips)
     {
+<<<<<<< .mine
+        /*m_tripsVertices.push_back(trips.at(i).getStartStation()->getLongitude() / 180.f);
+        m_tripsVertices.push_back(trips.at(i).getStartStation()->getLatitude() / 90.f);
+        m_tripsVertices.push_back(trips.at(i).getEndStation()->getLongitude() / 180.f);
+        m_tripsVertices.push_back(trips.at(i).getEndStation()->getLatitude() / 90.f);*/
+=======
         m_tripsVertices.append((float)(t->getStartStation()->getLongitude() / 180.f));
         m_tripsVertices.append((float)(t->getStartStation()->getLatitude() / 90.f));
 
@@ -197,6 +203,7 @@ void MapGLWidget::loadTripsAndStations(QVector<const Trip*>& trips, QVector<cons
         m_tripsVertices.append(1.f);
 
         //        qDebug() << m_tripsVertices[i++] << m_tripsVertices[i++] << m_tripsVertices[i++] << m_tripsVertices[i++];
+>>>>>>> .r41
     }
 
     m_tripsVBO.bind();
