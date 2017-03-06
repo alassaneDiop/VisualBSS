@@ -121,7 +121,6 @@ void MapGLWidget::drawTrips()
 void MapGLWidget::loadStationsData(const QVector<float> data, unsigned int verticesCount)
 {
     initializeOpenGLFunctions();
-    m_stationRenderer->createVAO();
     m_stationRenderer->sendData(data, verticesCount);
     update();
 }
