@@ -4,7 +4,7 @@
 #include <QDebug>
 #include <QElapsedTimer>
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
@@ -15,14 +15,20 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_model, &Model::dataLoaded, this, &MainWindow::onDataLoaded);
     connect(m_model, &Model::failedToLoadData, this, &MainWindow::onFailedToLoadData);
 
-    const QString filename = "../2013-07 - Citi Bike trip data.csv";
-    QElapsedTimer timer;
-    timer.start();
-    const int tripsCount = m_model->loadData(filename);
-    if (tripsCount < 0)
-        qWarning() << "Couldn't load data from file" << filename;
+    const QStringList args = QApplication::arguments();
+    if (args.size() < 2)
+        qInfo() << "You must specify a filename as parameter";
     else
-        qInfo() << "Loaded" << tripsCount << "trips from file" << filename << "in" << timer.elapsed() << "milliseconds";
+    {
+        const QString filename = args.at(1);
+        QElapsedTimer timer;
+        timer.start();
+        const int tripsCount = m_model->loadData(filename);
+        if (tripsCount < 0)
+            qWarning() << "Couldn't load data from file" << filename;
+        else
+            qInfo() << "Loaded" << tripsCount << "trips from file" << filename << "in" << timer.elapsed() << "milliseconds";
+    }
 }
 
 MainWindow::~MainWindow()
@@ -52,22 +58,21 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
 
     for (const Trip t : trips)
     {
-        int startStationId = t.startStationId();
-        const Station startStation = m_model->station(startStationId);
+        int startStationId = t.startStationId;
+        const Station startStation = m_model->constStation(startStationId);
 
-        tripsVertices.append((float) (startStation.longitude() / maxLongitude));
-        tripsVertices.append((float) (startStation.latitude() / maxLatitude));
+        tripsVertices.append((float) (startStation.longitude / maxLongitude));
+        tripsVertices.append((float) (startStation.latitude / maxLatitude));
 
         tripsVertices.append(1.f);
         tripsVertices.append(0.f);
         tripsVertices.append(0.f);
 
+        int endStationId = t.endStationId;
+        const Station endStation = m_model->constStation(endStationId);
 
-        int endStationId = t.endStationId();
-        const Station endStation = m_model->station(endStationId);
-
-        tripsVertices.append((float) (endStation.longitude() / maxLongitude));
-        tripsVertices.append((float) (endStation.latitude() / maxLatitude));
+        tripsVertices.append((float) (endStation.longitude / maxLongitude));
+        tripsVertices.append((float) (endStation.latitude / maxLatitude));
 
         tripsVertices.append(0.f);
         tripsVertices.append(0.f);
@@ -80,8 +85,8 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
 
     for (const Station s : stations)
     {
-        stationsVertices.push_back(s.longitude() / maxLongitude);
-        stationsVertices.push_back(s.latitude() / maxLatitude);
+        stationsVertices.push_back(s.longitude / maxLongitude);
+        stationsVertices.push_back(s.latitude / maxLatitude);
     }
 
     ui->mapwidget->loadStationsData(stationsVertices, stationsVerticesCount);

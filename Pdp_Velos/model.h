@@ -4,12 +4,12 @@
 #include <QObject>
 #include <QVector>
 
+#include "trip.h"
+#include "station.h"
+
 namespace bss {
 class Model;
 }
-
-#include "trip.h"
-#include "station.h"
 
 class Model : public QObject
 {
@@ -19,8 +19,12 @@ public:
 
     inline int tripsCount() const { return m_tripsCount; }
     inline int stationsCount() const { return m_stationsCount; }
-    inline const Trip& trip(const int& id) const { return m_trips.at(id); }
-    inline const Station& station(const int& id) const { return m_stations.at(id); }
+
+    inline Trip trip(const int& id) const { return m_trips[id]; }
+    inline Station station(const int& id) const { return m_stations[id]; }
+
+    inline const Trip& constTrip(const int& id) const { return m_trips.at(id); }
+    inline const Station& constStation(const int& id) const { return m_stations.at(id); }
 
     int loadData(const QString& filename);
 

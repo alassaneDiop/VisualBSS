@@ -5,57 +5,25 @@
 #include <QDateTime>
 
 namespace bss {
-class Trip;
 struct TripData;
 }
 
-struct TripData
+struct Trip
 {
-    TripData(const int& id = -1,
-             const int& startId = -1,
-             const int& endId = -1,
-             const bool& isCyclic = false,
-             const QDateTime& startDateTime = QDateTime(),
-             const QDateTime& endDateTime = QDateTime());
-    int id;
-    int startId;
-    int endId;
+    QString toString() const;
+
+    int id = -1;
+    int startStationId = -1;
+    int endStationId = -1;
     bool isCyclic = false;
     QDateTime startDateTime;
     QDateTime endDateTime;
-    int durationMsec = 0;
+    QTime duration;
     qreal direction = 0;
+
     qreal distance = 0;
-};
 
-class Trip
-{
-public:
-    Trip() : Trip(TripData()) { }
-    Trip(const TripData& data);
-
-    inline int id() const { return m_id; }
-    inline int startStationId() const { return m_startStationId; }
-    inline int endStationId() const { return m_endStationId; }
-    inline bool isCyclic() const { return m_isCyclic; }
-    inline const QDateTime& startDateTime() const { return m_startDateTime; }
-    inline const QDateTime& endDateTime() const { return m_endDateTime; }
-    inline const QTime& duration() const { return m_duration; }
-    inline qreal distance() const { return m_distance; }
-    inline qreal direction() const { return m_direction; }
-
-    QString toString() const;
-
-private:
-    int m_id;
-    int m_startStationId;
-    int m_endStationId;
-    bool m_isCyclic;
-    QDateTime m_startDateTime;
-    QDateTime m_endDateTime;
-    QTime m_duration;
-    qreal m_distance;
-    qreal m_direction;
+    static qreal calculateDistance(const Trip& trip);
 };
 
 #endif // TRIP_H

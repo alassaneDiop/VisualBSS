@@ -10,10 +10,8 @@ Model::Model(QObject* parent) :
 
 int Model::loadData(const QString& filename)
 {
-    QVector<TripData> tripsData;
-    QVector<StationData> stationsData;
     const DataFileReader* dataFileReader = new CsvDataFileReader(filename);
-    const bool ok = dataFileReader->readData(tripsData, stationsData);
+    const bool ok = dataFileReader->readData(m_trips, m_stations);
     delete dataFileReader;
 
     if (!ok)
@@ -23,16 +21,8 @@ int Model::loadData(const QString& filename)
     }
     else
     {
-        m_trips.clear();
-        m_trips.reserve(tripsData.size());
-        for (const TripData data : tripsData)
-            m_trips.append(Trip(data));
-
-        m_stations.clear();
-        m_stations.reserve(stationsData.size());
-        for (const StationData data : stationsData)
-            m_stations.append(StationData(data));
-
+        m_tripsCount = m_trips.size();
+        m_stationsCount = m_stations.size();
         emit dataLoaded(m_trips, m_stations);
         return m_trips.size();
     }

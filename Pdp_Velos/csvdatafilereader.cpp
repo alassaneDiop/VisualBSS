@@ -18,7 +18,7 @@ CsvDataFileReader::~CsvDataFileReader()
 
 }
 
-bool CsvDataFileReader::readData(QVector<TripData>& tripsData, QVector<StationData>& stationsData) const
+bool CsvDataFileReader::readData(QVector<Trip>& tripsData, QVector<Station>& stationsData) const
 {
     QFile file(DataFileReader::getFilename());
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -30,7 +30,7 @@ bool CsvDataFileReader::readData(QVector<TripData>& tripsData, QVector<StationDa
 
     file.close();
 
-    QMap<QString, StationData> stationsDataMap;
+    QMap<QString, Station> stationsDataMap;
     tripsData.clear();
     tripsData.reserve(lines.size());
 
@@ -58,34 +58,33 @@ bool CsvDataFileReader::readData(QVector<TripData>& tripsData, QVector<StationDa
                 return stationsDataMap.value(name).id;
             else
             {
-                const int id = stationsDataMap.size();
-                const qreal lat = latitudeStr.toDouble();
-                const qreal lon = longitudeStr.toDouble();
-                stationsDataMap.insert(name, StationData(id, name, lat, lon));
-                return id;
+                Station s;
+                s.name = name;
+                s.id = stationsDataMap.size() ;
+                s.latitude = latitudeStr.toDouble();
+                s.longitude = longitudeStr.toDouble();
+                stationsDataMap.insert(name, s);
+                return s.id;
             }
         };
 
-        const int startId = f(startName, startLatitudeStr, startLongitudeStr);
-        const int endId = f(endName, endLatitudeStr, endLongitudeStr);
-        const int tripId = tripsData.size();
-
-        const QDateTime startDateTime = QDateTime::fromString(startDateTimeStr, dateTimeFormat);
-        const QDateTime endDateTime = QDateTime::fromString(endDateTimeStr, dateTimeFormat);
-
-
-        const bool isCyclic = (startName == endName);
-        TripData tripData = TripData(tripId, startId, endId, isCyclic, startDateTime, endDateTime);
-        tripData.durationMsec = startDateTime.msecsTo(endDateTime);
-        if (isCyclic)
-            stationsDataMap[startName].appendCycle(tripId);
+        Trip t;
+        t.id = tripsData.size();
+        t.startDateTime = QDateTime::fromString(startDateTimeStr, dateTimeFormat);;
+        t.endDateTime =  QDateTime::fromString(endDateTimeStr, dateTimeFormat);
+        t.startStationId =  f(startName, startLatitudeStr, startLongitudeStr);
+        t.endStationId = f(endName, endLatitudeStr, endLongitudeStr);
+        t.duration = QTime().addMSecs(t.startDateTime.msecsTo(t.endDateTime));
+        t.isCyclic = (startName == endName);
+        if (t.isCyclic)
+            stationsDataMap[startName].appendCycle(t);
         else
         {
-            stationsDataMap[startName].appendDeparture(tripId);
-            stationsDataMap[endName].appendArrival(tripId);
+            stationsDataMap[startName].appendDeparture(t);
+            stationsDataMap[endName].appendArrival(t);
         }
 
-        tripsData.append(tripData);
+        tripsData.append(t);
 
         // TODO : a retirer
 //        if (tripsData.size() >= 1000)

@@ -16,7 +16,7 @@ public:
     DataFileReader(const QString& filename);
     virtual ~DataFileReader();
     inline QString getFilename() const { return m_filename; }
-    virtual bool readData(QVector<TripData>& tripsData, QVector<StationData>& stationsData) const = 0;
+    virtual bool readData(QVector<Trip>& tripsData, QVector<Station>& stationsData) const = 0;
 
 private:  
     const QString m_filename; 

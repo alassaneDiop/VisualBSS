@@ -25,9 +25,6 @@ protected:
     QOpenGLBuffer*              m_VBO;
 
     unsigned int                m_verticesCount;
-
-public:
-    void sendData(const QVector<float> &data, unsigned int verticesCount);
 };
 
 #endif // RENDER_H
