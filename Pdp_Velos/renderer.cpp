@@ -2,6 +2,8 @@
 
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
+#include <QVector>
+
 
 Renderer::Renderer()
 {
@@ -29,6 +31,15 @@ Renderer::~Renderer()
         delete m_VAO;
     if (m_VBO)
         delete m_VBO;
+}
+
+void Renderer::sendData(const QVector<float> &data, unsigned int verticesCount)
+{
+    initializeOpenGLFunctions();
+    m_verticesCount = verticesCount;
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO->IndexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
 }
 
 void Renderer::bindVAO()
