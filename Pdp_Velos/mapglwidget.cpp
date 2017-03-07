@@ -186,24 +186,24 @@ void MapGLWidget::calculateZoom()
     if (x != 0)
     {
         // OpenGL coordinates from -1 to 1
-        int coordinateSystemLength = 2;
+        const int coordinateSystemLength = 2;
 
         // FIXME: comprendre pourquoi le zoom n'est pas centré sur le centre
         // de la bounding box
         // Cette valeur permet de reduire le zoom et affiche toute la bounding box
-        int debugValue = 1.2;
+        const int debugValue = 1.2;
         m_zoom = coordinateSystemLength / x / debugValue;
     }
 }
 
 void MapGLWidget::wheelEvent(QWheelEvent* event)
 {
-    int numDegrees = event->delta() / 8;
-    int numSteps = numDegrees / 15;
-    m_zoom += numSteps * 1.01f;
+    m_zoom += event->delta();
 
-    if (m_zoom < 0.125f)
-        m_zoom = 0.125f;
+    const float minZoom = 0.125f;
+
+    if (m_zoom < minZoom)
+        m_zoom = minZoom;
 
     qDebug() << "zoom" << m_zoom;
 

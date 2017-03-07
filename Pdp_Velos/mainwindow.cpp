@@ -43,18 +43,18 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     qDebug() << "onDataLoaded" << "Trip number" << trips.size() << "Station number" << stations.size();
 
     // for x and y;
-    int tuplePositionSize = 2;
+    const int tuplePositionSize = 2;
     // 1 trip has 2 points (start/end)
-    int pointPerTrip = 2;
+    const int pointPerTrip = 2;
     // R, G, B
-    int tupleColorSize = 3;
+    const int tupleColorSize = 3;
 
     QVector<float> tripsVertices;
     tripsVertices.reserve(trips.size() * tuplePositionSize * pointPerTrip * tupleColorSize);
-    int tripsVerticesCount = trips.size() * pointPerTrip;
+    const int tripsVerticesCount = trips.size() * pointPerTrip;
 
-    float maxLongitude = 180.f;
-    float maxLatitude = 90.f;
+    const float maxLongitude = 180.f;
+    const float maxLatitude = 90.f;
 
     for (const Trip t : trips)
     {
@@ -81,7 +81,7 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
 
     QVector<float> stationsVertices;
     stationsVertices.reserve(stations.size() * tuplePositionSize);
-    int stationsVerticesCount = stations.size();
+    const int stationsVerticesCount = stations.size();
 
     for (const Station s : stations)
     {

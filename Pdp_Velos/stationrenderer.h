@@ -14,7 +14,6 @@ public:
     virtual ~StationRenderer();
     virtual void draw() override;
 
-    void sendData(const QVector<float>& data, unsigned int verticesCount);
     void drawFilledCircle(unsigned int triangleAmount, unsigned int radius);
 
 };

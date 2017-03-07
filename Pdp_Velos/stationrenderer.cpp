@@ -35,15 +35,6 @@ void StationRenderer::draw()
     m_VAO->release();
 }
 
-void StationRenderer::sendData(const QVector<float> &data, unsigned int verticesCount)
-{
-    initializeOpenGLFunctions();
-    m_verticesCount = verticesCount;
-
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO->IndexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
-}
-
 void StationRenderer::drawFilledCircle(unsigned int triangleAmount, unsigned int radius)
 {
     QVector<float> vertices;

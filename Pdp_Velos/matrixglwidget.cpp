@@ -42,11 +42,6 @@ void MatrixGLWidget::paintGL()
 {
 //    drawDirections();
 //    drawDragSelection();
-    QPainter p;
-    p.begin(this);
-    p.fillRect(QRect(0, 0, 10, 10), QBrush(QColor(10, 10, 210, 128)));
-    p.end();
-    update();
 }
 
 void MatrixGLWidget::drawDragSelection()
@@ -115,9 +110,7 @@ void MatrixGLWidget::loadTripsAndStations(QVector<const Trip*>& trips, QVector<c
 
 void MatrixGLWidget::wheelEvent(QWheelEvent* event)
 {
-    int numDegrees = event->delta() / 8;
-    int numSteps = numDegrees / 15;
-    m_translationValue += numSteps * 10;
+    m_translationValue += event->delta();
 
     if (m_translationValue > 0)
         m_translationValue = 0;
