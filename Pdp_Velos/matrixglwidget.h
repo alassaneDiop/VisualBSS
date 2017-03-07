@@ -28,6 +28,7 @@ protected:
     virtual void mouseMoveEvent (QMouseEvent* event) override;
     virtual void mousePressEvent(QMouseEvent* event) override;
     virtual void mouseReleaseEvent(QMouseEvent* event) override;
+
     void initPoint();
     QVector<QPoint> hit();
 
@@ -39,7 +40,7 @@ private:
     const int m_numberOfInterval = 24;
     const int m_matrixOffsetX = 10;
     int m_matrixViewWidth;
-    int m_stationCircleSize = 10;
+    const int m_stationCircleSize = 10;
 
     QVector<QPoint> m_ellipses;
 
@@ -55,8 +56,5 @@ private:
 
     QList<const Station*> m_stations;
     QList<const Trip*> m_trips;
-
-
-
 };
 #endif // MATRIXOPENGLWIDGET_H

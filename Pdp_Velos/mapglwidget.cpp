@@ -35,9 +35,18 @@ void MapGLWidget::initializeGL()
 {
     initializeOpenGLFunctions();
     this->makeCurrent();
-    glClearColor(0.2f, 0.2f, 0.2f, 1.f);
-    glEnable(GL_MULTISAMPLE);
+    QPair<int, int> version = this->format().version();
 
+    if (version < QPair<int, int>(3, 3))
+    {
+        qDebug() << "Version" << version << "OpenGL version 3.3 requiert ou sup";
+        exit(-1);
+    }
+    else
+        qDebug() << "initializeGL OpenGL version:" << version;
+
+
+    glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
     m_shaderProgramStations = new QOpenGLShaderProgram(this->context());
     m_shaderProgramStations->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/map.vert");
@@ -64,7 +73,6 @@ void MapGLWidget::initializeGL()
     m_tripsVBO.release();
     m_shaderProgramTrips->release();
 
-    qDebug() << "initializeGL OpenGL version:" << this->format().version();
 }
 
 void MapGLWidget::resizeGL(int width, int height)
@@ -186,24 +194,24 @@ void MapGLWidget::calculateZoom()
     if (x != 0)
     {
         // OpenGL coordinates from -1 to 1
-        int coordinateSystemLength = 2;
+        const int coordinateSystemLength = 2;
 
         // FIXME: comprendre pourquoi le zoom n'est pas centré sur le centre
         // de la bounding box
         // Cette valeur permet de reduire le zoom et affiche toute la bounding box
-        int debugValue = 1.2;
+        const int debugValue = 1.2;
         m_zoom = coordinateSystemLength / x / debugValue;
     }
 }
 
 void MapGLWidget::wheelEvent(QWheelEvent* event)
 {
-    int numDegrees = event->delta() / 8;
-    int numSteps = numDegrees / 15;
-    m_zoom += numSteps * 1.01f;
+    m_zoom += event->delta();
 
-    if (m_zoom < 0.125f)
-        m_zoom = 0.125f;
+    const float minZoom = 0.125;
+
+    if (m_zoom < minZoom)
+        m_zoom = minZoom;
 
     qDebug() << "zoom" << m_zoom;
 

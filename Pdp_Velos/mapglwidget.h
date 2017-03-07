@@ -53,11 +53,9 @@ private:
     float m_translationOffsetY;
     QPointF m_previousMousePos;
 
-    // TODO: enlever par la suite
     QVector<float> m_tripsVertices;
     int m_tripsVerticesCount;
 
-    // TODO: enlever par la suite
     QOpenGLVertexArrayObject m_tripsVAO;
     QOpenGLBuffer m_tripsVBO;
 
