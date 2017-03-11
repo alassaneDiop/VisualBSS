@@ -7,7 +7,7 @@ QString Trip::toString() const
     result += "end station id :\t" + QString::number(endStationId) + '\n';
     result += "start time :\t" + startDateTime.toString() + '\n';
     result += "end time :\t" + endDateTime.toString() + '\n';
-    result += "duration :\t" + duration.toString();
+    result += "duration :\t" + QString::number(duration);
     return result;
 }
 

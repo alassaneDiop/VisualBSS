@@ -7,18 +7,14 @@ namespace bss {
 class CsvDataFileReader;
 }
 
-
-class Station;
+struct Trip;
+struct Station;
 class CsvDataFileReader : public DataFileReader
 {
 public:
-    CsvDataFileReader(const QString& filename);
+    CsvDataFileReader(const QString& filename, const Qt::DateFormat& dateFormat);
     virtual ~CsvDataFileReader();
-    virtual bool readData(QVector<Trip>& tripsData, QVector<Station>& stationsData) const override;
-
-private:
-    // TODO : retirer codage dans le dur du format du temps
-    const QString dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+    virtual bool readData(QVector<Trip>& trips, QVector<Station>& stations) const override;
 };
 
 #endif // CSVDATAFILEREADER_H

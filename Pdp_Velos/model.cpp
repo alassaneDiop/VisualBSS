@@ -10,7 +10,7 @@ Model::Model(QObject* parent) :
 
 int Model::loadData(const QString& filename)
 {
-    const DataFileReader* dataFileReader = new CsvDataFileReader(filename);
+    const DataFileReader* dataFileReader = new CsvDataFileReader(filename, Qt::ISODate);
     const bool ok = dataFileReader->readData(m_trips, m_stations);
     delete dataFileReader;
 

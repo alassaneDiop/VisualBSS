@@ -10,16 +10,21 @@ namespace bss {
 class DataFileReader;
 }
 
+
 class DataFileReader
 {
 public:
-    DataFileReader(const QString& filename);
+    DataFileReader(const QString& filename, const Qt::DateFormat& dateFormat);
     virtual ~DataFileReader();
-    inline QString getFilename() const { return m_filename; }
+
+    inline QString filename() const { return m_filename; }
+    inline Qt::DateFormat dateFormat() const { return m_dateFormat; }
+
     virtual bool readData(QVector<Trip>& tripsData, QVector<Station>& stationsData) const = 0;
 
 private:  
     const QString m_filename; 
+    const Qt::DateFormat m_dateFormat;
 };
 
 #endif // DATAFILEREADER_H

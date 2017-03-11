@@ -3,8 +3,8 @@
 #include <QFile>
 #include <QXmlStreamReader>
 
-XmlDataFileReader::XmlDataFileReader(const QString& filename) :
-    DataFileReader(filename)
+XmlDataFileReader::XmlDataFileReader(const QString& filename, const Qt::DateFormat& dateFormat) :
+    DataFileReader(filename, dateFormat)
 {
 
 }

@@ -12,7 +12,7 @@ class XmlDataFileReader;
 class XmlDataFileReader : public DataFileReader
 {
 public:
-    XmlDataFileReader(const QString& filename);
+    XmlDataFileReader(const QString& filename, const Qt::DateFormat& dateFormat);
     virtual ~XmlDataFileReader();
     virtual bool readData(QVector<Trip>& tripsData, QVector<Station>& stationsData) const override;
 };

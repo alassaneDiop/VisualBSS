@@ -10,17 +10,18 @@ struct TripData;
 
 struct Trip
 {
+    typedef unsigned int id_t;
+
     QString toString() const;
 
-    int id = -1;
+    id_t id = (id_t)-1;
     int startStationId = -1;
     int endStationId = -1;
     bool isCyclic = false;
     QDateTime startDateTime;
     QDateTime endDateTime;
-    QTime duration;
+    quint64 duration = 0;
     qreal direction = 0;
-
     qreal distance = 0;
 
     static qreal calculateDistance(const Trip& trip);

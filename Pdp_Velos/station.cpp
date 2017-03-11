@@ -25,10 +25,10 @@ void Station::updateAppend(const Trip& trip)
     // calcul maxTripDistance
     maxTripDistance = qMax(maxTripDistance, trip.distance);
 
-    // TODO : avgTripDurationMsec : a vérifier
-    const int totalTripCount = arrivalsId.size() + departuresId.size() + cyclesId.size();
-    const int totalDurationMsec = (originDestinationFlow * avgTripDuration.msec()) + trip.duration.msec();
-    avgTripDuration = QTime().addMSecs(totalDurationMsec / totalTripCount);
+    // TODO : avgTripDuration : a vérifier
+    const int totalTripsCount = arrivalsId.size() + departuresId.size() + cyclesId.size();
+    const int totalDuration = (originDestinationFlow * avgTripDuration) + trip.duration;
+    avgTripDuration = totalDuration / totalTripsCount;
 
     // TODO : originDesinationFlow : a vérifier
     originDestinationFlow++;
@@ -56,6 +56,6 @@ QString Station::toString() const
     QString result;
     result += "name : " + name + '\t';
     result += "latitude : " + QString:: number(latitude) + '\t';
-    result += "longitude : " + QString:: number(longitude);
+    result += "longitude : " + QString::number(longitude);
     return result;
 }
