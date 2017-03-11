@@ -1,15 +1,18 @@
 #ifndef MATRIXOPENGLWIDGET_H
 #define MATRIXOPENGLWIDGET_H
 
+#include <QWheelEvent>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
+#include <QColor>
 
+#include "selectorrenderer.h"
 
-class QWheelEvent;
 class QMouseEvent;
 class Station;
 class Trip;
 class QPoint;
+class QOpenGLShaderProgram;
 
 class MatrixGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -32,8 +35,8 @@ protected:
     QVector<QPoint> hit();
 
 private:
-    void drawDragSelection();
-    void drawDirections();
+    void drawSelector();
+    void drawGlyphs();
 
 private:
     const int m_numberOfInterval = 24;
@@ -45,7 +48,7 @@ private:
 
     bool m_leftMouseButtonPressed;
     QPointF m_previousMousePos;
-    int m_translationValue;
+    float m_translationOffsetY;
 
     QPointF m_topLeftSelectionRectangle;
     QPointF m_bottomRightSelectionRectangle;
@@ -56,7 +59,11 @@ private:
     QList<const Station*> m_stations;
     QList<const Trip*> m_trips;
 
+    const QColor m_backgroundColor = QColor(Qt::white);
 
+    SelectorRenderer* m_selectorRenderer;
+    QOpenGLShaderProgram* m_shaderProgramSelector;
+    QOpenGLShaderProgram* m_shaderProgramGlyph;
 
 };
 #endif // MATRIXOPENGLWIDGET_H

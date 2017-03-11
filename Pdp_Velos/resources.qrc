@@ -4,5 +4,7 @@
         <file>shaders/stations.frag</file>
         <file>shaders/trips.frag</file>
         <file>shaders/curves.geom</file>
+        <file>shaders/selector.frag</file>
+        <file>shaders/selector.vert</file>
     </qresource>
 </RCC>

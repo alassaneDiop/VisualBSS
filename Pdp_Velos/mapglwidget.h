@@ -1,18 +1,17 @@
 #ifndef OPENGLWIDGET_H
 #define OPENGLWIDGET_H
 
+#include <QWheelEvent>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
-#include <QOpenGLVertexArrayObject>
-#include <QOpenGLBuffer>
 
 #include "stationrenderer.h"
+#include "triprenderer.h"
 
 
 class Point;
 class QOpenGLShaderProgram;
 class QOpenGLBuffer;
-class QWheelEvent;
 
 class MapGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -53,18 +52,11 @@ private:
     float m_translationOffsetY;
     QPointF m_previousMousePos;
 
-    // TODO: enlever par la suite
-    QVector<float> m_tripsVertices;
-    int m_tripsVerticesCount;
-
-    // TODO: enlever par la suite
-    QOpenGLVertexArrayObject m_tripsVAO;
-    QOpenGLBuffer m_tripsVBO;
-
     QOpenGLShaderProgram* m_shaderProgramStations;
     QOpenGLShaderProgram* m_shaderProgramTrips;
 
-    StationRenderer* m_stationRenderer;
+    StationRenderer*    m_stationRenderer;
+    TripRenderer*       m_tripRenderer;
 };
 
 #endif // OPENGLWIDGET_H

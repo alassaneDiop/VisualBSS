@@ -18,21 +18,22 @@ StationRenderer::~StationRenderer()
 
 void StationRenderer::draw()
 {
-    m_VAO->bind();
+    this->bindVAO();
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO->IndexBuffer);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
 
-//    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
+    /// When we will calculate color for each stations
+    //    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
 
-//    glBindBuffer(GL_ARRAY_BUFFER, m_VBO->IndexBuffer);
-//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
+    //    glBindBuffer(GL_ARRAY_BUFFER, m_VBO->IndexBuffer);
+    //    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
 
     glPointSize(5.f);
     glDrawArrays(GL_POINTS, 0, m_verticesCount);
 
-    m_VAO->release();
+    this->releaseVAO();
 }
 
 void StationRenderer::drawFilledCircle(unsigned int triangleAmount, unsigned int radius)
@@ -50,7 +51,7 @@ void StationRenderer::drawFilledCircle(unsigned int triangleAmount, unsigned int
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
     m_VBO->release();
 
-    m_VAO->bind();
+    this->bindVAO();
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO->IndexBuffer);
@@ -62,6 +63,6 @@ void StationRenderer::drawFilledCircle(unsigned int triangleAmount, unsigned int
 
     glDrawArrays(GL_POINTS, 0, triangleAmount);
 
-    m_VAO->release();
+    this->releaseVAO();
 }
 

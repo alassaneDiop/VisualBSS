@@ -28,7 +28,10 @@ SOURCES += main.cpp\
     tripsselector.cpp \
     renderer.cpp \
     stationrenderer.cpp \
-    stationssorter.cpp
+    stationssorter.cpp \
+    triprenderer.cpp \
+    glyphrenderer.cpp \
+    selectorrenderer.cpp
 
 HEADERS  += mainwindow.h \
     model.h \
@@ -46,7 +49,10 @@ HEADERS  += mainwindow.h \
     renderer.h \
     stationrenderer.h \
     stationssorter.h \
-    stationrenderer.h
+    stationrenderer.h \
+    triprenderer.h \
+    glyphrenderer.h \
+    selectorrenderer.h
 
 FORMS    += mainwindow.ui
 
@@ -55,5 +61,6 @@ DISTFILES +=
 RESOURCES += \
     resources.qrc
 
-QMAKE_CXXFLAGS_RELEASE += std=c++14
+CONFIG += C++14
+QMAKE_CXXFLAGS_RELEASE += -Wall -Werror
 QMAKE_CXXFLAGS_DEBUG += -Wunused-parameter -Wunused-variable -Wunused-value -Wunused
