@@ -107,79 +107,81 @@ bool CsvDataFileReader::readData(QVector<Trip>& trips, QVector<Station>& station
     QReadWriteLock tripsLock;
     QReadWriteLock stationsMapLock;
 
-    const auto run = [this, &tripsLock, &stationsMapLock, &stationsMap, &trips](const QStringList& lines)
+    const auto runFunction = [this, &tripsLock, &stationsMapLock, &stationsMap, &trips](QString& line)
     {
-        for (QString line : lines)
+        const QStringList fields = line.remove('"').split(',');
+        if (fields.size() < 11)
+            return;
+
+        const QString& startName = fields.at(4);
+        const QString& endName = fields.at(8);
+        if (startName.isEmpty() || endName.isEmpty())
+            return;
+
+        const QString& startDateTimeStr = fields.at(1);
+        const QString& endDateTimeStr = fields.at(2);
+        const QString& startLatitudeStr = fields.at(5);
+        const QString& startLongitudeStr = fields.at(6);
+        const QString& endLatitudeStr = fields.at(9);
+        const QString& endLongitudeStr = fields.at(10);
+
+        const auto insertStation = [&stationsMapLock, &tripsLock, &stationsMap](const QString& name, const QString& latitudeStr, const QString& longitudeStr)
         {
-            const QStringList fields = line.remove('"').split(',');
-            if (fields.size() < 11)
-                continue;
-
-            const QString& startName = fields.at(4);
-            const QString& endName = fields.at(8);
-
-            if (startName.isEmpty() || endName.isEmpty())
-                continue;
-
-            const QString& startDateTimeStr = fields.at(1);
-            const QString& endDateTimeStr = fields.at(2);
-            const QString& startLatitudeStr = fields.at(5);
-            const QString& startLongitudeStr = fields.at(6);
-            const QString& endLatitudeStr = fields.at(9);
-            const QString& endLongitudeStr = fields.at(10);
-
-            const auto insertStation = [&stationsMapLock, &tripsLock, &stationsMap](const QString& name, const QString& latitudeStr, const QString& longitudeStr)
-            {
-                Station s;
-                stationsMapLock.lockForRead();
-                const auto it = stationsMap.find(name);
-                if (it != stationsMap.end())
-                    s = it.value();
-                else
-                {
-                    s.name = name;
-                    s.id = stationsMap.size() ;
-                    s.latitude = latitudeStr.toDouble();
-                    s.longitude = longitudeStr.toDouble();
-                    stationsMapLock.lockForWrite();
-                    stationsMap.insert(name, s);
-                }
-                stationsMapLock.unlock();
-                return s;
-            };
-
-            const Station& startStation = insertStation(startName, startLatitudeStr, startLongitudeStr);
-            const Station& endStation = insertStation(endName, endLatitudeStr, endLongitudeStr);
-
-            Trip t;
-            t.id = trips.size();
-            t.startStationId = startStation.id;
-            t.endStationId = endStation.id;
-            t.startDateTime = QDateTime::fromString(startDateTimeStr, dateFormat());
-            t.endDateTime = QDateTime::fromString(endDateTimeStr, dateFormat());
-            t.distance = startStation.distance(endStation);
-            t.direction = startStation.direction(endStation);
-            t.duration = t.startDateTime.secsTo(t.endDateTime);
-            t.isCyclic = (startName == endName);
-
-            stationsMapLock.lockForWrite();
-            if (t.isCyclic)
-                stationsMap[startName].appendCycle(t);
+            Station s;
+            stationsMapLock.lockForRead();
+            const auto it = stationsMap.find(name);
+            if (it != stationsMap.end())
+                s = it.value();
             else
             {
-                stationsMap[startName].appendDeparture(t);
-                stationsMap[endName].appendArrival(t);
+                s.name = name;
+                s.id = stationsMap.size() ;
+                s.latitude = latitudeStr.toDouble();
+                s.longitude = longitudeStr.toDouble();
+                stationsMapLock.lockForWrite();
+                stationsMap.insert(name, s);
             }
             stationsMapLock.unlock();
+            return s;
+        };
 
-            tripsLock.lockForWrite();
-            trips.append(t);
-            tripsLock.unlock();
+        const Station& startStation = insertStation(startName, startLatitudeStr, startLongitudeStr);
+        const Station& endStation = insertStation(endName, endLatitudeStr, endLongitudeStr);
+
+        Trip t;
+        tripsLock.lockForRead();
+        t.id = trips.size();
+        tripsLock.unlock();
+
+        t.startStationId = startStation.id;
+        t.endStationId = endStation.id;
+        t.startDateTime = QDateTime::fromString(startDateTimeStr, dateFormat());
+        t.endDateTime = QDateTime::fromString(endDateTimeStr, dateFormat());
+        t.distance = startStation.distance(endStation);
+        t.direction = startStation.direction(endStation);
+        t.duration = t.startDateTime.secsTo(t.endDateTime);
+        t.isCyclic = (startName == endName);
+
+        stationsMapLock.lockForWrite();
+        if (t.isCyclic)
+            stationsMap[startName].appendCycle(t);
+        else
+        {
+            stationsMap[startName].appendDeparture(t);
+            stationsMap[endName].appendArrival(t);
         }
+        stationsMapLock.unlock();
+
+        tripsLock.lockForWrite();
+        trips.append(t);
+        tripsLock.unlock();
     };
 
+    /*QThreadPool pool;
+    pool.setExpiryTimeout(-1);
+
     const int linesCount = lines.size();
-    const int threadCount = QThread::idealThreadCount();
+    const int threadCount = pool.maxThreadCount();
     QVector<QStringList> lists;
     int pos = 0;
     int len = (linesCount / threadCount);
@@ -191,13 +193,14 @@ bool CsvDataFileReader::readData(QVector<Trip>& trips, QVector<Station>& station
             len += 1;
     }
 
-    QThreadPool::globalInstance()->setMaxThreadCount(threadCount);
     QVector<QFuture<void>> results;
     for (const QStringList l : lists)
-        results.append(QtConcurrent::run(run, l));
+        results.append(QtConcurrent::run(runFunction, l));
 
     for (QFuture<void> r : results)
-        r.waitForFinished();
+        r.waitForFinished();*/
+
+    QtConcurrent::blockingMap(lines, runFunction);
 
     stations = stationsMap.values().toVector();
 
