@@ -107,7 +107,7 @@ bool CsvDataFileReader::readData(QVector<Trip>& trips, QVector<Station>& station
     QReadWriteLock tripsLock;
     QReadWriteLock stationsMapLock;
 
-    const auto runFunction = [this, &tripsLock, &stationsMapLock, &stationsMap, &trips](QString& line)
+    const auto runFunction = [this, &trips, &tripsLock, &stationsMap, &stationsMapLock](QString& line)
     {
         const QStringList fields = line.remove('"').split(',');
         if (fields.size() < 11)
@@ -125,23 +125,29 @@ bool CsvDataFileReader::readData(QVector<Trip>& trips, QVector<Station>& station
         const QString& endLatitudeStr = fields.at(9);
         const QString& endLongitudeStr = fields.at(10);
 
-        const auto insertStation = [&stationsMapLock, &tripsLock, &stationsMap](const QString& name, const QString& latitudeStr, const QString& longitudeStr)
+        const auto insertStation = [&stationsMap, &stationsMapLock](const QString& name, const QString& latitudeStr, const QString& longitudeStr)
         {
             Station s;
             stationsMapLock.lockForRead();
-            const auto it = stationsMap.find(name);
-            if (it != stationsMap.end())
+            const auto it = stationsMap.constFind(name);
+            if (it != stationsMap.constEnd())
+            {
+                stationsMapLock.unlock();
                 s = it.value();
+            }
             else
             {
+                stationsMapLock.unlock();
+
                 s.name = name;
                 s.id = stationsMap.size() ;
                 s.latitude = latitudeStr.toDouble();
                 s.longitude = longitudeStr.toDouble();
+
                 stationsMapLock.lockForWrite();
                 stationsMap.insert(name, s);
+                stationsMapLock.unlock();
             }
-            stationsMapLock.unlock();
             return s;
         };
 
@@ -149,6 +155,7 @@ bool CsvDataFileReader::readData(QVector<Trip>& trips, QVector<Station>& station
         const Station& endStation = insertStation(endName, endLatitudeStr, endLongitudeStr);
 
         Trip t;
+
         tripsLock.lockForRead();
         t.id = trips.size();
         tripsLock.unlock();
