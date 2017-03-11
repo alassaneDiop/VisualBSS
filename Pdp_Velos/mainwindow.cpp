@@ -44,13 +44,15 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
 
     // for x and y;
     const int tuplePositionSize = 2;
+
     // 1 trip has 2 points (start/end)
     const int pointPerTrip = 2;
+
     // R, G, B
     const int tupleColorSize = 3;
 
     QVector<float> tripsVertices;
-    tripsVertices.reserve(trips.size() * tuplePositionSize * pointPerTrip * tupleColorSize);
+    tripsVertices.reserve((trips.size() * tuplePositionSize + trips.size() * tupleColorSize) * pointPerTrip);
     const int tripsVerticesCount = trips.size() * pointPerTrip;
 
     const float maxLongitude = 180.f;
@@ -64,9 +66,10 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
         tripsVertices.append((float) (startStation.longitude / maxLongitude));
         tripsVertices.append((float) (startStation.latitude / maxLatitude));
 
-        tripsVertices.append(1.f);
-        tripsVertices.append(0.f);
-        tripsVertices.append(0.f);
+        // Departure RED
+//        tripsVertices.append(1.f);
+//        tripsVertices.append(0.f);
+//        tripsVertices.append(0.f);
 
         int endStationId = t.endStationId;
         const Station endStation = m_model->constStation(endStationId);
@@ -74,20 +77,27 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
         tripsVertices.append((float) (endStation.longitude / maxLongitude));
         tripsVertices.append((float) (endStation.latitude / maxLatitude));
 
-        tripsVertices.append(0.f);
-        tripsVertices.append(0.f);
-        tripsVertices.append(1.f);
+        // Arrival BLUE
+//        tripsVertices.append(0.f);
+//        tripsVertices.append(0.f);
+//        tripsVertices.append(1.f);
     }
 
     QVector<float> stationsVertices;
-    stationsVertices.reserve(stations.size() * tuplePositionSize);
+    stationsVertices.reserve(stations.size() * tuplePositionSize + stations.size() * tupleColorSize);
     const int stationsVerticesCount = stations.size();
 
     for (const Station s : stations)
     {
         stationsVertices.push_back(s.longitude / maxLongitude);
         stationsVertices.push_back(s.latitude / maxLatitude);
+
+//        stationsVertices.push_back(1.f);
+//        stationsVertices.push_back(1.f);
+//        stationsVertices.push_back(0.3f);
     }
+
+    qDebug() << "stations" << stationsVerticesCount << "trips" << tripsVerticesCount;
 
     ui->mapwidget->loadStationsData(stationsVertices, stationsVerticesCount);
     ui->mapwidget->loadTripsData(tripsVertices, tripsVerticesCount);

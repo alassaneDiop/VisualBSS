@@ -57,6 +57,9 @@ private:
 
     StationRenderer*    m_stationRenderer;
     TripRenderer*       m_tripRenderer;
+
+    bool m_stationsLoaded;
+    bool m_tripsLoaded;
 };
 
 #endif // OPENGLWIDGET_H

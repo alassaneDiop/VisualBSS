@@ -7,7 +7,7 @@
 static void setDefaultOpenGLSurfaceFormat()
 {
   QSurfaceFormat format;
-//  format.setVersion(3, 3);
+//  format.setVersion(4, 5);
   format.setProfile(QSurfaceFormat::CoreProfile);
   QSurfaceFormat::setDefaultFormat(format);
 }

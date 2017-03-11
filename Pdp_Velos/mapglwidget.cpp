@@ -19,6 +19,9 @@ MapGLWidget::MapGLWidget(QWidget* p) : QOpenGLWidget(p)
     m_translationOffsetX = 0.f;
     m_translationOffsetY = 0.f;
 
+    m_stationsLoaded = false;
+    m_tripsLoaded = false;
+
     m_stationRenderer = new StationRenderer();
     m_tripRenderer = new TripRenderer();
 }
@@ -67,8 +70,11 @@ void MapGLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    drawStations();
-    drawTrips();
+    if (m_stationsLoaded)
+        drawStations();
+
+    if (m_tripsLoaded)
+        drawTrips();
 }
 
 void MapGLWidget::drawStations()
@@ -102,6 +108,7 @@ void MapGLWidget::drawTrips()
 
 void MapGLWidget::loadStationsData(const QVector<float> data, unsigned int verticesCount)
 {
+    m_stationsLoaded = true;
     m_stationRenderer->sendData(data, verticesCount);
 
     update();
@@ -109,6 +116,7 @@ void MapGLWidget::loadStationsData(const QVector<float> data, unsigned int verti
 
 void MapGLWidget::loadTripsData(const QVector<float> data, unsigned int verticesCount)
 {
+    m_tripsLoaded = true;
     m_tripRenderer->sendData(data, verticesCount);
 
     update();
@@ -178,7 +186,7 @@ void MapGLWidget::wheelEvent(QWheelEvent* event)
 {
     m_zoom += event->delta();
 
-    const float minZoom = 10.f;
+    const float minZoom = 5.f;
 
     if (m_zoom < minZoom)
         m_zoom = minZoom;

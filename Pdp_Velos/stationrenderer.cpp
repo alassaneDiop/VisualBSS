@@ -20,15 +20,13 @@ void StationRenderer::draw()
 {
     this->bindVAO();
 
-    glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO->IndexBuffer);
+
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
+    glEnableVertexAttribArray(0);
 
-    /// When we will calculate color for each stations
-    //    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
-
-    //    glBindBuffer(GL_ARRAY_BUFFER, m_VBO->IndexBuffer);
-    //    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
+//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
+//    glEnableVertexAttribArray(1);
 
     glPointSize(5.f);
     glDrawArrays(GL_POINTS, 0, m_verticesCount);
