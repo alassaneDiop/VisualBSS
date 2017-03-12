@@ -1,30 +1,30 @@
 #ifndef TRIP_H
 #define TRIP_H
 
+#include "typedefs.h"
+
 #include <QString>
 #include <QDateTime>
 
 namespace bss {
-struct TripData;
+struct Trip;
 }
+
 
 struct Trip
 {
-    typedef unsigned int id_t;
+    inline bool operator ==(const Trip& other) { return (id == other.id); }
+    static qreal calculateDistance(const Trip& trip);
 
-    QString toString() const;
-
-    id_t id = (id_t)-1;
-    int startStationId = -1;
-    int endStationId = -1;
+    bss::tripId id = (bss::tripId) -1;
+    bss::stationId startStationId = (bss::stationId) -1;
+    bss::stationId endStationId = (bss::stationId) -1;
     bool isCyclic = false;
-    QDateTime startDateTime;
-    QDateTime endDateTime;
     quint64 duration = 0;
     qreal direction = 0;
     qreal distance = 0;
-
-    static qreal calculateDistance(const Trip& trip);
+    QDateTime startDateTime;
+    QDateTime endDateTime;
 };
 
 #endif // TRIP_H

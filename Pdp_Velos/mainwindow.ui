@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1288</width>
-    <height>680</height>
+    <width>788</width>
+    <height>609</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -66,7 +66,7 @@
             <x>0</x>
             <y>0</y>
             <width>600</width>
-            <height>568</height>
+            <height>497</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -113,6 +113,12 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>512</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
         <width>360</width>
@@ -142,15 +148,18 @@
         <number>3</number>
        </property>
        <item>
-        <widget class="QGroupBox" name="groupBox_period">
+        <widget class="QFrame" name="frame_period">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title">
-          <string/>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <property name="spacing">
@@ -169,200 +178,179 @@
            <number>3</number>
           </property>
           <item>
-           <widget class="QWidget" name="widget_period" native="true">
-            <layout class="QVBoxLayout" name="verticalLayout_13">
+           <widget class="QWidget" name="widget_periodDay" native="true">
+            <layout class="QHBoxLayout" name="horizontalLayout">
              <property name="spacing">
-              <number>3</number>
+              <number>12</number>
              </property>
              <property name="leftMargin">
-              <number>6</number>
+              <number>3</number>
              </property>
              <property name="topMargin">
-              <number>6</number>
+              <number>3</number>
              </property>
              <property name="rightMargin">
-              <number>6</number>
+              <number>3</number>
              </property>
              <property name="bottomMargin">
-              <number>6</number>
+              <number>3</number>
              </property>
              <item>
-              <widget class="QWidget" name="widget_periodDay" native="true">
-               <layout class="QHBoxLayout" name="horizontalLayout">
+              <widget class="QWidget" name="widget_period_2" native="true">
+               <layout class="QHBoxLayout" name="horizontalLayout_4">
                 <property name="spacing">
-                 <number>12</number>
+                 <number>6</number>
                 </property>
                 <property name="leftMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="topMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="rightMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <item>
-                 <widget class="QWidget" name="widget_period_2" native="true">
-                  <layout class="QHBoxLayout" name="horizontalLayout_4">
-                   <property name="spacing">
-                    <number>6</number>
-                   </property>
-                   <property name="leftMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QLabel" name="label_period">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>Period</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="comboBox_period">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
+                 <widget class="QLabel" name="label_period">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Period</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QWidget" name="widget_day" native="true">
-                  <layout class="QHBoxLayout" name="horizontalLayout_5">
-                   <property name="spacing">
-                    <number>6</number>
-                   </property>
-                   <property name="leftMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QLabel" name="label_day">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>Day</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLineEdit" name="lineEdit_day">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
+                 <widget class="QComboBox" name="comboBox_period">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                  </widget>
                 </item>
                </layout>
               </widget>
              </item>
              <item>
-              <widget class="QWidget" name="widget_dayOfWeek" native="true">
-               <layout class="QVBoxLayout" name="verticalLayout_6">
+              <widget class="QWidget" name="widget_day" native="true">
+               <layout class="QHBoxLayout" name="horizontalLayout_5">
                 <property name="spacing">
-                 <number>3</number>
+                 <number>6</number>
                 </property>
                 <property name="leftMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="topMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="rightMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <item>
-                 <widget class="QComboBox" name="comboBox_dayOfWeek">
-                  <item>
-                   <property name="text">
-                    <string>Monday</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Thursday</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Wednesday</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Tuesday</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Friday</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Saturday</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Sunday</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Weekdays</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Weekend</string>
-                   </property>
-                  </item>
+                 <widget class="QLabel" name="label_day">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Day</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="lineEdit_day">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                  </widget>
                 </item>
                </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QWidget" name="widget_dayOfWeek" native="true">
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <property name="spacing">
+              <number>3</number>
+             </property>
+             <property name="leftMargin">
+              <number>3</number>
+             </property>
+             <property name="topMargin">
+              <number>3</number>
+             </property>
+             <property name="rightMargin">
+              <number>3</number>
+             </property>
+             <property name="bottomMargin">
+              <number>3</number>
+             </property>
+             <item>
+              <widget class="QComboBox" name="comboBox_dayOfWeek">
+               <item>
+                <property name="text">
+                 <string>Monday</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Thursday</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Wednesday</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Tuesday</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Friday</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Saturday</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Sunday</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Weekdays</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Weekend</string>
+                </property>
+               </item>
               </widget>
              </item>
             </layout>
@@ -372,96 +360,60 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_display">
+        <widget class="QFrame" name="frame_display">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title">
-          <string>Display</string>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
          </property>
-         <property name="flat">
-          <bool>true</bool>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <layout class="QVBoxLayout" name="verticalLayout_14">
           <property name="spacing">
            <number>3</number>
           </property>
           <property name="leftMargin">
-           <number>6</number>
+           <number>3</number>
           </property>
           <property name="topMargin">
-           <number>6</number>
+           <number>3</number>
           </property>
           <property name="rightMargin">
-           <number>6</number>
+           <number>3</number>
           </property>
           <property name="bottomMargin">
-           <number>6</number>
+           <number>3</number>
           </property>
           <item>
-           <widget class="QWidget" name="widget_displayLeft" native="true">
-            <layout class="QVBoxLayout" name="verticalLayout_7">
-             <property name="spacing">
-              <number>3</number>
-             </property>
-             <property name="leftMargin">
-              <number>3</number>
-             </property>
-             <property name="topMargin">
-              <number>3</number>
-             </property>
-             <property name="rightMargin">
-              <number>3</number>
-             </property>
-             <property name="bottomMargin">
-              <number>3</number>
-             </property>
-             <item>
-              <widget class="QCheckBox" name="checkBox_arrivals">
-               <property name="text">
-                <string>Incoming trips</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="checkBox_cycles">
-               <property name="text">
-                <string>Cyclic trips</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="checkBox_distance">
-               <property name="text">
-                <string>Trips distance</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="verticalSpacer_displayLeft">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Ignored</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
+           <widget class="QLabel" name="label_display">
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
+            </property>
+            <property name="text">
+             <string>Display</string>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="widget_displayRight" native="true">
-            <layout class="QVBoxLayout" name="verticalLayout_8">
+           <widget class="QWidget" name="widget_display" native="true">
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
              <property name="spacing">
               <number>3</number>
              </property>
@@ -478,34 +430,97 @@
               <number>3</number>
              </property>
              <item>
-              <widget class="QCheckBox" name="checkBox_departures">
-               <property name="text">
-                <string>Outgoing trips</string>
-               </property>
+              <widget class="QWidget" name="widget_displayLeft" native="true">
+               <layout class="QVBoxLayout" name="verticalLayout_7">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QCheckBox" name="checkBox_arrivals">
+                  <property name="text">
+                   <string>Incoming trips</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="checkBox_cycles">
+                  <property name="text">
+                   <string>Cyclic trips</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="checkBox_distance">
+                  <property name="text">
+                   <string>Trips distance</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
              <item>
-              <widget class="QCheckBox" name="checkBox_duration">
-               <property name="text">
-                <string>Trips duration</string>
-               </property>
+              <widget class="QWidget" name="widget_displayRight" native="true">
+               <layout class="QVBoxLayout" name="verticalLayout_8">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QCheckBox" name="checkBox_departures">
+                  <property name="text">
+                   <string>Outgoing trips</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="checkBox_duration">
+                  <property name="text">
+                   <string>Trips duration</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_displayRight">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Ignored</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
               </widget>
-             </item>
-             <item>
-              <spacer name="verticalSpacer_displayRight">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Ignored</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
              </item>
             </layout>
            </widget>
@@ -514,35 +529,51 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_order">
+        <widget class="QFrame" name="frame_order">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title">
-          <string>Order</string>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
          </property>
-         <property name="flat">
-          <bool>true</bool>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_10">
           <property name="spacing">
            <number>3</number>
           </property>
           <property name="leftMargin">
-           <number>6</number>
+           <number>3</number>
           </property>
           <property name="topMargin">
-           <number>6</number>
+           <number>3</number>
           </property>
           <property name="rightMargin">
-           <number>6</number>
+           <number>3</number>
           </property>
           <property name="bottomMargin">
-           <number>6</number>
+           <number>3</number>
           </property>
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Order</string>
+            </property>
+            <property name="margin">
+             <number>0</number>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QComboBox" name="comboBox_order">
             <item>
@@ -576,86 +607,57 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_filter">
+        <widget class="QFrame" name="frame_filter">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title">
-          <string>Filter</string>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
          </property>
-         <property name="flat">
-          <bool>true</bool>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_9">
           <property name="spacing">
            <number>3</number>
           </property>
           <property name="leftMargin">
-           <number>6</number>
+           <number>3</number>
           </property>
           <property name="topMargin">
-           <number>6</number>
+           <number>3</number>
           </property>
           <property name="rightMargin">
-           <number>6</number>
+           <number>3</number>
           </property>
           <property name="bottomMargin">
-           <number>6</number>
+           <number>3</number>
           </property>
           <item>
-           <widget class="QWidget" name="widget_distance" native="true">
-            <layout class="QHBoxLayout" name="horizontalLayout_7">
-             <property name="spacing">
-              <number>3</number>
-             </property>
-             <property name="leftMargin">
-              <number>3</number>
-             </property>
-             <property name="topMargin">
-              <number>3</number>
-             </property>
-             <property name="rightMargin">
-              <number>3</number>
-             </property>
-             <property name="bottomMargin">
-              <number>3</number>
-             </property>
-             <item>
-              <widget class="QLabel" name="label_distance">
-               <property name="text">
-                <string>Trip distance</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_minDistance">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>TextLabel</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_maxDistance">
-               <property name="text">
-                <string>TextLabel</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
+           <widget class="QLabel" name="label_filter">
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
+            </property>
+            <property name="text">
+             <string>Filter</string>
+            </property>
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="widget_duration" native="true">
-            <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <widget class="QWidget" name="widget_filter" native="true">
+            <layout class="QVBoxLayout" name="verticalLayout_16">
              <property name="spacing">
               <number>3</number>
              </property>
@@ -672,108 +674,177 @@
               <number>3</number>
              </property>
              <item>
-              <widget class="QLabel" name="label_duration">
-               <property name="text">
-                <string>Trip duration</string>
-               </property>
+              <widget class="QWidget" name="widget_distance" native="true">
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
+                <property name="spacing">
+                 <number>3</number>
+                </property>
+                <property name="leftMargin">
+                 <number>3</number>
+                </property>
+                <property name="topMargin">
+                 <number>3</number>
+                </property>
+                <property name="rightMargin">
+                 <number>3</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>3</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_distance">
+                  <property name="text">
+                   <string>Trip distance</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_minDistance">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_maxDistance">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_minDuration">
-               <property name="text">
-                <string>TextLabel</string>
-               </property>
+              <widget class="QWidget" name="widget_duration" native="true">
+               <layout class="QHBoxLayout" name="horizontalLayout_8">
+                <property name="spacing">
+                 <number>3</number>
+                </property>
+                <property name="leftMargin">
+                 <number>3</number>
+                </property>
+                <property name="topMargin">
+                 <number>3</number>
+                </property>
+                <property name="rightMargin">
+                 <number>3</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>3</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_duration">
+                  <property name="text">
+                   <string>Trip duration</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_minDuration">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_maxDuration">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_maxDuration">
-               <property name="text">
-                <string>TextLabel</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QWidget" name="widget_direction" native="true">
-            <layout class="QHBoxLayout" name="horizontalLayout_9">
-             <property name="spacing">
-              <number>3</number>
-             </property>
-             <property name="leftMargin">
-              <number>3</number>
-             </property>
-             <property name="topMargin">
-              <number>3</number>
-             </property>
-             <property name="rightMargin">
-              <number>3</number>
-             </property>
-             <property name="bottomMargin">
-              <number>3</number>
-             </property>
-             <item>
-              <widget class="QLabel" name="label_direction">
-               <property name="text">
-                <string>Trip direction</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_minDirection">
-               <property name="text">
-                <string>TextLabel</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_maxDirection">
-               <property name="text">
-                <string>TextLabel</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QWidget" name="widget_odFlow" native="true">
-            <layout class="QHBoxLayout" name="horizontalLayout_10">
-             <property name="spacing">
-              <number>3</number>
-             </property>
-             <property name="leftMargin">
-              <number>3</number>
-             </property>
-             <property name="topMargin">
-              <number>3</number>
-             </property>
-             <property name="rightMargin">
-              <number>3</number>
-             </property>
-             <property name="bottomMargin">
-              <number>3</number>
-             </property>
-             <item>
-              <widget class="QLabel" name="label_odFlow">
-               <property name="text">
-                <string>OD flow</string>
-               </property>
+              <widget class="QWidget" name="widget_direction" native="true">
+               <layout class="QHBoxLayout" name="horizontalLayout_9">
+                <property name="spacing">
+                 <number>3</number>
+                </property>
+                <property name="leftMargin">
+                 <number>3</number>
+                </property>
+                <property name="topMargin">
+                 <number>3</number>
+                </property>
+                <property name="rightMargin">
+                 <number>3</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>3</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_direction">
+                  <property name="text">
+                   <string>Trip direction</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_minDirection">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_maxDirection">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_minOdFlow">
-               <property name="text">
-                <string>TextLabel</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_maxOdFlow">
-               <property name="text">
-                <string>TextLabel</string>
-               </property>
+              <widget class="QWidget" name="widget_odFlow" native="true">
+               <layout class="QHBoxLayout" name="horizontalLayout_10">
+                <property name="spacing">
+                 <number>3</number>
+                </property>
+                <property name="leftMargin">
+                 <number>3</number>
+                </property>
+                <property name="topMargin">
+                 <number>3</number>
+                </property>
+                <property name="rightMargin">
+                 <number>3</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>3</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_odFlow">
+                  <property name="text">
+                   <string>OD flow</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_minOdFlow">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_maxOdFlow">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
             </layout>
@@ -783,34 +854,40 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_ranking">
-         <property name="title">
-          <string>Ranking</string>
+        <widget class="QFrame" name="frame_ranking">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <property name="flat">
-          <bool>true</bool>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_11">
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_18">
           <property name="spacing">
            <number>3</number>
           </property>
           <property name="leftMargin">
-           <number>6</number>
+           <number>3</number>
           </property>
           <property name="topMargin">
-           <number>6</number>
+           <number>3</number>
           </property>
           <property name="rightMargin">
-           <number>6</number>
+           <number>3</number>
           </property>
           <property name="bottomMargin">
-           <number>6</number>
+           <number>3</number>
           </property>
           <item>
-           <widget class="QWidget" name="widget_top" native="true">
-            <layout class="QVBoxLayout" name="verticalLayout_11">
+           <widget class="QWidget" name="widget_ranking_2" native="true">
+            <layout class="QVBoxLayout" name="verticalLayout_17">
              <property name="spacing">
-              <number>3</number>
+              <number>0</number>
              </property>
              <property name="leftMargin">
               <number>0</number>
@@ -825,51 +902,120 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QLabel" name="label_top">
-               <property name="text">
-                <string>Top</string>
+              <widget class="QLabel" name="label_ranking">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+               <property name="text">
+                <string>Ranking</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QListView" name="listView_top"/>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QWidget" name="widget_last" native="true">
-            <layout class="QVBoxLayout" name="verticalLayout_12">
-             <property name="spacing">
-              <number>3</number>
-             </property>
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QLabel" name="label_last">
-               <property name="text">
-                <string>Last</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
+              <widget class="QWidget" name="widget_ranking" native="true">
+               <layout class="QHBoxLayout" name="horizontalLayout_6">
+                <property name="spacing">
+                 <number>3</number>
+                </property>
+                <property name="leftMargin">
+                 <number>3</number>
+                </property>
+                <property name="topMargin">
+                 <number>3</number>
+                </property>
+                <property name="rightMargin">
+                 <number>3</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>3</number>
+                </property>
+                <item>
+                 <widget class="QWidget" name="widget_top" native="true">
+                  <layout class="QVBoxLayout" name="verticalLayout_11">
+                   <property name="spacing">
+                    <number>3</number>
+                   </property>
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_top">
+                     <property name="text">
+                      <string>Top</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QListView" name="listView_top">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QWidget" name="widget_last" native="true">
+                  <layout class="QVBoxLayout" name="verticalLayout_12">
+                   <property name="spacing">
+                    <number>3</number>
+                   </property>
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_last">
+                     <property name="text">
+                      <string>Last</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QListView" name="listView__last">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
               </widget>
-             </item>
-             <item>
-              <widget class="QListView" name="listView__last"/>
              </item>
             </layout>
            </widget>
@@ -887,7 +1033,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1288</width>
+     <width>788</width>
      <height>19</height>
     </rect>
    </property>

@@ -1,15 +1,5 @@
 #include "trip.h"
 
-QString Trip::toString() const
-{
-    QString result;
-    result += "start station id :\t" + QString::number(startStationId) + '\n';
-    result += "end station id :\t" + QString::number(endStationId) + '\n';
-    result += "start time :\t" + startDateTime.toString() + '\n';
-    result += "end time :\t" + endDateTime.toString() + '\n';
-    result += "duration :\t" + QString::number(duration);
-    return result;
-}
 
 qreal Trip::calculateDistance(const Trip& trip)
 {

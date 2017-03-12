@@ -1,35 +1,38 @@
 #ifndef SELECTOR_H
 #define SELECTOR_H
 
+#include "typedefs.h"
+#include <QVector>
 
-#include <QSet>
 
 namespace bss {
 class TripsSelector;
 }
 
-class Station;
-class Trip;
+
+struct TripsSelectionParams
+{
+    int startHour = -1;
+    int endHour = -1;
+    QVector<bss::stationId> stations;
+};
+
+
+struct Station;
+struct Trip;
 class TripsSelector
 {
-    struct SelectionParams
-    {
-        QSet<const Station*> stations;
-        int startHour = -1;
-        int endHour = -1;
-    };
-
 public:
     TripsSelector();
-    TripsSelector(const SelectionParams& params);
+    TripsSelector(const TripsSelectionParams& params);
 
-    inline const SelectionParams& getParameters() const { return m_params; }
-    inline void setParams(const SelectionParams& params) { m_params = params; }
+    inline const TripsSelectionParams& params() const { return m_params; }
+    inline void setParams(const TripsSelectionParams& params) { m_params = params; }
 
-    QSet<const Trip*> selectTripsFrom(const QSet<const Trip*>& trips) const;
+    QVector<bss::tripId> selectTripsFrom(const QVector<Trip>& trips) const;
 
 private:
-    SelectionParams m_params;
+    TripsSelectionParams m_params;
 };
 
 #endif // SELECTOR_H

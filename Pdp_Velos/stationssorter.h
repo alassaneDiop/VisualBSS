@@ -1,8 +1,10 @@
 #ifndef STATIONSSORTER_H
 #define STATIONSSORTER_H
 
-#include <QList>
-#include <QSet>
+#include "typedefs.h"
+
+#include <QVector>
+
 
 namespace bss {
 class StationsSorter;
@@ -16,17 +18,17 @@ enum SortOrder
 };
 }
 
-class Station;
+struct Station;
 class StationsSorter
 {
 public:
+    StationsSorter();
     StationsSorter(const bss::SortOrder& sortParam);
 
-    inline bss::SortOrder getSortParam() const {return m_sortParam; }
+    inline bss::SortOrder sortParam() const {return m_sortParam; }
     inline void setSortParam(const bss::SortOrder& param) { m_sortParam = param; }
 
-    QList<const Station*> sort(const QSet<const Station*>& stations) const;
-    void sort(QSet<const Station*>& stations) const;
+    QVector<bss::stationId> sort(const QVector<Station>& stations) const;
 
 private:
     bss::SortOrder m_sortParam;

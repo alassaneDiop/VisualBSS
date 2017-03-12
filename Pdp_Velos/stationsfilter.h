@@ -4,26 +4,27 @@
 #include "station.h"
 #include <QSet>
 
+
+struct StationsFilterParams
+{
+    qreal minOriginDestinationFlow = 0;
+    qreal maxOriginDestinationFlow = 0;
+};
+
+
 class StationsFilter
 {
-    struct FilterParams
-    {
-        qreal minOriginDestinationFlow = 0;
-        qreal maxOriginDestinationFlow = 0;
-    };
-
 public:
     StationsFilter();
-    StationsFilter(const FilterParams& params);
+    StationsFilter(const StationsFilterParams& params);
 
-    inline const FilterParams& getparams() const { return m_params; }
-    inline void setParams(const FilterParams& params) { m_params = params; }
+    inline const StationsFilterParams& params() const { return m_params; }
+    inline void setParams(const StationsFilterParams& params) { m_params = params; }
 
-    QSet<const Station*> filter(const QSet<const Station*>& stations) const;
-    void filter(QSet<const Station*>& stations);
+    QVector<bss::stationId> filter(const QVector<Station>& stations) const;
 
 private:
-    FilterParams m_params;
+    StationsFilterParams m_params;
 };
 
 #endif // STATIONSFILTER_H

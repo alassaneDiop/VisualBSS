@@ -1,23 +1,36 @@
 #include "stationsfilter.h"
+#include <QtConcurrent>
+
 
 StationsFilter::StationsFilter()
 {
 
 }
 
-StationsFilter::StationsFilter(const FilterParams& params) :
+StationsFilter::StationsFilter(const StationsFilterParams& params) :
     m_params(params)
 {
 
 }
 
-QSet<const Station*> StationsFilter::filter(const QSet<const Station*>& stations) const
+QVector<bss::stationId> StationsFilter::filter(const QVector<Station>& stations) const
 {
-    // TODO : Filter::filter
-    return stations;
-}
+    QMutex lock;
+    QVector<bss::stationId> ids;
 
-void StationsFilter::filter(QSet<const Station*>& stations)
-{
-    // TODO : Filter::filter
+    const auto filterFunctor = [this, &lock, &ids](const Station& s)
+    {
+        bool b = true;
+        b &= (s.originDestinationFlow <= params().maxOriginDestinationFlow);
+        b &= (s.originDestinationFlow >= params().minOriginDestinationFlow);
+        if (b)
+        {
+            lock.lock();
+            ids.append(s.id);
+            lock.unlock();
+        }
+    };
+
+    QtConcurrent::blockingMap(stations, filterFunctor);
+    return ids;
 }

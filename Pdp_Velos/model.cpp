@@ -21,8 +21,6 @@ int Model::loadData(const QString& filename)
     }
     else
     {
-        m_tripsCount = m_trips.size();
-        m_stationsCount = m_stations.size();
         emit dataLoaded(m_trips, m_stations);
         return m_trips.size();
     }

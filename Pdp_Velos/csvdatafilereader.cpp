@@ -32,15 +32,15 @@ bool CsvDataFileReader::readData(QVector<Trip>& trips, QVector<Station>& station
 
     file.close();
 
-    // parsing is parallelized so we need locks to synchronize data access
-    QReadWriteLock tripsLock, stationsMapLock;
-
-    // at this point, each station is identified by its name
-    QHash<const QString, Station> stationsMap;
-
     // clear trips vector (if it's not) and reserve space
     trips.clear();
     trips.reserve(lines.size());
+
+    // parsing is parallelized so we need locks to synchronize data access
+    QMutex tripsLock, stationsMapLock;
+
+    // at this point, each station is identified by its name
+    QHash<const QString, Station> stationsMap;
 
     // the functor that will be run in parallel
     const auto runFunction = [this, &trips, &tripsLock, &stationsMap, &stationsMapLock](QString& line)
@@ -65,23 +65,23 @@ bool CsvDataFileReader::readData(QVector<Trip>& trips, QVector<Station>& station
         const auto insertStation = [&stationsMap, &stationsMapLock](const QString& name, const QString& latitudeStr, const QString& longitudeStr)
         {
             Station s;
-            stationsMapLock.lockForRead();
+            stationsMapLock.lock();
             const auto it = stationsMap.constFind(name);
             if (it != stationsMap.constEnd())
             {
-                stationsMapLock.unlock();
                 s = it.value();
+                stationsMapLock.unlock();
             }
             else
             {
                 stationsMapLock.unlock();
 
                 s.name = name;
-                s.id = stationsMap.size() ;
                 s.latitude = latitudeStr.toDouble();
                 s.longitude = longitudeStr.toDouble();
 
-                stationsMapLock.lockForWrite();
+                stationsMapLock.lock();
+                s.id = stationsMap.size();
                 stationsMap.insert(name, s);
                 stationsMapLock.unlock();
             }
@@ -93,20 +93,21 @@ bool CsvDataFileReader::readData(QVector<Trip>& trips, QVector<Station>& station
 
         Trip t;
 
-        tripsLock.lockForRead();
-        t.id = trips.size();
-        tripsLock.unlock();
-
         t.startStationId = startStation.id;
         t.endStationId = endStation.id;
-        t.startDateTime = QDateTime::fromString(startDateTimeStr, dateFormat());
-        t.endDateTime = QDateTime::fromString(endDateTimeStr, dateFormat());
+        t.isCyclic = (startName == endName);
+        t.duration = durationStr.toDouble();
         t.distance = startStation.distance(endStation);
         t.direction = startStation.direction(endStation);
-        t.duration = durationStr.toDouble();
-        t.isCyclic = (startName == endName);
+        t.startDateTime = QDateTime::fromString(startDateTimeStr, dateFormat());
+        t.endDateTime = QDateTime::fromString(endDateTimeStr, dateFormat());
 
-        stationsMapLock.lockForWrite();
+        tripsLock.lock();
+        t.id = trips.size();
+        trips.append(t);
+        tripsLock.unlock();
+
+        stationsMapLock.lock();
         if (t.isCyclic)
             stationsMap[startName].appendCycle(t);
         else
@@ -115,13 +116,9 @@ bool CsvDataFileReader::readData(QVector<Trip>& trips, QVector<Station>& station
             stationsMap[endName].appendArrival(t);
         }
         stationsMapLock.unlock();
-
-        tripsLock.lockForWrite();
-        trips.append(t);
-        tripsLock.unlock();
     };
 
-    // parses all lines from file in parallel (Qt does all the work for us and chooses an appropriate threads count)
+    // parses all lines from file in parallel (Qt does all the work for us and chooses an appropriate thread count)
     QtConcurrent::blockingMap(lines, runFunction);
 
     // some trips may be invalids so we didn't insert them into the vector
