@@ -19,10 +19,16 @@ MatrixGLWidget::MatrixGLWidget(QWidget* p) : QOpenGLWidget(p)
 
     m_drawRectangle = false;
     m_leftMouseButtonPressed = false;
-    m_translationOffsetY = 0;
-    m_dragSelectionBorderWidth = 1;
+    m_translationOffsetY = 0.f;
+
+    m_isGlyphsVAOCreated = false;
+    m_glyphsLoaded = false;
+
+    m_selectorRenderer = Q_NULLPTR;
+    m_glyphRenderer = Q_NULLPTR;
 
     m_selectorRenderer = new SelectorRenderer();
+    m_glyphRenderer = new GlyphRenderer();
 }
 
 MatrixGLWidget::~MatrixGLWidget()
@@ -34,6 +40,9 @@ MatrixGLWidget::~MatrixGLWidget()
 
     if (m_selectorRenderer)
         delete m_selectorRenderer;
+
+    if (m_glyphRenderer)
+        delete m_glyphRenderer;
 }
 
 void MatrixGLWidget::initializeGL()
@@ -41,6 +50,10 @@ void MatrixGLWidget::initializeGL()
     initializeOpenGLFunctions();
     this->makeCurrent();
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    m_selectorRenderer->createVAO();
     m_selectorRenderer->prepareData(6, 6 * 2);
 
     glClearColor(m_backgroundColor.red(),
@@ -57,11 +70,11 @@ void MatrixGLWidget::initializeGL()
     m_shaderProgramSelector->release();
 
     m_shaderProgramGlyph = new QOpenGLShaderProgram();
-    //    m_shaderProgramGlyph->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/glyph.vert");
-    //    m_shaderProgramGlyph->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/shaders/glyph.frag");
-    //    m_shaderProgramGlyph->link();
-    //    m_shaderProgramGlyph->bind();
-    //    m_shaderProgramGlyph->release();
+    m_shaderProgramGlyph->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/glyph.vert");
+    m_shaderProgramGlyph->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/shaders/glyph.frag");
+    m_shaderProgramGlyph->link();
+    m_shaderProgramGlyph->bind();
+    m_shaderProgramGlyph->release();
 
     qDebug() << "MatrixGLWidget::initializeGL() OpenGL version:" << this->format().version();
 }
@@ -74,7 +87,10 @@ void MatrixGLWidget::resizeGL(int width, int height)
 void MatrixGLWidget::paintGL()
 {
     initializeOpenGLFunctions();
-    //    drawGlyphs();
+
+    if (m_glyphsLoaded)
+        drawGlyphs();
+
     drawSelector();
 }
 
@@ -95,48 +111,41 @@ void MatrixGLWidget::drawSelector()
 
 void MatrixGLWidget::drawGlyphs()
 {
-    QPainter painter(this);
-    int intervalLength = m_matrixViewWidth / m_numberOfInterval;
+    m_shaderProgramGlyph->bind();
 
-    QElapsedTimer timer;
-    timer.start();
+    int translationLoc = m_shaderProgramGlyph->uniformLocation("translation");
+    glUniform1f(translationLoc, m_translationOffsetY);
 
-    for (QPoint i : m_ellipses)
-    {
-        painter.setBrush(QColor(100, 100, 100, 128));
-        painter.drawEllipse(QPoint(m_matrixOffsetX + i.x() * intervalLength + (m_stationCircleSize / 2),
-                                   m_translationOffsetY + i.y() + m_stationCircleSize),
-                            m_stationCircleSize, m_stationCircleSize);
-    }
+    m_glyphRenderer->draw();
 
-
-    qDebug() << "drawDirections: The slow operation took" << timer.elapsed() << "milliseconds";
+    m_shaderProgramGlyph->release();
 }
 
-void MatrixGLWidget::loadTripsAndStations(QVector<const Trip*>& trips, QVector<const Station*>& stations)
+void MatrixGLWidget::loadGlyphsData(const QVector<float> &data, unsigned int verticesCount)
 {
-    for (const Station* s: stations)
+    if (!m_isGlyphsVAOCreated)
     {
-        m_stations.append(s);
+        m_isGlyphsVAOCreated = true;
+        m_glyphRenderer->initGLFunc();
+        m_glyphRenderer->createVAO();
     }
-    qDebug() << "m_stations size " << m_stations.size();
-
-    for (const Trip* t: trips)
-    {
-        m_trips.append(t);
-    }
-
-    qDebug() << "m_trip size" << m_trips.size();
-    initPoint();
-    update();
+    m_glyphsLoaded = true;
+    m_glyphRenderer->sendData(data, verticesCount);
 }
 
 void MatrixGLWidget::wheelEvent(QWheelEvent* event)
 {
-    m_translationOffsetY += event->delta();
+    int i = 1;
+    if (event->delta() < 0)
+        i *= -1;
+
+    const float scrollValue = 0.05f;
+    m_translationOffsetY += i * scrollValue;
 
     if (m_translationOffsetY > 0)
         m_translationOffsetY = 0;
+
+    //qDebug() << m_translationOffsetY;
 
     event->accept();
     update();

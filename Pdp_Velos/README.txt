@@ -18,7 +18,7 @@ Requierement:
 
 ===============================================================================
 Compilation:
-	In Pdp_Velos repository
+	In Pdp_Velos repository:
 		-mkdir build && cd build
 		-qmake ../Pdp_Velos.pro
 		-make
@@ -29,5 +29,10 @@ Execution:
 
 ===============================================================================
 Bugs:
-Trips and stations in the map widget are not shown correctly in the center of
+
+-Trips and stations in the map widget are not shown correctly in the center of
 the widget, due a zoom calculation issue.
+
+-Stations/Trips and Glyphs cannot be displayed in the same time. There is a VAO/VBO
+issue.
+

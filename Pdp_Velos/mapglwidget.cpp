@@ -22,16 +22,32 @@ MapGLWidget::MapGLWidget(QWidget* p) : QOpenGLWidget(p)
     m_stationsLoaded = false;
     m_tripsLoaded = false;
 
+    m_isStationsVAOCreated = false;
+    m_isTripsVAOCreated = false;
+
+    m_shaderProgramStations = Q_NULLPTR;
+    m_shaderProgramTrips = Q_NULLPTR;
+
+    m_stationRenderer = Q_NULLPTR;
+    m_tripRenderer = Q_NULLPTR;
+
     m_stationRenderer = new StationRenderer();
     m_tripRenderer = new TripRenderer();
 }
 
 MapGLWidget::~MapGLWidget()
 {
-    delete m_shaderProgramStations;
-    delete m_shaderProgramTrips;
-    delete m_stationRenderer;
-    delete m_tripRenderer;
+    if (m_shaderProgramStations)
+        delete m_shaderProgramStations;
+
+    if (m_shaderProgramTrips)
+        delete m_shaderProgramTrips;
+
+    if (m_stationRenderer)
+        delete m_stationRenderer;
+
+    if (m_tripRenderer)
+        delete m_tripRenderer;
 }
 
 void MapGLWidget::initializeGL()
@@ -41,7 +57,6 @@ void MapGLWidget::initializeGL()
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);
     glEnable(GL_MULTISAMPLE);
-
 
     m_shaderProgramStations = new QOpenGLShaderProgram(this->context());
     m_shaderProgramStations->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/map.vert");
@@ -105,31 +120,44 @@ void MapGLWidget::drawTrips()
     m_shaderProgramTrips->release();
 }
 
-
-void MapGLWidget::loadStationsData(const QVector<float> data, unsigned int verticesCount)
+void MapGLWidget::loadStationsData(const QVector<float>& data, unsigned int verticesCount)
 {
+    if (!m_isStationsVAOCreated)
+    {
+        m_isStationsVAOCreated = true;
+        m_stationRenderer->createVAO();
+        m_stationRenderer->initGLFunc();
+    }
+
     m_stationsLoaded = true;
     m_stationRenderer->sendData(data, verticesCount);
 
     update();
 }
 
-void MapGLWidget::loadTripsData(const QVector<float> data, unsigned int verticesCount)
+void MapGLWidget::loadTripsData(const QVector<float>& data, unsigned int verticesCount)
 {
+    if (!m_isTripsVAOCreated)
+    {
+        m_isTripsVAOCreated = true;
+        m_tripRenderer->initGLFunc();
+        m_tripRenderer->createVAO();
+    }
+
     m_tripsLoaded = true;
     m_tripRenderer->sendData(data, verticesCount);
 
     update();
 }
 
-void MapGLWidget::centerView(const QVector<float> data)
+void MapGLWidget::centerView(const QVector<float>& data)
 {
     calculateBoundingBoxStations(data);
     calculateTranslation();
     calculateZoom();
 }
 
-void MapGLWidget::calculateBoundingBoxStations(const QVector<float> data)
+void MapGLWidget::calculateBoundingBoxStations(const QVector<float>& data)
 {
     float minLatitude = 90;
     float maxLatitude = -90.f;

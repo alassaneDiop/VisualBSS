@@ -7,6 +7,7 @@
 #include <QColor>
 
 #include "selectorrenderer.h"
+#include "glyphrenderer.h"
 
 class QMouseEvent;
 class Station;
@@ -21,7 +22,8 @@ public:
     MatrixGLWidget(QWidget* p = 0);
     ~MatrixGLWidget();
 
-    void loadTripsAndStations(QVector<const Trip*>& trips, QVector<const Station*>& stations);
+    void loadGlyphsData(const QVector<float>& data, unsigned int verticesCount);
+
 
 protected:
     virtual void initializeGL() override;
@@ -39,31 +41,36 @@ private:
     void drawGlyphs();
 
 private:
-    const int m_numberOfInterval = 24;
-    const int m_matrixOffsetX = 10;
-    int m_matrixViewWidth;
-    int m_stationCircleSize = 10;
+    const int   m_numberOfInterval = 24;
+    const int   m_matrixOffsetX = 10;
+    int         m_matrixViewWidth;
+    int         m_stationCircleSize = 10;
 
     QVector<QPoint> m_ellipses;
 
-    bool m_leftMouseButtonPressed;
+    bool    m_leftMouseButtonPressed;
     QPointF m_previousMousePos;
-    float m_translationOffsetY;
+    float   m_translationOffsetY;
 
-    QPointF m_topLeftSelectionRectangle;
-    QPointF m_bottomRightSelectionRectangle;
+    QPointF     m_topLeftSelectionRectangle;
+    QPointF     m_bottomRightSelectionRectangle;
 
-    bool m_drawRectangle;
-    int m_dragSelectionBorderWidth;
+    bool    m_drawRectangle;
 
-    QList<const Station*> m_stations;
-    QList<const Trip*> m_trips;
+    QList<const Station*>   m_stations;
+    QList<const Trip*>      m_trips;
 
     const QColor m_backgroundColor = QColor(Qt::white);
 
-    SelectorRenderer* m_selectorRenderer;
-    QOpenGLShaderProgram* m_shaderProgramSelector;
-    QOpenGLShaderProgram* m_shaderProgramGlyph;
+
+    bool                    m_glyphsLoaded;
+
+    SelectorRenderer*       m_selectorRenderer;
+    GlyphRenderer*          m_glyphRenderer;
+    QOpenGLShaderProgram*   m_shaderProgramSelector;
+    QOpenGLShaderProgram*   m_shaderProgramGlyph;
+
+    bool m_isGlyphsVAOCreated;
 
 };
 #endif // MATRIXOPENGLWIDGET_H

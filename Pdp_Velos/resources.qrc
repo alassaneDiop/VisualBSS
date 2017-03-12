@@ -6,5 +6,7 @@
         <file>shaders/curves.geom</file>
         <file>shaders/selector.frag</file>
         <file>shaders/selector.vert</file>
+        <file>shaders/glyph.frag</file>
+        <file>shaders/glyph.vert</file>
     </qresource>
 </RCC>

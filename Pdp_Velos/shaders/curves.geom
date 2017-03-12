@@ -3,6 +3,7 @@
 layout (lines) in;
 layout (lines) out;
 
+uniform int numSegment;
 
 vec2 quadraticBezierCurve(vec2 p0, vec2 p1, vec2 p2, float t)
 {
@@ -21,7 +22,7 @@ void main()
 
     int it = ceil(dist);
 
-    for (int i = 0; i < it; ++)
+    for (int i = 1; i < numSegment; ++)
     {
         vec2 p = quadraticBezierCurve(p1, p2 - p1, p2, i);
         gl_Position = p;

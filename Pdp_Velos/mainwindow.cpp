@@ -83,17 +83,17 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
 {
     qDebug() << "onDataLoaded" << "Trip number" << trips.size() << "Station number" << stations.size();
 
-    // for x and y;
-    const int tuplePositionSize = 2;
+    // x and y;
+    const unsigned short positionTupleSize = 2;
 
     // 1 trip has 2 points (start/end)
-    const int pointPerTrip = 2;
+    const unsigned short pointPerTrip = 2;
 
     // R, G, B
-    const int tupleColorSize = 3;
+    const unsigned short colorTupleSize = 3;
 
     QVector<float> tripsVertices;
-    tripsVertices.reserve((trips.size() * tuplePositionSize + trips.size() * tupleColorSize) * pointPerTrip);
+    tripsVertices.reserve((trips.size() * positionTupleSize + trips.size() * colorTupleSize) * pointPerTrip);
     const int tripsVerticesCount = trips.size() * pointPerTrip;
 
     const float maxLongitude = 180.f;
@@ -108,9 +108,9 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
         tripsVertices.append((float) (startStation.latitude / maxLatitude));
 
         // Departure RED
-//        tripsVertices.append(1.f);
-//        tripsVertices.append(0.f);
-//        tripsVertices.append(0.f);
+        tripsVertices.append(1.f);
+        tripsVertices.append(0.f);
+        tripsVertices.append(0.f);
 
         int endStationId = t.endStationId;
         const Station endStation = m_model->constStation(endStationId);
@@ -119,30 +119,79 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
         tripsVertices.append((float) (endStation.latitude / maxLatitude));
 
         // Arrival BLUE
-//        tripsVertices.append(0.f);
-//        tripsVertices.append(0.f);
-//        tripsVertices.append(1.f);
+        tripsVertices.append(0.f);
+        tripsVertices.append(0.f);
+        tripsVertices.append(1.f);
     }
 
     QVector<float> stationsVertices;
-    stationsVertices.reserve(stations.size() * tuplePositionSize + stations.size() * tupleColorSize);
     const int stationsVerticesCount = stations.size();
+    stationsVertices.reserve(stationsVerticesCount * positionTupleSize + stationsVerticesCount * colorTupleSize);
 
     for (const Station s : stations)
     {
-        stationsVertices.push_back(s.longitude / maxLongitude);
-        stationsVertices.push_back(s.latitude / maxLatitude);
+        stationsVertices.append(s.longitude / maxLongitude);
+        stationsVertices.append(s.latitude / maxLatitude);
 
-//        stationsVertices.push_back(1.f);
-//        stationsVertices.push_back(1.f);
-//        stationsVertices.push_back(0.3f);
+        //        stationsVertices.append(1.f);
+        //        stationsVertices.append(1.f);
+        //        stationsVertices.append(0.3f);
+    }
+
+    // TEST D'AFFICHAGE DES GLYPHS
+    // LARGEUR ET HAUTEUR
+    float width = ui->timelinematrixwidget->width();
+    float heigth = ui->timelinematrixwidget->height();
+    float intervalX = ui->timelinematrixwidget->width() / 24.f;
+    float intervalY = 10;
+    int numberOfStations = 2000;
+
+    const int offsetX = ui->timelinewidget->offsetX();
+    float offsetY = 10;
+
+    int numberOfHours = 24;
+
+    QVector<float> glyphVertices;
+    for (int i = 0; i < numberOfStations; ++i)
+    {
+        for (int j = 0; j < numberOfHours; ++j)
+        {
+            // VERTEX #1
+            float positionX = offsetX + j * intervalX;
+            float positionY = offsetY + i * intervalY;
+
+            positionX = positionX / width * 2 - 1;
+            positionY = positionY / heigth * 2 - 1;
+
+            glyphVertices.append(positionX);
+            glyphVertices.append(-positionY);
+
+            // VERTEX #2
+            positionX = offsetX + j * intervalX;
+            positionY = offsetY + i * intervalY + 8;
+
+            positionX = positionX / width * 2 - 1;
+            positionY = positionY / heigth * 2 - 1;
+
+            glyphVertices.append(positionX);
+            glyphVertices.append(-positionY);
+        }
     }
 
     qDebug() << "stations" << stationsVerticesCount << "trips" << tripsVerticesCount;
 
-    ui->mapwidget->loadStationsData(stationsVertices, stationsVerticesCount);
-    ui->mapwidget->loadTripsData(tripsVertices, tripsVerticesCount);
-    ui->mapwidget->centerView(stationsVertices);
+    bool drawTripsAndStations = true;
+
+    if (drawTripsAndStations)
+    {
+        ui->mapwidget->loadStationsData(stationsVertices, stationsVerticesCount);
+        ui->mapwidget->loadTripsData(tripsVertices, tripsVerticesCount);
+        ui->mapwidget->centerView(stationsVertices);
+    }
+    else
+    {
+        ui->timelinematrixwidget->loadGlyphsData(glyphVertices, 2 * numberOfHours * numberOfStations);
+    }
 }
 
 void MainWindow::onFailedToLoadData(const QString& filename)
