@@ -1,9 +1,5 @@
 #include "mapglwidget.h"
 #include <QGuiApplication>
-
-#include <QElapsedTimer>
-#include <QList>
-#include <QPainter>
 #include <QOpenGLShaderProgram>
 #include <QDebug>
 #include <QtGlobal>
@@ -59,15 +55,14 @@ void MapGLWidget::initializeGL()
     glEnable(GL_MULTISAMPLE);
 
     m_shaderProgramStations = new QOpenGLShaderProgram(this->context());
-    m_shaderProgramStations->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/map.vert");
+    m_shaderProgramStations->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/stations.vert");
     m_shaderProgramStations->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/shaders/stations.frag");
     m_shaderProgramStations->link();
     m_shaderProgramStations->bind();
     m_shaderProgramStations->release();
 
     m_shaderProgramTrips = new QOpenGLShaderProgram();
-    m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/map.vert");
-    //    m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Geometry, ":/Shaders/shaders/curves.geom");
+    m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/trips.vert");
     m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/shaders/trips.frag");
     m_shaderProgramTrips->link();
     m_shaderProgramTrips->bind();
@@ -98,6 +93,7 @@ void MapGLWidget::drawStations()
 
     int zoomLoc = m_shaderProgramStations->uniformLocation("zoom");
     glUniform1f(zoomLoc, m_zoom);
+
     int translationLoc = m_shaderProgramStations->uniformLocation("translation");
     glUniform2f(translationLoc, m_translationOffsetX, m_translationOffsetY);
 
@@ -112,6 +108,7 @@ void MapGLWidget::drawTrips()
 
     int zoomLoc = m_shaderProgramTrips->uniformLocation("zoom");
     glUniform1f(zoomLoc, m_zoom);
+
     int translationLoc = m_shaderProgramTrips->uniformLocation("translation");
     glUniform2f(translationLoc, m_translationOffsetX, m_translationOffsetY);
 
@@ -125,8 +122,8 @@ void MapGLWidget::loadStationsData(const QVector<float>& data, unsigned int vert
     if (!m_isStationsVAOCreated)
     {
         m_isStationsVAOCreated = true;
-        m_stationRenderer->createVAO();
         m_stationRenderer->initGLFunc();
+        m_stationRenderer->createVAO();
     }
 
     m_stationsLoaded = true;
@@ -164,15 +161,17 @@ void MapGLWidget::calculateBoundingBoxStations(const QVector<float>& data)
     float minLongitude = 180.f;
     float maxLongitude = -180.f;
 
+    const int vertexSize = 5;
+
     // Iterate on x
-    for (int i = 0; i < data.size(); i += 2)
+    for (int i = 0; i < data.size(); i += vertexSize)
     {
         minLongitude = qMin(minLongitude, data[i]);
         maxLongitude = qMax(maxLongitude, data[i]);
     }
 
     // Iterate on y
-    for (int i = 1; i < data.size(); i += 2)
+    for (int i = 1; i < data.size(); i += vertexSize)
     {
         minLatitude = qMin(minLatitude, data[i]);
         maxLatitude = qMax(maxLatitude, data[i]);

@@ -33,6 +33,6 @@ Bugs:
 -Trips and stations in the map widget are not shown correctly in the center of
 the widget, due a zoom calculation issue.
 
--Stations/Trips and Glyphs cannot be displayed in the same time. There is a VAO/VBO
-issue.
+-Stations/Trips and Glyphs cannot be displayed in the same time. There is a
+VAO/VBO issue.
 

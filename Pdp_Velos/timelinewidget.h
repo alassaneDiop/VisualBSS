@@ -3,6 +3,10 @@
 
 #include <QWidget>
 
+namespace bss {
+class TimeLineWidget;
+}
+
 class TimeLineWidget : public QWidget
 {
     Q_OBJECT

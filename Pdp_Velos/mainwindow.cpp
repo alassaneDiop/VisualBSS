@@ -133,9 +133,9 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
         stationsVertices.append(s.longitude / maxLongitude);
         stationsVertices.append(s.latitude / maxLatitude);
 
-        //        stationsVertices.append(1.f);
-        //        stationsVertices.append(1.f);
-        //        stationsVertices.append(0.3f);
+        stationsVertices.append(1.f);
+        stationsVertices.append(1.f);
+        stationsVertices.append(.3f);
     }
 
     // TEST D'AFFICHAGE DES GLYPHS
@@ -180,18 +180,11 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
 
     qDebug() << "stations" << stationsVerticesCount << "trips" << tripsVerticesCount;
 
-    bool drawTripsAndStations = true;
+    ui->mapwidget->loadStationsData(stationsVertices, stationsVerticesCount);
+    ui->mapwidget->loadTripsData(tripsVertices, tripsVerticesCount);
+    ui->mapwidget->centerView(stationsVertices);
+    ui->timelinematrixwidget->loadGlyphsData(glyphVertices, 2 * numberOfHours * numberOfStations);
 
-    if (drawTripsAndStations)
-    {
-        ui->mapwidget->loadStationsData(stationsVertices, stationsVerticesCount);
-        ui->mapwidget->loadTripsData(tripsVertices, tripsVerticesCount);
-        ui->mapwidget->centerView(stationsVertices);
-    }
-    else
-    {
-        ui->timelinematrixwidget->loadGlyphsData(glyphVertices, 2 * numberOfHours * numberOfStations);
-    }
 }
 
 void MainWindow::onFailedToLoadData(const QString& filename)

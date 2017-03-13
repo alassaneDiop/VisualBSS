@@ -4,6 +4,8 @@
 
 TimeLineWidget::TimeLineWidget(QWidget *parent)
 {
+    Q_UNUSED(parent);
+
     this->setFixedHeight(m_widgetHeight);
     QPalette pal = palette();
     pal.setColor(QPalette::Background, Qt::white);
@@ -23,6 +25,8 @@ int TimeLineWidget::offsetX() const
 
 void TimeLineWidget::paintEvent(QPaintEvent *event)
 {
+    Q_UNUSED(event);
+
     QPainter painter;
     m_timeLineLength = this->width() - (2 * m_timeLineOffsetX);
     m_lineInterval = m_timeLineLength / m_numberOfInterval;

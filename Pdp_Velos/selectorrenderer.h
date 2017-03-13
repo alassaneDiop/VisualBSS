@@ -3,6 +3,10 @@
 
 #include "renderer.h"
 
+namespace bss {
+class SelectorRenderer;
+}
+
 class SelectorRenderer : public Renderer
 {
 public:

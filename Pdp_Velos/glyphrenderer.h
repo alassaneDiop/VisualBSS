@@ -3,6 +3,10 @@
 
 #include "renderer.h"
 
+namespace bss {
+class GlyphRenderer;
+}
+
 class GlyphRenderer : public Renderer
 {
 public:

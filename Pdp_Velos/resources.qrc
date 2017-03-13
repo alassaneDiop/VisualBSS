@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/Shaders">
-        <file>shaders/map.vert</file>
+        <file>shaders/trips.vert</file>
         <file>shaders/stations.frag</file>
         <file>shaders/trips.frag</file>
         <file>shaders/curves.geom</file>
@@ -8,5 +8,6 @@
         <file>shaders/selector.vert</file>
         <file>shaders/glyph.frag</file>
         <file>shaders/glyph.vert</file>
+        <file>shaders/stations.vert</file>
     </qresource>
 </RCC>

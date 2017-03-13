@@ -9,6 +9,10 @@
 #include "selectorrenderer.h"
 #include "glyphrenderer.h"
 
+namespace bss {
+class MatrixGLWidget;
+}
+
 class QMouseEvent;
 class Station;
 class Trip;
@@ -60,8 +64,7 @@ private:
     QList<const Station*>   m_stations;
     QList<const Trip*>      m_trips;
 
-    const QColor m_backgroundColor = QColor(Qt::white);
-
+    const QColor            m_backgroundColor = QColor(Qt::white);
 
     bool                    m_glyphsLoaded;
 
@@ -71,6 +74,5 @@ private:
     QOpenGLShaderProgram*   m_shaderProgramGlyph;
 
     bool m_isGlyphsVAOCreated;
-
 };
 #endif // MATRIXOPENGLWIDGET_H

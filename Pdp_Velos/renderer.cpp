@@ -36,7 +36,7 @@ void Renderer::sendData(const QVector<float> &data, unsigned int verticesCount)
     initializeOpenGLFunctions();
     m_verticesCount = verticesCount;
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO->IndexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO->bufferId());
     glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(GLfloat), data.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

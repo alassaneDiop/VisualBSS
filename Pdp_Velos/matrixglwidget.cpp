@@ -1,10 +1,8 @@
 #include "matrixglwidget.h"
 
 #include <QGuiApplication>
-#include <QtMath>
 #include <QDebug>
 #include <QWheelEvent>
-#include <QPainter>
 #include <QElapsedTimer>
 #include <QOpenGLShaderProgram>
 
@@ -81,13 +79,14 @@ void MatrixGLWidget::initializeGL()
 
 void MatrixGLWidget::resizeGL(int width, int height)
 {
+    Q_UNUSED(width);
+    Q_UNUSED(height);
+
     m_matrixViewWidth = this->width() - 2 * m_matrixOffsetX;
 }
 
 void MatrixGLWidget::paintGL()
 {
-    initializeOpenGLFunctions();
-
     if (m_glyphsLoaded)
         drawGlyphs();
 

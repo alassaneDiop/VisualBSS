@@ -8,6 +8,9 @@
 #include "stationrenderer.h"
 #include "triprenderer.h"
 
+namespace bss {
+class MapGLWidget;
+}
 
 class Point;
 class QOpenGLShaderProgram;
@@ -41,27 +44,23 @@ private:
     void calculateZoom();
     void calculateBoundingBoxStations(const QVector<float>& data);
 
-//    bool createStationsShader();
-//    bool createTripsShader();
-
-
 private:
     //FIXME: calculer en fonction de la largeur hauteur du widget
     const float m_translationSensibility = 200.f;
 
     QRectF m_boundingBoxStations;
 
-    float m_zoom;
-    bool m_leftMouseButtonPressed;
-    float m_translationOffsetX;
-    float m_translationOffsetY;
+    float   m_zoom;
+    bool    m_leftMouseButtonPressed;
+    float   m_translationOffsetX;
+    float   m_translationOffsetY;
     QPointF m_previousMousePos;
 
-    QOpenGLShaderProgram* m_shaderProgramStations;
-    QOpenGLShaderProgram* m_shaderProgramTrips;
+    QOpenGLShaderProgram*   m_shaderProgramStations;
+    QOpenGLShaderProgram*   m_shaderProgramTrips;
 
-    StationRenderer*    m_stationRenderer;
-    TripRenderer*       m_tripRenderer;
+    StationRenderer*        m_stationRenderer;
+    TripRenderer*           m_tripRenderer;
 
     bool m_stationsLoaded;
     bool m_tripsLoaded;
