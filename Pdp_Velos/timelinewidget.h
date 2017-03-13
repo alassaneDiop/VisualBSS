@@ -16,7 +16,7 @@ public:
     int offsetX() const;
 
 protected:
-    void paintEvent(QPaintEvent *event);
+    virtual void paintEvent(QPaintEvent *event) override;
 
 private:
     const unsigned int m_hourInterval = 24;
@@ -25,7 +25,9 @@ private:
     const int m_lineHeight = 10;
     const int m_textOffsetX = -4;
     const int m_textOffsetY = 15;
-    const int m_timeInterval = (m_hourInterval / (m_numberOfInterval - 1));
+
+    const int m_timeInterval = m_hourInterval / (m_numberOfInterval - 1);
+
     int m_lineInterval;
 
     const int m_timeLineOffsetX = 10;

@@ -144,7 +144,7 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     float heigth = ui->timelinematrixwidget->height();
     float intervalX = ui->timelinematrixwidget->width() / 24.f;
     float intervalY = 10;
-    int numberOfStations = 2000;
+    int numberOfStations = stations.size();
 
     const int offsetX = ui->timelinewidget->offsetX();
     float offsetY = 10;
@@ -156,6 +156,10 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     {
         for (int j = 0; j < numberOfHours; ++j)
         {
+//            for (int k = 0; k < ; k++)
+//            {
+
+//            }
             // VERTEX #1
             float positionX = offsetX + j * intervalX;
             float positionY = offsetY + i * intervalY;
