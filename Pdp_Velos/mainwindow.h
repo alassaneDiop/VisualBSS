@@ -11,6 +11,7 @@
 #include "typedefs.h"
 
 #include <QVector>
+#include <QFutureWatcher>
 
 namespace Ui {
 class MainWindow;
@@ -40,7 +41,13 @@ private:
     QVector<bss::stationId> m_stationsOrder;        // ids of stations, sorted by user's specification
     bss::stationId m_highlight = (bss::stationId) -1;    // currently highlighted station's id (-1 if there is none)
 
+    QFutureWatcher<void>* m_futureWatcher = nullptr;
+
 private slots:
+    void onFutureStarted();
+    void onFutureFinished();
+    void onFutureProgressValueChanged(int progressValue);
+    void onFutureProgressRangeChanged(int min, int max);
     void onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations);
     void onFailedToLoadData(const QString& filename);
     void onFilteredTripsChanged(const QVector<bss::tripId>& filteredTrips);

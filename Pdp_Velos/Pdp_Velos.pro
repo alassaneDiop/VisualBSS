@@ -52,7 +52,8 @@ HEADERS  += mainwindow.h \
     stationrenderer.h \
     triprenderer.h \
     glyphrenderer.h \
-    selectorrenderer.h
+    selectorrenderer.h \
+    typedefs.h
 
 FORMS    += mainwindow.ui
 

@@ -48,9 +48,6 @@ void Station::appendCycle(const Trip& trip)
 
 void Station::updateAppend(const Trip& trip)
 {
-    // calculates the maximum trip distance
-    maxTripDistance = qMax(maxTripDistance, trip.distance);
-
     // TODO : originDesinationFlow : a vérifier
     originDestinationFlow++;
 

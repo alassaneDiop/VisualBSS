@@ -3,51 +3,83 @@
 
 #include <QDebug>
 #include <QElapsedTimer>
+#include <QtConcurrent>
 
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    showMaximized();
-    ui->setupUi(this);
-
-    m_model = new Model();
-
-    // instantiate all useful objects
-    m_filter = new TripsFilter();
-    m_selector = new TripsSelector();
-    m_stationsFilter = new StationsFilter();
-    m_stationsSorter = new StationsSorter();
-
-    connect(m_model, &Model::dataLoaded, this, &MainWindow::onDataLoaded);
-    connect(m_model, &Model::failedToLoadData, this, &MainWindow::onFailedToLoadData);
-
     const QStringList args = QApplication::arguments();
     if (args.size() < 2)
+    {
         qInfo() << "You must specify a filename as parameter";
+        QApplication::exit(0);
+    }
     else
     {
+        ui->setupUi(this);
+
+        // instantiate all useful objects
+        m_model = new Model();
+        m_filter = new TripsFilter();
+        m_selector = new TripsSelector();
+        m_stationsFilter = new StationsFilter();
+        m_stationsSorter = new StationsSorter();
+        m_futureWatcher = new QFutureWatcher<void>();
+
+        connect(m_futureWatcher, &QFutureWatcher<void>::started, this, &MainWindow::onFutureStarted);
+        connect(m_futureWatcher, &QFutureWatcher<void>::finished, this, &MainWindow::onFutureFinished);
+        connect(m_futureWatcher, &QFutureWatcher<void>::progressValueChanged, this, &MainWindow::onFutureProgressValueChanged);
+        connect(m_futureWatcher, &QFutureWatcher<void>::progressRangeChanged, this, &MainWindow::onFutureProgressRangeChanged);
+
+        const auto run = [this](const QString& filename)
+        {
+            ui->frame_controls->setEnabled(false);
+
+            QElapsedTimer timer;
+            timer.start();
+
+            const int tripsCount = m_model->loadData(filename);
+            if (tripsCount < 0)
+                qWarning() << "Couldn't load data from file" << filename;
+            else
+                qInfo() << "Loaded" << tripsCount << "trips from file" << filename << "in" << timer.elapsed() << "milliseconds";
+
+            ui->frame_controls->setEnabled(true);
+        };
+
         const QString filename = args.at(1);
-        QElapsedTimer timer;
-        timer.start();
-        const int tripsCount = m_model->loadData(filename);
-        if (tripsCount < 0)
-            qWarning() << "Couldn't load data from file" << filename;
-        else
-            qInfo() << "Loaded" << tripsCount << "trips from file" << filename << "in" << timer.elapsed() << "milliseconds";
+        const QFuture<void> future = QtConcurrent::run(run, filename);
+        m_futureWatcher->setFuture(future);
     }
 }
 
 MainWindow::~MainWindow()
 {
-    m_model->disconnect();
+    if (m_filter)
+        delete m_filter;
 
-    delete m_filter;
-    delete m_selector;
-    delete m_stationsFilter;
-    delete m_stationsSorter;
+    if (m_selector)
+        delete m_selector;
 
-    delete m_model;
+    if (m_stationsFilter)
+        delete m_stationsFilter;
+
+    if (m_stationsSorter)
+        delete m_stationsSorter;
+
+    if (m_model)
+    {
+        m_model->disconnect();
+        delete m_model;
+    }
+
+    if (m_futureWatcher)
+    {
+        m_futureWatcher->disconnect();
+        delete m_futureWatcher;
+    }
+
     delete ui;
 }
 
@@ -77,6 +109,28 @@ void MainWindow::sortStations(const bss::SortOrder& orderParam)
             onStationsOrderChanged(sortedStations);
         }
     }
+}
+
+void MainWindow::onFutureStarted()
+{
+    ui->progressBar->setEnabled(true);
+}
+
+void MainWindow::onFutureFinished()
+{
+    ui->progressBar->reset();
+    ui->progressBar->setEnabled(false);
+}
+
+void MainWindow::onFutureProgressValueChanged(int progressValue)
+{
+    ui->progressBar->setValue(progressValue);
+}
+
+void MainWindow::onFutureProgressRangeChanged(int min, int max)
+{
+    ui->progressBar->setMaximum(max);
+    ui->progressBar->setMinimum(min);
 }
 
 void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations)

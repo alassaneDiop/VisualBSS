@@ -65,9 +65,11 @@ bool CsvDataFileReader::readData(QVector<Trip>& trips, QVector<Station>& station
         const auto insertStation = [&stationsMap, &stationsMapLock](const QString& name, const QString& latitudeStr, const QString& longitudeStr)
         {
             Station s;
+
             stationsMapLock.lock();
             const auto it = stationsMap.constFind(name);
-            if (it != stationsMap.constEnd())
+            const bool found = (it != stationsMap.constEnd());
+            if (found)
             {
                 s = it.value();
                 stationsMapLock.unlock();
@@ -92,7 +94,6 @@ bool CsvDataFileReader::readData(QVector<Trip>& trips, QVector<Station>& station
         const Station& endStation = insertStation(endName, endLatitudeStr, endLongitudeStr);
 
         Trip t;
-
         t.startStationId = startStation.id;
         t.endStationId = endStation.id;
         t.isCyclic = (startName == endName);
@@ -107,15 +108,19 @@ bool CsvDataFileReader::readData(QVector<Trip>& trips, QVector<Station>& station
         trips.append(t);
         tripsLock.unlock();
 
-        stationsMapLock.lock();
         if (t.isCyclic)
+        {
+            stationsMapLock.lock();
             stationsMap[startName].appendCycle(t);
+            stationsMapLock.unlock();
+        }
         else
         {
+            stationsMapLock.lock();
             stationsMap[startName].appendDeparture(t);
             stationsMap[endName].appendArrival(t);
+            stationsMapLock.unlock();
         }
-        stationsMapLock.unlock();
     };
 
     // parses all lines from file in parallel (Qt does all the work for us and chooses an appropriate thread count)
@@ -125,15 +130,18 @@ bool CsvDataFileReader::readData(QVector<Trip>& trips, QVector<Station>& station
     trips.squeeze();
 
     // transmits stations from map to vector
-    stations = stationsMap.values().toVector();
+    stations = QVector<Station>::fromList(stationsMap.values());
 
     // to optimize memory usage (because QVector allocates more than needed)
-    for (Station s : stations)
+    const auto squeeze = [](Station& s)
     {
         s.arrivalsId.squeeze();
         s.cyclesId.squeeze();
         s.departuresId.squeeze();
-    }
+    };
+
+    // squeeze trips from station in parallel
+    QtConcurrent::blockingMap(stations, squeeze);
 
     return true;
 }

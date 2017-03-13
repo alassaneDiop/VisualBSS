@@ -29,7 +29,6 @@ struct Station
     qreal longitude = 0;
     quint64 avgTripDuration;
     qreal avgTripDistance = 0;
-    qreal maxTripDistance = 0;
     int originDestinationFlow = 0;
     QVector<bss::tripId> arrivalsId;
     QVector<bss::tripId> departuresId;
