@@ -194,16 +194,19 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
 
     // TEST D'AFFICHAGE DES GLYPHS
     // LARGEUR ET HAUTEUR
-    float width = ui->timelinematrixwidget->width();
-    float heigth = ui->timelinematrixwidget->height();
-    float intervalX = ui->timelinematrixwidget->width() / 24.f;
-    float intervalY = 10;
-    int numberOfStations = stations.size();
+    const float width = ui->timelinematrixwidget->width();
+    const float heigth = ui->timelinematrixwidget->height();
+    const int numberOfStations = stations.size();
 
     const int offsetX = ui->timelinewidget->offsetX();
-    float offsetY = 10;
 
-    int numberOfHours = 24;
+    // TODO: appeler un methode de timeline pour recuperer la valeur de numberOfHour
+    const int numberOfHours = 24;
+    const float intervalX = ui->timelinematrixwidget->width() / (numberOfHours * 1.f);
+
+    const int glyphHeight = 5;
+    const int glyphSpaceBetweenToLines = 3;
+    const int glyphIntervalY = glyphHeight + glyphSpaceBetweenToLines;
 
     QVector<float> glyphVertices;
     for (int i = 0; i < numberOfStations; ++i)
@@ -214,9 +217,11 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
 //            {
 
 //            }
+
+            // JUST DRAWING LINE
             // VERTEX #1
             float positionX = offsetX + j * intervalX;
-            float positionY = offsetY + i * intervalY;
+            float positionY = i * glyphIntervalY;
 
             positionX = positionX / width * 2 - 1;
             positionY = positionY / heigth * 2 - 1;
@@ -226,7 +231,7 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
 
             // VERTEX #2
             positionX = offsetX + j * intervalX;
-            positionY = offsetY + i * intervalY + 8;
+            positionY = i * glyphIntervalY + glyphHeight;
 
             positionX = positionX / width * 2 - 1;
             positionY = positionY / heigth * 2 - 1;

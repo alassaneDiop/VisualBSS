@@ -7,6 +7,6 @@ uniform float translation;
 void main()
 {
     gl_Position = vec4(vtx_position.x,
-                       vtx_position.y,
+                       vtx_position.y - translation,
                        0.f, 1.f);
 }

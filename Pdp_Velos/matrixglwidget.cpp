@@ -6,9 +6,6 @@
 #include <QElapsedTimer>
 #include <QOpenGLShaderProgram>
 
-#include "trip.h"
-#include "station.h"
-
 
 MatrixGLWidget::MatrixGLWidget(QWidget* p) : QOpenGLWidget(p)
 {
@@ -162,10 +159,10 @@ void MatrixGLWidget::mouseMoveEvent(QMouseEvent* event)
                     m_bottomRightSelectionRectangle.y() - m_translationOffsetY);
 
         float topLeftX = m_topLeftSelectionRectangle.x() / this->width() * 2 - 1;
-        float topLeftY = m_topLeftSelectionRectangle.y() / this->height() * 2 - 1;
+        float topLeftY = (m_topLeftSelectionRectangle.y() / this->height() * 2 - 1) - m_translationOffsetY;
 
         float bottomRightX = m_bottomRightSelectionRectangle.x() / this->width() * 2 - 1;
-        float bottomRightY = m_bottomRightSelectionRectangle.y() / this->height() * 2 - 1;
+        float bottomRightY = (m_bottomRightSelectionRectangle.y() / this->height() * 2 - 1) - m_translationOffsetY;
 
         QVector<float> data;
         data.append(topLeftX);
@@ -187,10 +184,12 @@ void MatrixGLWidget::mouseMoveEvent(QMouseEvent* event)
         data.append(-topLeftY);
 
         m_selectorRenderer->updateData(data);
+//        m_selectorRenderer->sendData(data, 6);
 
-        QVector<QPoint> out = hit();
-        qDebug() <<  "out size : " << out.size();
+        //        QVector<QPoint> out = hit();
+        //        qDebug() <<  "out size : " << out.size();
 
+        tripsInSelector();
         update();
         event->accept();
     }
@@ -232,35 +231,97 @@ void MatrixGLWidget::mouseReleaseEvent(QMouseEvent* event)
     }
 }
 
-void MatrixGLWidget::initPoint()
+//void MatrixGLWidget::initPoint()
+//{
+//    int j = 0;
+//    for (const Station* s : m_stations)
+//    {
+//        j++;
+//        for (int i = 0; i < 24; ++i)
+//        {
+//            m_ellipses.push_back(QPoint(i, j * 30));
+//        }
+//    }
+//}
+
+//QVector<QPoint> MatrixGLWidget::hit()
+//{
+//    int intervalLength = m_matrixViewWidth / m_numberOfInterval;
+//    QVector<QPoint> outEllipses;
+
+//    QRect rectangle(m_topLeftSelectionRectangle.x(),
+//                    m_topLeftSelectionRectangle.y() + m_translationOffsetY,
+//                    m_bottomRightSelectionRectangle.x() - m_topLeftSelectionRectangle.x(),
+//                    m_bottomRightSelectionRectangle.y() - m_topLeftSelectionRectangle.y());
+
+//    for (QPoint i : m_ellipses)
+//    {
+//        int x = m_matrixOffsetX + i.x() * intervalLength + (m_stationCircleSize / 2);
+//        int y = m_translationOffsetY + i.y() + m_stationCircleSize;
+
+//        if(rectangle.contains(x,y)) outEllipses.push_back(i);
+//    }
+//    return outEllipses;
+//}
+
+QPair<QPair<char, char>, QPair<int, int>>& MatrixGLWidget::tripsInSelector()
 {
-    int j = 0;
-    for (const Station* s : m_stations)
-    {
-        j++;
-        for (int i = 0; i < 24; ++i)
-        {
-            m_ellipses.push_back(QPoint(i, j * 30));
-        }
-    }
-}
+    QPair<char, char> timeInterval;
 
-QVector<QPoint> MatrixGLWidget::hit()
-{
-    int intervalLength = m_matrixViewWidth / m_numberOfInterval;
-    QVector<QPoint> outEllipses;
+    // FIND TIME INTERVAL
+    // TODO: appeler un methode de timeline pour recuperer la valeur de numberOfHour
+    const char numberOfHour = 24;
+    const int width = this->width();
+    const float oneHour = width / numberOfHour;
 
-    QRect rectangle(m_topLeftSelectionRectangle.x(),
-                    m_topLeftSelectionRectangle.y() + m_translationOffsetY,
-                    m_bottomRightSelectionRectangle.x() - m_topLeftSelectionRectangle.x(),
-                    m_bottomRightSelectionRectangle.y() - m_topLeftSelectionRectangle.y());
+    timeInterval.first = (char)(m_topLeftSelectionRectangle.x() / oneHour);
+    timeInterval.second = (char)(m_bottomRightSelectionRectangle.x() / oneHour);
 
-    for (QPoint i : m_ellipses)
-    {
-        int x = m_matrixOffsetX + i.x() * intervalLength + (m_stationCircleSize / 2);
-        int y = m_translationOffsetY + i.y() + m_stationCircleSize;
+    char tmp1 = timeInterval.first;
+    char tmp2 = timeInterval.second;
 
-        if(rectangle.contains(x,y)) outEllipses.push_back(i);
-    }
-    return outEllipses;
+    timeInterval.first = qMin(tmp1, tmp2);
+    timeInterval.second = qMax(tmp1, tmp2);
+
+    timeInterval.first = qMax((char)0, timeInterval.first);
+    timeInterval.second = qMin(timeInterval.second, numberOfHour);
+
+    qDebug() << "Interval heure"<< (int)timeInterval.first << (int)timeInterval.second;
+
+
+    // FIND STATIONS
+    // TODO: cleanup constante et methodes...
+    const int glyphHeight = 5;
+    const int glyphSpaceBetweenToLines = 3;
+    const int glyphIntervalY = glyphHeight + glyphSpaceBetweenToLines;
+    QPair<int, int> stationsInterval;
+
+    // En fonction de la position de y et la translation trouver l'interval des
+    // stations selectionnées.
+
+    const float sizeInterval = this->height() / ((glyphIntervalY + glyphHeight) * 2 - 1);
+
+    const float normalizedTranslationY = m_translationOffsetY * height() / 2.f;
+
+    stationsInterval.first = (m_topLeftSelectionRectangle.y() - normalizedTranslationY) / sizeInterval;
+    stationsInterval.second = (m_bottomRightSelectionRectangle.y() - normalizedTranslationY) / sizeInterval;
+
+    int tmp3 = stationsInterval.first;
+    int tmp4 = stationsInterval.second;
+
+    stationsInterval.first = qMin(tmp3, tmp4);
+    stationsInterval.second = qMax(tmp3, tmp4);
+
+    stationsInterval.first = qMax(0, stationsInterval.first);
+
+    qDebug() << "Stations interval"<< stationsInterval.first << stationsInterval.second;
+
+    QPair<QPair<char, char>, QPair<int, int>> trips;
+    trips.first.first = timeInterval.first;
+    trips.first.second = timeInterval.second;
+
+    trips.second.first = stationsInterval.first;
+    trips.second.second = stationsInterval.second;
+
+    return trips;
 }

@@ -9,6 +9,11 @@
 #include "selectorrenderer.h"
 #include "glyphrenderer.h"
 
+#include "typedefs.h"
+
+#include <QVector>
+#include <QPair>
+
 namespace bss {
 class MatrixGLWidget;
 }
@@ -18,6 +23,7 @@ class Station;
 class Trip;
 class QPoint;
 class QOpenGLShaderProgram;
+//class QPair<QVector<int>, QPair<char, char>>;
 
 class MatrixGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -28,7 +34,6 @@ public:
 
     void loadGlyphsData(const QVector<float>& data, unsigned int verticesCount);
 
-
 protected:
     virtual void initializeGL() override;
     virtual void resizeGL(int width, int height) override;
@@ -37,18 +42,23 @@ protected:
     virtual void mouseMoveEvent (QMouseEvent* event) override;
     virtual void mousePressEvent(QMouseEvent* event) override;
     virtual void mouseReleaseEvent(QMouseEvent* event) override;
-    void initPoint();
-    QVector<QPoint> hit();
+
+//    void initPoint();
+//    QVector<QPoint> hit();
 
 private:
+
     void drawSelector();
     void drawGlyphs();
 
+    QPair<QPair<char, char>, QPair<int, int>>& tripsInSelector();
+
 private:
+    // TODO: duplication de donnees, les recuperer...
     const int   m_numberOfInterval = 24;
     const int   m_matrixOffsetX = 10;
+
     int         m_matrixViewWidth;
-    int         m_stationCircleSize = 10;
 
     QVector<QPoint> m_ellipses;
 

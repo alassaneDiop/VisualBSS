@@ -68,7 +68,7 @@ void MapGLWidget::initializeGL()
     m_shaderProgramTrips->bind();
     m_shaderProgramTrips->release();
 
-    qDebug() << "initializeGL OpenGL version:" << this->format().version();
+    qDebug() << "MapGLWidget::initializeGL() OpenGL version:" << this->format().version();
 }
 
 void MapGLWidget::resizeGL(int width, int height)
