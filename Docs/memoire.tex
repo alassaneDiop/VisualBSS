@@ -47,7 +47,7 @@
  
 \tableofcontents \newpage
 
-\section*{Remerciement} \newpage
+\section*{Remerciements} \newpage
 
 \part{Introduction}
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor eu lorem in rhoncus. Nullam tempus sit amet risus vitae porta. Sed diam eros, condimentum et enim sit amet, mollis dignissim dolor. Pellentesque mollis enim a risus faucibus dignissim. Nam vulputate, turpis ut luctus facilisis, ipsum quam dictum quam, quis condimentum ligula nulla et dui. Proin at neque euismod, imperdiet est mollis, bibendum nisl. Nam pharetra ipsum id enim suscipit semper. Curabitur accumsan nibh non risus congue tincidunt. Integer ac lacus imperdiet, accumsan diam sit amet, mollis odio. Vestibulum gravida lacus quis orci sollicitudin sagittis. Nullam vel lacinia urna. Praesent sed mattis mauris, id pretium metus. Phasellus id ipsum venenatis, cursus nulla in, dignissim turpis.
@@ -60,18 +60,63 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor eu lorem 
 	\section{Besoins non fonctionnels}
 	\section{Besoins fonctionnels}
 		\subsection{Prototypes}
-	\section{Fonctionnalité du logiciel}
+	\section{Fonctionnalités du logiciel}
 
 \part{L'architecture}
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor eu lorem in rhoncus. Nullam tempus sit amet risus vitae porta. Sed diam eros, condimentum et enim sit amet, mollis dignissim dolor. Pellentesque mollis enim a risus faucibus dignissim. Nam vulputate, turpis ut luctus facilisis, ipsum quam dictum quam, quis condimentum ligula nulla et dui. Proin at neque euismod, imperdiet est mollis, bibendum nisl. Nam pharetra ipsum id enim suscipit semper. Curabitur accumsan nibh non risus congue tincidunt. Integer ac lacus imperdiet, accumsan diam sit amet, mollis odio. Vestibulum gravida lacus quis orci sollicitudin sagittis. Nullam vel lacinia urna. Praesent sed mattis mauris, id pretium metus. Phasellus id ipsum venenatis, cursus nulla in, dignissim turpis.
 	\section{Présentation de l'architecture}
-	\section{Fonctionnalité à implémenter}
 	\section{Documentation}
 
 \part{Les tests}
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor eu lorem in rhoncus. Nullam tempus sit amet risus vitae porta. Sed diam eros, condimentum et enim sit amet, mollis dignissim dolor. Pellentesque mollis enim a risus faucibus dignissim. Nam vulputate, turpis ut luctus facilisis, ipsum quam dictum quam, quis condimentum ligula nulla et dui. Proin at neque euismod, imperdiet est mollis, bibendum nisl. Nam pharetra ipsum id enim suscipit semper. Curabitur accumsan nibh non risus congue tincidunt. Integer ac lacus imperdiet, accumsan diam sit amet, mollis odio. Vestibulum gravida lacus quis orci sollicitudin sagittis. Nullam vel lacinia urna. Praesent sed mattis mauris, id pretium metus. Phasellus id ipsum venenatis, cursus nulla in, dignissim turpis.
+
 	\section{Les tests de performances}
 		\subsection{Conditions de tests}
+		Les tests ont été réalisés sur un système d’exploitation Linux Debian 8.7 avec un noyau de version 3.16.0-4-amd64. \\ \\
+		Spécifications de la machine: \\
+		\begin{center}
+			\begin{tabular}{| l | l |}
+			\hline
+			\textbf{Composants} & \textbf{Model} \\ \hline
+			Processeur & Intel I5 2500k \\ \hline
+			Carte Graphique & NVIDIA 970 GTX 4Go \\ \hline
+			Mémoire vive & 12 Go \\ \hline
+			Disque dur & Mécanique à 7200 trs/min \\ \hline
+		    \end{tabular}
+	    \end{center}
+	    
+	    Outils de développement: \\
+	    \begin{center}
+			\begin{tabular}{| l | l |}
+			\hline
+			\textbf{Composants} & \textbf{Version} \\ \hline
+			gcc & 4.9.2 \\ \hline
+			Qt & 5.8 \\ \hline
+			Mode de compilation & Release \\ \hline
+		    \end{tabular}
+	    \end{center}
+	    
+	    Options de compilation:\\
+	    \begin{itemize}
+	    \item C++14
+	    \end{itemize}
+	    
+		\subsection{Temps de chargement des fichiers}
+		Le fichier utilisé pour tester les temps de chargement de fichier est disponible à ce lien:\\
+		\url{https://s3.amazonaws.com/tripdata/201310-citibike-tripdata.zip}\\
+		
+		Le fichier contient 843 416 trajets et 329 stations.\\
+		\begin{center}
+			\begin{tabular}{| l | l |}
+			\hline
+			\textbf{Méthode} & \textbf{temps de chargement (en millisecondes)} \\ \hline
+			Séquentiel & 21 214 \\ \hline
+			Parallèle & ? \\ \hline
+		    \end{tabular}
+	    \end{center}
+		
+		\subsection{Temps d'affichage des trajets et des stations}
+		
 	\section{Les tests boite blanche}
 	\section{Les tests boite noire}
 
@@ -81,8 +126,17 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor eu lorem 
 	\section{Critiques}
 	\section{Conclusion}
 
-\section{Lexique}
-\section{Annexes}
+	\section{Lexique}
+	\begin{itemize}
+		\item[]\textbf{Visual BSS} :
+		\item[]\textbf{XML} :
+		\item[]\textbf{JSON} :
+		\item[]\textbf{Qt} :
+	\end{itemize}
+
+
+
+	\section{Annexes}
 
 
  
