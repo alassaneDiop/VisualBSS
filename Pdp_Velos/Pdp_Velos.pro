@@ -53,7 +53,8 @@ HEADERS  += mainwindow.h \
     triprenderer.h \
     glyphrenderer.h \
     selectorrenderer.h \
-    typedefs.h
+    typedefs.h \
+    config.h
 
 FORMS    += mainwindow.ui
 

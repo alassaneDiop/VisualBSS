@@ -46,6 +46,8 @@ MapGLWidget::~MapGLWidget()
         delete m_tripRenderer;
 }
 
+
+
 void MapGLWidget::initializeGL()
 {
     initializeOpenGLFunctions();
@@ -86,6 +88,8 @@ void MapGLWidget::paintGL()
     if (m_tripsLoaded)
         drawTrips();
 }
+
+
 
 void MapGLWidget::drawStations()
 {

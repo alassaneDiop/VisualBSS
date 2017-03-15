@@ -7,6 +7,7 @@
 
 Renderer::Renderer()
 {
+    m_verticesCount = 0;
     m_VAO = Q_NULLPTR;
     m_VBO = Q_NULLPTR;
 }
@@ -33,7 +34,6 @@ void Renderer::initGLFunc()
 
 void Renderer::sendData(const QVector<float> &data, unsigned int verticesCount)
 {
-    initializeOpenGLFunctions();
     m_verticesCount = verticesCount;
 
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO->bufferId());

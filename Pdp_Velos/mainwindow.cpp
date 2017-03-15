@@ -6,6 +6,8 @@
 #include <QFileDialog>
 
 
+#include "config.h"
+
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -22,7 +24,7 @@ MainWindow::MainWindow(QWidget* parent) :
     m_futureWatcher = new QFutureWatcher<void>();
 
     // listening to himself (isn't there a better solution, like event queues ?)
-    connect(this, &MainWindow::dataLoaded, &MainWindow::onDataLoaded);
+    connect(this, &MainWindow::dataLoaded, this, &MainWindow::onDataLoaded, Qt::BlockingQueuedConnection);
     connect(this, &MainWindow::failedToLoadData, &MainWindow::onFailedToLoadData);
     connect(this, &MainWindow::dataUnloaded, &MainWindow::onDataUnloaded);
 
@@ -130,6 +132,7 @@ void MainWindow::onOpenFilesActionTriggered()
     const QString dirPath = QDir::rootPath();
     const QStringList filenames = QFileDialog::getOpenFileNames(this, caption, dirPath, filter);
 
+
     if (m_futureWatcher && m_model && !filenames.isEmpty())
     {
         const auto task = [this](const QStringList& filenames)
@@ -142,8 +145,8 @@ void MainWindow::onOpenFilesActionTriggered()
                 else
                     emit failedToLoadData(filename, result.info.errorString);
             }
-        };
 
+        };
         m_futureWatcher->setFuture(QtConcurrent::run(task, filenames));
     }
 }
@@ -182,8 +185,6 @@ void MainWindow::onAsyncTaskFinished()
 void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations)
 {
     m_shouldEnableControlsFrame = true;
-//TODO :
-    return;
 
     qDebug() << "onDataLoaded" << "Trip number" << trips.size() << "Station number" << stations.size();
 
@@ -208,10 +209,19 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
         int startStationId = t.startStationId;
         const Station startStation = m_model->constStation(startStationId);
 
+        //        tripsVertices.append((float) (startStation.longitude / maxLongitude));
+        //        tripsVertices.append((float) (startStation.latitude / maxLatitude));
+
         tripsVertices.append((float) (startStation.longitude / maxLongitude));
         tripsVertices.append((float) (startStation.latitude / maxLatitude));
 
-        // Departure RED
+        // incoming
+        // red origin           1, 0, 0
+        // yellow destination   1, 1, 0
+
+        // outgoing
+        // cyan origin          0, 1, 1
+        // blue end             0, 0, 1
         tripsVertices.append(1.f);
         tripsVertices.append(0.f);
         tripsVertices.append(0.f);
@@ -222,7 +232,6 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
         tripsVertices.append((float) (endStation.longitude / maxLongitude));
         tripsVertices.append((float) (endStation.latitude / maxLatitude));
 
-        // Arrival BLUE
         tripsVertices.append(0.f);
         tripsVertices.append(0.f);
         tripsVertices.append(1.f);
@@ -248,56 +257,50 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     const float heigth = ui->timelinematrixwidget->height();
     const int numberOfStations = stations.size();
 
-    const int offsetX = ui->timelinewidget->offsetX();
-
     // TODO: appeler un methode de timeline pour recuperer la valeur de numberOfHour
-    const int numberOfHours = 24;
-    const float intervalX = ui->timelinematrixwidget->width() / (numberOfHours * 1.f);
+    const float intervalX = ui->timelinematrixwidget->width() / (bss::NB_OF_HOUR * 1.f);
 
-    const int glyphHeight = 5;
-    const int glyphSpaceBetweenToLines = 3;
+    const int glyphHeight = bss::GLYPH_HEIGHT;
+    const int glyphSpaceBetweenToLines = bss::SPACE_BETWEEN_GLYPHS;
     const int glyphIntervalY = glyphHeight + glyphSpaceBetweenToLines;
 
     QVector<float> glyphVertices;
     for (int i = 0; i < numberOfStations; ++i)
     {
-        for (int j = 0; j < numberOfHours; ++j)
+        for (int j = 0; j < bss::NB_OF_HOUR; ++j)
         {
-//            for (int k = 0; k < ; k++)
-//            {
+            //for (int k = 0; k < stations.size(); k++)
+            {
+                // JUST DRAWING LINE
+                // VERTEX #1
+                float positionX = bss::TIMELINE_OFFSET_X + j * intervalX;
+                float positionY = i * glyphIntervalY;
 
-//            }
+                //float positionXT =
 
-            // JUST DRAWING LINE
-            // VERTEX #1
-            float positionX = offsetX + j * intervalX;
-            float positionY = i * glyphIntervalY;
+                positionX = positionX / width * 2 - 1;
+                positionY = positionY / heigth * 2 - 1;
 
-            positionX = positionX / width * 2 - 1;
-            positionY = positionY / heigth * 2 - 1;
+                glyphVertices.append(positionX);
+                glyphVertices.append(-positionY);
 
-            glyphVertices.append(positionX);
-            glyphVertices.append(-positionY);
+                // VERTEX #2
+                positionX = bss::TIMELINE_OFFSET_X + j * intervalX;
+                positionY = i * glyphIntervalY + glyphHeight;
 
-            // VERTEX #2
-            positionX = offsetX + j * intervalX;
-            positionY = i * glyphIntervalY + glyphHeight;
+                positionX = positionX / width * 2 - 1;
+                positionY = positionY / heigth * 2 - 1;
 
-            positionX = positionX / width * 2 - 1;
-            positionY = positionY / heigth * 2 - 1;
-
-            glyphVertices.append(positionX);
-            glyphVertices.append(-positionY);
+                glyphVertices.append(positionX);
+                glyphVertices.append(-positionY);
+            }
         }
     }
-
-    qDebug() << "stations" << stationsVerticesCount << "trips" << tripsVerticesCount;
 
     ui->mapwidget->loadStationsData(stationsVertices, stationsVerticesCount);
     ui->mapwidget->loadTripsData(tripsVertices, tripsVerticesCount);
     ui->mapwidget->centerView(stationsVertices);
-    ui->timelinematrixwidget->loadGlyphsData(glyphVertices, 2 * numberOfHours * numberOfStations);
-
+    ui->timelinematrixwidget->loadGlyphsData(glyphVertices, 2 * bss::NB_OF_HOUR * numberOfStations);
 }
 
 void MainWindow::onFailedToLoadData(const QString& filename, const QString& errorDesc)

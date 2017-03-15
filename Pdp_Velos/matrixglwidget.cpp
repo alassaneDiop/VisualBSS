@@ -6,6 +6,8 @@
 #include <QElapsedTimer>
 #include <QOpenGLShaderProgram>
 
+#include "config.h"
+
 
 MatrixGLWidget::MatrixGLWidget(QWidget* p) : QOpenGLWidget(p)
 {
@@ -93,6 +95,7 @@ void MatrixGLWidget::paintGL()
 void MatrixGLWidget::drawSelector()
 {
     initializeOpenGLFunctions();
+
     if (m_drawRectangle)
     {
         m_shaderProgramSelector->bind();
@@ -125,6 +128,7 @@ void MatrixGLWidget::loadGlyphsData(const QVector<float> &data, unsigned int ver
         m_glyphRenderer->initGLFunc();
         m_glyphRenderer->createVAO();
     }
+
     m_glyphsLoaded = true;
     m_glyphRenderer->sendData(data, verticesCount);
 }
@@ -145,7 +149,7 @@ void MatrixGLWidget::wheelEvent(QWheelEvent* event)
 
     event->accept();
     update();
-    qDebug() <<  "Wheel event";
+    //qDebug() <<  "Wheel event";
 }
 
 void MatrixGLWidget::mouseMoveEvent(QMouseEvent* event)
@@ -190,6 +194,7 @@ void MatrixGLWidget::mouseMoveEvent(QMouseEvent* event)
         //        qDebug() <<  "out size : " << out.size();
 
         tripsInSelector();
+
         update();
         event->accept();
     }
@@ -203,20 +208,22 @@ void MatrixGLWidget::mousePressEvent(QMouseEvent* event)
         QGuiApplication::setOverrideCursor(Qt::CrossCursor);
         m_drawRectangle = true;
         m_leftMouseButtonPressed = true;
+
         m_previousMousePos = event->pos();
         m_previousMousePos.setY(m_previousMousePos.y() - m_translationOffsetY);
+
         m_topLeftSelectionRectangle = event->pos();
-        m_topLeftSelectionRectangle.setY(
-                    m_topLeftSelectionRectangle.y() - m_translationOffsetY);
+        m_topLeftSelectionRectangle.setY(m_topLeftSelectionRectangle.y()
+                                         - m_translationOffsetY);
         event->accept();
-        qDebug() <<  "left mouse button pressed";
+        //qDebug() <<  "left mouse button pressed";
     }
     else if (event->button() == Qt::RightButton)
     {
         m_drawRectangle = false;
         event->accept();
         update();
-        qDebug() <<  "right mouse button pressed";
+        //qDebug() <<  "right mouse button pressed";
     }
 }
 
@@ -227,52 +234,16 @@ void MatrixGLWidget::mouseReleaseEvent(QMouseEvent* event)
         QGuiApplication::restoreOverrideCursor();
         m_leftMouseButtonPressed = false;
         event->accept();
-        qDebug() <<  "left mouse button released";
+        //qDebug() <<  "left mouse button released";
     }
 }
-
-//void MatrixGLWidget::initPoint()
-//{
-//    int j = 0;
-//    for (const Station* s : m_stations)
-//    {
-//        j++;
-//        for (int i = 0; i < 24; ++i)
-//        {
-//            m_ellipses.push_back(QPoint(i, j * 30));
-//        }
-//    }
-//}
-
-//QVector<QPoint> MatrixGLWidget::hit()
-//{
-//    int intervalLength = m_matrixViewWidth / m_numberOfInterval;
-//    QVector<QPoint> outEllipses;
-
-//    QRect rectangle(m_topLeftSelectionRectangle.x(),
-//                    m_topLeftSelectionRectangle.y() + m_translationOffsetY,
-//                    m_bottomRightSelectionRectangle.x() - m_topLeftSelectionRectangle.x(),
-//                    m_bottomRightSelectionRectangle.y() - m_topLeftSelectionRectangle.y());
-
-//    for (QPoint i : m_ellipses)
-//    {
-//        int x = m_matrixOffsetX + i.x() * intervalLength + (m_stationCircleSize / 2);
-//        int y = m_translationOffsetY + i.y() + m_stationCircleSize;
-
-//        if(rectangle.contains(x,y)) outEllipses.push_back(i);
-//    }
-//    return outEllipses;
-//}
 
 QPair<QPair<char, char>, QPair<int, int>>& MatrixGLWidget::tripsInSelector()
 {
     QPair<char, char> timeInterval;
 
-    // FIND TIME INTERVAL
-    // TODO: appeler un methode de timeline pour recuperer la valeur de numberOfHour
-    const char numberOfHour = 24;
     const int width = this->width();
-    const float oneHour = width / numberOfHour;
+    const float oneHour = width / bss::NB_OF_HOUR;
 
     timeInterval.first = (char)(m_topLeftSelectionRectangle.x() / oneHour);
     timeInterval.second = (char)(m_bottomRightSelectionRectangle.x() / oneHour);
@@ -284,27 +255,24 @@ QPair<QPair<char, char>, QPair<int, int>>& MatrixGLWidget::tripsInSelector()
     timeInterval.second = qMax(tmp1, tmp2);
 
     timeInterval.first = qMax((char)0, timeInterval.first);
-    timeInterval.second = qMin(timeInterval.second, numberOfHour);
+    timeInterval.second = qMin((unsigned int)timeInterval.second, bss::NB_OF_HOUR);
 
-    qDebug() << "Interval heure"<< (int)timeInterval.first << (int)timeInterval.second;
+    //qDebug() << "Time interval"<< (int)timeInterval.first << (int)timeInterval.second;
 
 
     // FIND STATIONS
-    // TODO: cleanup constante et methodes...
-    const int glyphHeight = 5;
-    const int glyphSpaceBetweenToLines = 3;
-    const int glyphIntervalY = glyphHeight + glyphSpaceBetweenToLines;
+    const int glyphIntervalY = bss::GLYPH_HEIGHT + bss::SPACE_BETWEEN_GLYPHS;
     QPair<int, int> stationsInterval;
 
-    // En fonction de la position de y et la translation trouver l'interval des
-    // stations selectionnées.
-
-    const float sizeInterval = this->height() / ((glyphIntervalY + glyphHeight) * 2 - 1);
+    const float sizeInterval = this->height() / ((glyphIntervalY + bss::GLYPH_HEIGHT) * 2 - 1);
 
     const float normalizedTranslationY = m_translationOffsetY * height() / 2.f;
 
-    stationsInterval.first = (m_topLeftSelectionRectangle.y() - normalizedTranslationY) / sizeInterval;
-    stationsInterval.second = (m_bottomRightSelectionRectangle.y() - normalizedTranslationY) / sizeInterval;
+    stationsInterval.first = (m_topLeftSelectionRectangle.y() - normalizedTranslationY)
+            / sizeInterval;
+
+    stationsInterval.second = (m_bottomRightSelectionRectangle.y() - normalizedTranslationY)
+            / sizeInterval;
 
     int tmp3 = stationsInterval.first;
     int tmp4 = stationsInterval.second;
@@ -314,7 +282,7 @@ QPair<QPair<char, char>, QPair<int, int>>& MatrixGLWidget::tripsInSelector()
 
     stationsInterval.first = qMax(0, stationsInterval.first);
 
-    qDebug() << "Stations interval"<< stationsInterval.first << stationsInterval.second;
+    //qDebug() << "Stations interval"<< stationsInterval.first << stationsInterval.second;
 
     QPair<QPair<char, char>, QPair<int, int>> trips;
     trips.first.first = timeInterval.first;
