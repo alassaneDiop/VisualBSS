@@ -6,25 +6,41 @@
 #include <QString>
 #include <QVector>
 
+
 namespace bss {
 class DataFileReader;
+struct DataFileParams;
+struct DataFileReadInfo;
 }
 
+struct DataFileParams
+{
+    QString filename;
+    Qt::DateFormat dateFormat = Qt::ISODate;
+};
+
+struct DataFileReadInfo
+{
+    bool ok = true;
+    QString errorString;
+};
 
 class DataFileReader
 {
 public:
-    DataFileReader(const QString& filename, const Qt::DateFormat& dateFormat);
+    DataFileReader(const DataFileParams& params);
+    DataFileReader(const QString& filename, const Qt::DateFormat& dateFormat = Qt::ISODate);
+
     virtual ~DataFileReader();
+    virtual DataFileReadInfo readData(QHash<QString, Station>& stations, QVector<Trip>& trips) const;
+    virtual DataFileReadInfo readCsvData(QHash<QString, Station>& stations, QVector<Trip>& trips) const;
+    virtual DataFileReadInfo readXmlData(QHash<QString, Station>& stations, QVector<Trip>& trips) const;
+    virtual DataFileReadInfo readJsonData(QHash<QString, Station>& stations, QVector<Trip>& trips) const;
 
-    inline QString filename() const { return m_filename; }
-    inline Qt::DateFormat dateFormat() const { return m_dateFormat; }
+    inline DataFileParams params() const { return m_params; }
 
-    virtual bool readData(QVector<Trip>& tripsData, QVector<Station>& stationsData) const = 0;
-
-private:  
-    const QString m_filename; 
-    const Qt::DateFormat m_dateFormat;
+private:
+    DataFileParams m_params;
 };
 
 #endif // DATAFILEREADER_H

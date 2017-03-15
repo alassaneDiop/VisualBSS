@@ -3,8 +3,8 @@
 #include <QFile>
 #include <QXmlStreamReader>
 
-XmlDataFileReader::XmlDataFileReader(const QString& filename, const Qt::DateFormat& dateFormat) :
-    DataFileReader(filename, dateFormat)
+XmlDataFileReader::XmlDataFileReader(const DataFileParams& params) :
+    DataFileReader(params)
 {
 
 }
@@ -13,7 +13,7 @@ XmlDataFileReader::~XmlDataFileReader()
 
 }
 
-bool XmlDataFileReader::readData(QVector<Trip>& tripsData, QVector<Station>& stationsData) const
+DataFileReadInfo XmlDataFileReader::readData(QHash<QString, Station>& stations, QVector<Trip>& trips) const
 {   
     /*QFile file(DataFileReader::getFilename());
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -41,5 +41,5 @@ bool XmlDataFileReader::readData(QVector<Trip>& tripsData, QVector<Station>& sta
         file.close();
         return true;
     }*/
-    return false;
+    return DataFileReadInfo();
 }

@@ -12,9 +12,9 @@ struct Station;
 class CsvDataFileReader : public DataFileReader
 {
 public:
-    CsvDataFileReader(const QString& filename, const Qt::DateFormat& dateFormat);
+    CsvDataFileReader(const DataFileParams& params);
     virtual ~CsvDataFileReader();
-    virtual bool readData(QVector<Trip>& trips, QVector<Station>& stations) const override;
+    virtual DataFileReadInfo readData(QHash<QString, Station>& stations, QVector<Trip>& trips) const;
 };
 
 #endif // CSVDATAFILEREADER_H

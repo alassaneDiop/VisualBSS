@@ -1,23 +1,27 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <QObject>
-#include <QVector>
-
 #include "trip.h"
 #include "station.h"
 #include "typedefs.h"
+#include "datafilereader.h"
+#include <QVector>
 
 namespace bss {
 class Model;
+struct DataLoadResult;
 }
 
-class Model : public QObject
+struct DataLoadResult
 {
-    Q_OBJECT
-public:
-    explicit Model(QObject* parent = 0);
+    DataFileReadInfo info;
+    QVector<Trip> trips;
+    QVector<Station> stations;
+};
 
+class Model
+{
+public:
     inline int tripsCount() const { return m_trips.count(); }
     inline int stationsCount() const { return m_stations.count(); }
 
@@ -33,18 +37,12 @@ public:
     inline const QVector<Trip>& constTrips() const { return m_trips; }
     inline const QVector<Station>& constStations() const { return m_stations; }
 
-    int loadData(const QString& filename);
+    DataLoadResult loadData(const QString& filename);
+    void unloadData();
 
 private:
     QVector<Trip> m_trips;
     QVector<Station> m_stations;
-
-signals:
-    void dataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations);
-    void failedToLoadData(const QString& filename);
-
-public slots:
-
 };
 
 #endif // MODEL_H

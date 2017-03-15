@@ -1,27 +1,33 @@
 #include "model.h"
-#include "datafilereader.h"
-#include "csvdatafilereader.h"
 
-Model::Model(QObject* parent) :
-    QObject(parent)
+
+DataLoadResult Model::loadData(const QString& filename)
 {
+    QHash<QString, Station> stationsHash;
+    for (const Station s : m_stations)
+        stationsHash.insert(s.name, s);
 
+    const DataFileReader dataFileReader = DataFileReader(filename);
+    const DataFileReadInfo info = dataFileReader.readData(stationsHash, m_trips);
+
+    DataLoadResult result;
+    result.info = info;
+
+    if (info.ok)
+    {
+        m_stations = stationsHash.values().toVector();
+        result.trips = m_trips;
+        result.stations = m_stations;
+    }
+
+    return result;
 }
 
-int Model::loadData(const QString& filename)
+void Model::unloadData()
 {
-    const DataFileReader* dataFileReader = new CsvDataFileReader(filename, Qt::ISODate);
-    const bool ok = dataFileReader->readData(m_trips, m_stations);
-    delete dataFileReader;
+    m_trips.clear();
+    m_trips.squeeze();
 
-    if (!ok)
-    {
-        emit failedToLoadData(filename);
-        return -1;
-    }
-    else
-    {
-        emit dataLoaded(m_trips, m_stations);
-        return m_trips.size();
-    }
+    m_stations.clear();
+    m_stations.squeeze();
 }
