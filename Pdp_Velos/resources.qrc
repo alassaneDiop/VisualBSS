@@ -10,4 +10,7 @@
         <file>shaders/glyph.vert</file>
         <file>shaders/stations.vert</file>
     </qresource>
+    <qresource prefix="/QML">
+        <file>qml/controls/RangeSlider.qml</file>
+    </qresource>
 </RCC>

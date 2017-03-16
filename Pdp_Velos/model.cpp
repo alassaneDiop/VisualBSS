@@ -15,6 +15,7 @@ DataLoadResult Model::loadData(const QString& filename)
 
     if (info.ok)
     {
+        m_hasData = true;
         m_stations = stationsHash.values().toVector();
         result.trips = m_trips;
         result.stations = m_stations;
@@ -23,11 +24,19 @@ DataLoadResult Model::loadData(const QString& filename)
     return result;
 }
 
-void Model::unloadData()
+bool Model::unloadData()
 {
-    m_trips.clear();
-    m_trips.squeeze();
+    if (!hasData())
+        return false;
+    else
+    {
+        m_trips.clear();
+        m_trips.squeeze();
 
-    m_stations.clear();
-    m_stations.squeeze();
+        m_stations.clear();
+        m_stations.squeeze();
+
+        m_hasData = false;
+        return true;
+    }
 }

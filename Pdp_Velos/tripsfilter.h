@@ -17,10 +17,10 @@ struct TripsFilterParams
     QDate period;
     QDate day;
     Qt::DayOfWeek dayOfWeek = Qt::DayOfWeek::Monday;
-    bool showArrivals = true;
-    bool showDepartures = true;
-    bool showCycles = true;
-    bool showDistance = true;
+    bool shouldShowArrivals = true;
+    bool shouldShowDepartures = true;
+    bool shouldShowCycles = true;
+    bool shouldShowDistance = true;
     quint64 maxDuration = 0;
     quint64 minDuration = 0;
     qreal maxDistance = 0;

@@ -13,9 +13,11 @@
 #include <QVector>
 #include <QFutureWatcher>
 
+
 namespace Ui {
 class MainWindow;
 }
+
 
 class MainWindow : public QMainWindow
 {
@@ -30,6 +32,10 @@ protected:
 private:
     QMenu* createFilesMenu() const;  
 
+    template<typename T>
+    void runAsync(const QFuture<T>& future);
+    bool loadData(const QStringList& filenames);
+    bool unloadData();
     void filterTrips(const TripsFilterParams& params);
     void sortStations(const bss::SortOrder& param);
 
@@ -77,6 +83,14 @@ private slots:
     void on_checkBox_duration_stateChanged(int arg1);
     void on_checkBox_distance_stateChanged(int arg1);
     void on_comboBox_order_currentIndexChanged(int index);
+    void on_rangeSlider_distance_firstValueChanged(qreal v);
+    void on_rangeSlider_distance_secondValueChanged(qreal v);
+    void on_rangeSlider_duration_firstValueChanged(qreal v);
+    void on_rangeSlider_duration_secondValueChanged(qreal v);
+    void on_rangeSlider_direction_firstValueChanged(qreal v);
+    void on_rangeSlider_direction_secondValueChanged(qreal v);
+    void on_rangeSlider_odFlow_firstValueChanged(qreal v);
+    void on_rangeSlider_odFlow_secondValueChanged(qreal v);
 
 signals:
     void dataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations);

@@ -22,6 +22,8 @@ struct DataLoadResult
 class Model
 {
 public:
+    inline bool hasData() const { return m_hasData; }
+
     inline int tripsCount() const { return m_trips.count(); }
     inline int stationsCount() const { return m_stations.count(); }
 
@@ -38,9 +40,10 @@ public:
     inline const QVector<Station>& constStations() const { return m_stations; }
 
     DataLoadResult loadData(const QString& filename);
-    void unloadData();
+    bool unloadData();
 
 private:
+    bool m_hasData = false;
     QVector<Trip> m_trips;
     QVector<Station> m_stations;
 };

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui concurrent opengl
+QT       += core gui quickwidgets concurrent opengl
 
 greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 

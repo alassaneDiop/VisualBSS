@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>988</width>
-    <height>609</height>
+    <width>876</width>
+    <height>645</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -73,7 +73,7 @@
            <widget class="MapGLWidget" name="mapwidget">
             <property name="minimumSize">
              <size>
-              <width>500</width>
+              <width>400</width>
               <height>0</height>
              </size>
             </property>
@@ -99,7 +99,7 @@
                <x>0</x>
                <y>0</y>
                <width>600</width>
-               <height>440</height>
+               <height>476</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -199,7 +199,7 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <property name="spacing">
-              <number>3</number>
+              <number>6</number>
              </property>
              <property name="leftMargin">
               <number>3</number>
@@ -217,19 +217,19 @@
               <widget class="QWidget" name="widget_periodDay" native="true">
                <layout class="QHBoxLayout" name="horizontalLayout">
                 <property name="spacing">
-                 <number>12</number>
+                 <number>3</number>
                 </property>
                 <property name="leftMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="topMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="rightMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <item>
                  <widget class="QWidget" name="widget_period_2" native="true">
@@ -329,16 +329,16 @@
                  <number>3</number>
                 </property>
                 <property name="leftMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="topMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="rightMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <item>
                  <widget class="QComboBox" name="comboBox_dayOfWeek">
@@ -411,7 +411,7 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_14">
              <property name="spacing">
-              <number>3</number>
+              <number>6</number>
              </property>
              <property name="leftMargin">
               <number>3</number>
@@ -454,16 +454,16 @@
                  <number>3</number>
                 </property>
                 <property name="leftMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="topMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="rightMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <item>
                  <widget class="QWidget" name="widget_displayLeft" native="true">
@@ -580,7 +580,7 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_10">
              <property name="spacing">
-              <number>3</number>
+              <number>6</number>
              </property>
              <property name="leftMargin">
               <number>3</number>
@@ -658,7 +658,7 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_9">
              <property name="spacing">
-              <number>3</number>
+              <number>6</number>
              </property>
              <property name="leftMargin">
               <number>3</number>
@@ -695,22 +695,37 @@
               <widget class="QWidget" name="widget_filter" native="true">
                <layout class="QVBoxLayout" name="verticalLayout_16">
                 <property name="spacing">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="leftMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="topMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="rightMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <item>
-                 <widget class="QWidget" name="widget_distance" native="true">
+                 <widget class="QFrame" name="frame_distance">
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::Box</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Sunken</enum>
+                  </property>
+                  <property name="lineWidth">
+                   <number>1</number>
+                  </property>
+                  <property name="midLineWidth">
+                   <number>0</number>
+                  </property>
                   <layout class="QHBoxLayout" name="horizontalLayout_7">
                    <property name="spacing">
                     <number>3</number>
@@ -735,22 +750,104 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="label_minDistance">
+                    <spacer name="horizontalSpacer_distance">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="lineEdit_minDistance">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>60</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
                      <property name="text">
-                      <string>TextLabel</string>
+                      <string>0</string>
+                     </property>
+                     <property name="maxLength">
+                      <number>6</number>
+                     </property>
+                     <property name="frame">
+                      <bool>true</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="readOnly">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="label_maxDistance">
+                    <widget class="QQuickWidget" name="rangeSlider_distance">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>120</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="resizeMode">
+                      <enum>QQuickWidget::SizeRootObjectToView</enum>
+                     </property>
+                     <property name="source">
+                      <url>
+                       <string>qrc:/QML/qml/controls/RangeSlider.qml</string>
+                      </url>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="lineEdit_maxDistance">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>60</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
                      <property name="text">
-                      <string>TextLabel</string>
+                      <string>100000</string>
+                     </property>
+                     <property name="maxLength">
+                      <number>6</number>
+                     </property>
+                     <property name="frame">
+                      <bool>true</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="readOnly">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -758,7 +855,19 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QWidget" name="widget_duration" native="true">
+                 <widget class="QFrame" name="frame_duration">
+                  <property name="frameShape">
+                   <enum>QFrame::Box</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Sunken</enum>
+                  </property>
+                  <property name="lineWidth">
+                   <number>1</number>
+                  </property>
+                  <property name="midLineWidth">
+                   <number>0</number>
+                  </property>
                   <layout class="QHBoxLayout" name="horizontalLayout_8">
                    <property name="spacing">
                     <number>3</number>
@@ -783,16 +892,101 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="label_minDuration">
+                    <spacer name="horizontalSpacer_duration">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="lineEdit_minDuration">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>60</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
                      <property name="text">
-                      <string>TextLabel</string>
+                      <string>0</string>
+                     </property>
+                     <property name="maxLength">
+                      <number>6</number>
+                     </property>
+                     <property name="frame">
+                      <bool>true</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="readOnly">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="label_maxDuration">
+                    <widget class="QQuickWidget" name="rangeSlider_duration">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>120</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="resizeMode">
+                      <enum>QQuickWidget::SizeRootObjectToView</enum>
+                     </property>
+                     <property name="source">
+                      <url>
+                       <string>qrc:/QML/qml/controls/RangeSlider.qml</string>
+                      </url>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="lineEdit_maxDuration">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>60</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
                      <property name="text">
-                      <string>TextLabel</string>
+                      <string>100000</string>
+                     </property>
+                     <property name="maxLength">
+                      <number>6</number>
+                     </property>
+                     <property name="frame">
+                      <bool>true</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="readOnly">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -800,7 +994,19 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QWidget" name="widget_direction" native="true">
+                 <widget class="QFrame" name="frame_direction">
+                  <property name="frameShape">
+                   <enum>QFrame::Box</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Sunken</enum>
+                  </property>
+                  <property name="lineWidth">
+                   <number>1</number>
+                  </property>
+                  <property name="midLineWidth">
+                   <number>0</number>
+                  </property>
                   <layout class="QHBoxLayout" name="horizontalLayout_9">
                    <property name="spacing">
                     <number>3</number>
@@ -825,16 +1031,101 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="label_minDirection">
+                    <spacer name="horizontalSpacer_3">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="lineEdit_minDirection">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>60</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
                      <property name="text">
-                      <string>TextLabel</string>
+                      <string>0</string>
+                     </property>
+                     <property name="maxLength">
+                      <number>6</number>
+                     </property>
+                     <property name="frame">
+                      <bool>true</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="readOnly">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="label_maxDirection">
+                    <widget class="QQuickWidget" name="rangeSlider_direction">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>120</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="resizeMode">
+                      <enum>QQuickWidget::SizeRootObjectToView</enum>
+                     </property>
+                     <property name="source">
+                      <url>
+                       <string>qrc:/QML/qml/controls/RangeSlider.qml</string>
+                      </url>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="lineEdit_maxDirection">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>60</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
                      <property name="text">
-                      <string>TextLabel</string>
+                      <string>360</string>
+                     </property>
+                     <property name="maxLength">
+                      <number>6</number>
+                     </property>
+                     <property name="frame">
+                      <bool>true</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="readOnly">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -842,7 +1133,19 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QWidget" name="widget_odFlow" native="true">
+                 <widget class="QFrame" name="frame_odFlow">
+                  <property name="frameShape">
+                   <enum>QFrame::Box</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Sunken</enum>
+                  </property>
+                  <property name="lineWidth">
+                   <number>1</number>
+                  </property>
+                  <property name="midLineWidth">
+                   <number>0</number>
+                  </property>
                   <layout class="QHBoxLayout" name="horizontalLayout_10">
                    <property name="spacing">
                     <number>3</number>
@@ -867,16 +1170,101 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="label_minOdFlow">
+                    <spacer name="horizontalSpacer_odFlow">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="lineEdit_minOdFlow">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>60</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
                      <property name="text">
-                      <string>TextLabel</string>
+                      <string>0</string>
+                     </property>
+                     <property name="maxLength">
+                      <number>6</number>
+                     </property>
+                     <property name="frame">
+                      <bool>true</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="readOnly">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="label_maxOdFlow">
+                    <widget class="QQuickWidget" name="rangeSlider_odFlow">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>120</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="resizeMode">
+                      <enum>QQuickWidget::SizeRootObjectToView</enum>
+                     </property>
+                     <property name="source">
+                      <url>
+                       <string>qrc:/QML/qml/controls/RangeSlider.qml</string>
+                      </url>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="lineEdit_maxOdFlow">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>60</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
                      <property name="text">
-                      <string>TextLabel</string>
+                      <string>100000</string>
+                     </property>
+                     <property name="maxLength">
+                      <number>6</number>
+                     </property>
+                     <property name="frame">
+                      <bool>true</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="readOnly">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -905,7 +1293,7 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_18">
              <property name="spacing">
-              <number>3</number>
+              <number>6</number>
              </property>
              <property name="leftMargin">
               <number>3</number>
@@ -957,16 +1345,16 @@
                     <number>3</number>
                    </property>
                    <property name="leftMargin">
-                    <number>3</number>
+                    <number>0</number>
                    </property>
                    <property name="topMargin">
-                    <number>3</number>
+                    <number>0</number>
                    </property>
                    <property name="rightMargin">
-                    <number>3</number>
+                    <number>0</number>
                    </property>
                    <property name="bottomMargin">
-                    <number>3</number>
+                    <number>0</number>
                    </property>
                    <item>
                     <widget class="QWidget" name="widget_top" native="true">
@@ -1118,7 +1506,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>988</width>
+     <width>876</width>
      <height>19</height>
     </rect>
    </property>
@@ -1135,6 +1523,11 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>QQuickWidget</class>
+   <extends>QWidget</extends>
+   <header>QtQuickWidgets/QQuickWidget</header>
+  </customwidget>
   <customwidget>
    <class>MapGLWidget</class>
    <extends>QOpenGLWidget</extends>

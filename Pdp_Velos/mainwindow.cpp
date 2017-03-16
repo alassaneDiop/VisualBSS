@@ -5,8 +5,8 @@
 #include <QtConcurrent>
 #include <QFileDialog>
 
-
 #include "config.h"
+
 
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),
@@ -21,40 +21,53 @@ MainWindow::MainWindow(QWidget* parent) :
     m_selector = new TripsSelector();
     m_stationsFilter = new StationsFilter();
     m_stationsSorter = new StationsSorter();
+
     m_futureWatcher = new QFutureWatcher<void>();
+    const Qt::ConnectionType connectionType = (Qt::ConnectionType)(Qt::QueuedConnection | Qt::UniqueConnection);
+    connect(m_futureWatcher, &QFutureWatcher<void>::started, this, &MainWindow::onAsyncTaskStarted, connectionType);
+    connect(m_futureWatcher, &QFutureWatcher<void>::finished, this, &MainWindow::onAsyncTaskFinished, connectionType);
 
-    // listening to himself (isn't there a better solution, like event queues ?)
-    connect(this, &MainWindow::dataLoaded, this, &MainWindow::onDataLoaded, Qt::BlockingQueuedConnection);
-    connect(this, &MainWindow::failedToLoadData, &MainWindow::onFailedToLoadData);
-    connect(this, &MainWindow::dataUnloaded, &MainWindow::onDataUnloaded);
+    connect(this, &MainWindow::dataLoaded, this, &MainWindow::onDataLoaded, connectionType);
+    connect(this, &MainWindow::failedToLoadData, this, &MainWindow::onFailedToLoadData, connectionType);
+    connect(this, &MainWindow::dataUnloaded, this, &MainWindow::onDataUnloaded, connectionType);
 
-    connect(m_futureWatcher, &QFutureWatcher<void>::started, this, &MainWindow::onAsyncTaskStarted);
-    connect(m_futureWatcher, &QFutureWatcher<void>::finished, this, &MainWindow::onAsyncTaskFinished);
+    const QObject* distanceRangeSlider = reinterpret_cast<QObject*>((QObject*)ui->rangeSlider_distance->rootObject());
+    connect(distanceRangeSlider, SIGNAL(firstValueChanged(qreal)), SLOT(on_rangeSlider_distance_firstValueChanged(qreal)));
+    connect(distanceRangeSlider, SIGNAL(secondValueChanged(qreal)), SLOT(on_rangeSlider_distance_secondValueChanged(qreal)));
+
+    const QObject* durationRangeSlider = reinterpret_cast<QObject*>((QObject*)ui->rangeSlider_duration->rootObject());
+    connect(durationRangeSlider, SIGNAL(firstValueChanged(qreal)), SLOT(on_rangeSlider_duration_firstValueChanged(qreal)));
+    connect(durationRangeSlider, SIGNAL(secondValueChanged(qreal)), SLOT(on_rangeSlider_duration_secondValueChanged(qreal)));
+
+    const QObject* odFlowRangeSlider = reinterpret_cast<QObject*>((QObject*)ui->rangeSlider_odFlow->rootObject());
+    connect(odFlowRangeSlider, SIGNAL(firstValueChanged(qreal)), SLOT(on_rangeSlider_odFlow_firstValueChanged(qreal)));
+    connect(odFlowRangeSlider, SIGNAL(secondValueChanged(qreal)), SLOT(on_rangeSlider_odFlow_secondValueChanged(qreal)));
+
+    QObject* const directionRangeSlider = reinterpret_cast<QObject*>((QObject*)ui->rangeSlider_direction->rootObject());
+    connect(directionRangeSlider, SIGNAL(firstValueChanged(qreal)), SLOT(on_rangeSlider_direction_firstValueChanged(qreal)));
+    connect(directionRangeSlider, SIGNAL(secondValueChanged(qreal)), SLOT(on_rangeSlider_direction_secondValueChanged(qreal)));
+    directionRangeSlider->setProperty("snapMode", "NoSnap");
+    directionRangeSlider->setProperty("from", 0);
+    directionRangeSlider->setProperty("to", 360);
+    directionRangeSlider->setProperty("stepSize", 0.0001);
+
+
+    /* It's needed to pass parameters of type QVector<T> to queued signals (it' apparently a Qt bug)
+     * https://forum.qt.io/topic/2826/solved-cross-thread-signal-cannot-queue-arguments-of-type-qvector-qvector-int/3
+     * By the way, the typedef suggested in the answer from the forum is not needed
+     * */
+    qRegisterMetaType<QVector<Trip>>("QVector<Trip>");
+    qRegisterMetaType<QVector<Station>>("QVector<Station>");
 }
 
 MainWindow::~MainWindow()
 {
-    if (m_filter)
-        delete m_filter;
-
-    if (m_selector)
-        delete m_selector;
-
-    if (m_stationsFilter)
-        delete m_stationsFilter;
-
-    if (m_stationsSorter)
-        delete m_stationsSorter;
-
-    if (m_model)
-        delete m_model;
-
-    if (m_futureWatcher)
-    {
-        m_futureWatcher->waitForFinished();
-        m_futureWatcher->disconnect();
-        delete m_futureWatcher;
-    }
+    delete m_filter;
+    delete m_selector;
+    delete m_stationsFilter;
+    delete m_stationsSorter;
+    delete m_futureWatcher;
+    delete m_model;
     delete ui;
 }
 
@@ -74,52 +87,72 @@ QMenu* MainWindow::createFilesMenu() const
 
     QAction* const openFilesAction = new QAction("Open");
     openFilesAction->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirOpenIcon));
+    connect(openFilesAction, &QAction::triggered, this, &MainWindow::onOpenFilesActionTriggered);
 
     QAction* const closeFilesAction = new QAction("Close all");
     closeFilesAction->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirClosedIcon));
+    connect(closeFilesAction, &QAction::triggered, this, &MainWindow::onCloseFilesActionTriggered);
 
     QMenu* const filesMenu = new QMenu("File");
     filesMenu->addAction(openFilesAction);
-    filesMenu->addAction(closeFilesAction);
-
-    connect(openFilesAction, &QAction::triggered, this, &MainWindow::onOpenFilesActionTriggered);
-    connect(closeFilesAction, &QAction::triggered, this, &MainWindow::onCloseFilesActionTriggered);
+    filesMenu->addAction(closeFilesAction); 
 
     return filesMenu;
 }
 
+template<typename T>
+void MainWindow::runAsync(const QFuture<T>& future)
+{
+    m_futureWatcher->setFuture(future);
+}
 
+bool MainWindow::loadData(const QStringList& filenames)
+{
+    bool hasLoadedData = false;
+    for (const QString filename : filenames)
+    {
+        const DataLoadResult loadResult = m_model->loadData(filename);
+        if (!loadResult.info.ok)
+            emit failedToLoadData(filename, loadResult.info.errorString);
+        else
+        {
+            hasLoadedData = true;
+            emit dataLoaded(loadResult.trips, loadResult.stations);
+        }
+    }
+    return hasLoadedData;
+}
+
+bool MainWindow::unloadData()
+{
+    if (!m_model->unloadData())
+        return false;
+    else
+    {
+        emit dataUnloaded();
+        return true;
+    }
+}
 
 void MainWindow::filterTrips(const TripsFilterParams& params)
 {
-    // TODO : filterTrips
-    QThread::sleep(6);
-
-    if (m_filter)
+    m_filter->setParams(params);
+    const QVector<bss::tripId> filteredTrips = m_filter->filter(m_model->constTrips());
+    if (m_filteredTrips != filteredTrips)
     {
-        const QVector<bss::tripId> filteredTrips = m_filter->filter(m_model->constTrips());
-        if (m_filteredTrips != filteredTrips)
-        {
-            m_filteredTrips = filteredTrips;
-            onFilteredTripsChanged(filteredTrips);
-        }
+        m_filteredTrips = filteredTrips;
+        onFilteredTripsChanged(filteredTrips);
     }
 }
 
 void MainWindow::sortStations(const bss::SortOrder& param)
 {
-    // TODO : filterTrips
-    QThread::sleep(6);
-
-    if (m_stationsSorter && m_model)
+    m_stationsSorter->setSortParam(param);
+    const QVector<bss::stationId> sortedStations = m_stationsSorter->sort(m_model->constStations());
+    if (m_stationsOrder != sortedStations)
     {
-        m_stationsSorter->setSortParam(param);
-        const QVector<bss::stationId> sortedStations = m_stationsSorter->sort(m_model->constStations());
-        if (m_stationsOrder != sortedStations)
-        {
-            m_stationsOrder = sortedStations;
-            onStationsOrderChanged(sortedStations);
-        }
+        m_stationsOrder = sortedStations;
+        onStationsOrderChanged(sortedStations);
     }
 }
 
@@ -132,50 +165,26 @@ void MainWindow::onOpenFilesActionTriggered()
     const QString dirPath = QDir::rootPath();
     const QStringList filenames = QFileDialog::getOpenFileNames(this, caption, dirPath, filter);
 
-
-    if (m_futureWatcher && m_model && !filenames.isEmpty())
-    {
-        const auto task = [this](const QStringList& filenames)
-        {
-            for (const QString filename : filenames)
-            {
-                const DataLoadResult result = m_model->loadData(filename);
-                if (result.info.ok)
-                    emit dataLoaded(result.trips, result.stations);
-                else
-                    emit failedToLoadData(filename, result.info.errorString);
-            }
-
-        };
-        m_futureWatcher->setFuture(QtConcurrent::run(task, filenames));
-    }
+    runAsync(QtConcurrent::run(this, &MainWindow::loadData, filenames));
 }
 
 void MainWindow::onCloseFilesActionTriggered()
 {
-    if (m_futureWatcher && m_model)
-    {
-        const auto task = [this]()
-        {
-            m_model->unloadData();
-            emit dataUnloaded();
-        };
-
-        m_futureWatcher->setFuture(QtConcurrent::run(task));
-    }
+    runAsync(QtConcurrent::run(this, &MainWindow::unloadData));
 }
 
 
 
 void MainWindow::onAsyncTaskStarted()
 {
+    // disables menu bar and filter controls when an async task has finished running
     ui->menuBar->setEnabled(false);
     ui->frame_controls->setEnabled(false);
 }
 
 void MainWindow::onAsyncTaskFinished()
 {
-    // restore menu bar and filter controls when an async task has finished running
+    // restores menu bar and filter controls when an async task has finished running
     ui->menuBar->setEnabled(m_shouldEnableMenuBar);
     ui->frame_controls->setEnabled(m_shouldEnableControlsFrame);
 }
@@ -184,6 +193,7 @@ void MainWindow::onAsyncTaskFinished()
 
 void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations)
 {
+    // we know we have data to display and manipulate so we can enable controls
     m_shouldEnableControlsFrame = true;
 
     qDebug() << "onDataLoaded" << "Trip number" << trips.size() << "Station number" << stations.size();
@@ -310,6 +320,7 @@ void MainWindow::onFailedToLoadData(const QString& filename, const QString& erro
 
 void MainWindow::onDataUnloaded()
 {
+    // data aren't available anymore so controls are disabled
     m_shouldEnableControlsFrame = false;
 }
 
@@ -336,14 +347,12 @@ void MainWindow::onHighlightChanged(const bss::stationId& highlight)
 
 void MainWindow::onTripsFilterParamsChanged(const TripsFilterParams& params)
 {
-    if (m_futureWatcher)
-        m_futureWatcher->setFuture(QtConcurrent::run(this, &MainWindow::filterTrips, params));
+    runAsync(QtConcurrent::run(this, &MainWindow::filterTrips, params));
 }
 
 void MainWindow::onStationsSorterParamChanged(const bss::SortOrder& param)
 {
-    if (m_futureWatcher)
-        m_futureWatcher->setFuture(QtConcurrent::run(this, &MainWindow::sortStations, param));
+    runAsync(QtConcurrent::run(this, &MainWindow::sortStations, param));
 }
 
 
@@ -365,19 +374,19 @@ void MainWindow::on_comboBox_dayOfWeek_currentIndexChanged(int index)
 
 void MainWindow::on_checkBox_arrivals_stateChanged(int arg1)
 {
-    m_filterParams.showArrivals = (arg1 == Qt::Checked);
+    m_filterParams.shouldShowArrivals = (arg1 == Qt::Checked);
     onTripsFilterParamsChanged(m_filterParams);
 }
 
 void MainWindow::on_checkBox_departures_stateChanged(int arg1)
 {
-    m_filterParams.showDepartures = (arg1 == Qt::Checked);
+    m_filterParams.shouldShowDepartures = (arg1 == Qt::Checked);
     onTripsFilterParamsChanged(m_filterParams);
 }
 
 void MainWindow::on_checkBox_cycles_stateChanged(int arg1)
 {
-    m_filterParams.showCycles = (arg1 == Qt::Checked);
+    m_filterParams.shouldShowCycles = (arg1 == Qt::Checked);
     onTripsFilterParamsChanged(m_filterParams);
 }
 
@@ -388,7 +397,7 @@ void MainWindow::on_checkBox_duration_stateChanged(int arg1)
 
 void MainWindow::on_checkBox_distance_stateChanged(int arg1)
 {
-    m_filterParams.showDistance = (arg1 == Qt::Checked);
+    m_filterParams.shouldShowDistance = (arg1 == Qt::Checked);
     onTripsFilterParamsChanged(m_filterParams);
 }
 
@@ -399,4 +408,44 @@ void MainWindow::on_comboBox_order_currentIndexChanged(int index)
     { bss::DISTANCE, bss::DURATION, bss::ARRIVALS, bss::DEPARTURES, bss::CYCLES });
 
     onStationsSorterParamChanged(sortParams.at(index));
+}
+
+void MainWindow::on_rangeSlider_distance_firstValueChanged(qreal v)
+{
+    ui->lineEdit_minDistance->setText(QString::number(v));
+}
+
+void MainWindow::on_rangeSlider_distance_secondValueChanged(qreal v)
+{
+    ui->lineEdit_maxDistance->setText(QString::number(v));
+}
+
+void MainWindow::on_rangeSlider_duration_firstValueChanged(qreal v)
+{
+    ui->lineEdit_minDuration->setText(QString::number(v));
+}
+
+void MainWindow::on_rangeSlider_duration_secondValueChanged(qreal v)
+{
+    ui->lineEdit_maxDuration->setText(QString::number(v));
+}
+
+void MainWindow::on_rangeSlider_direction_firstValueChanged(qreal v)
+{
+    ui->lineEdit_minDirection->setText(QString::number(v));
+}
+
+void MainWindow::on_rangeSlider_direction_secondValueChanged(qreal v)
+{
+    ui->lineEdit_maxDirection->setText(QString::number(v));
+}
+
+void MainWindow::on_rangeSlider_odFlow_firstValueChanged(qreal v)
+{
+    ui->lineEdit_minOdFlow->setText(QString::number(v));
+}
+
+void MainWindow::on_rangeSlider_odFlow_secondValueChanged(qreal v)
+{
+    ui->lineEdit_maxOdFlow->setText(QString::number(v));
 }
