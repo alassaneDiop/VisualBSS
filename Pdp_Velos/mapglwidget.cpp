@@ -4,16 +4,16 @@
 #include <QDebug>
 #include <QtGlobal>
 
-
 #include "stationrenderer.h"
 
 
 MapGLWidget::MapGLWidget(QWidget* p) : QOpenGLWidget(p)
 {
     m_zoom = 1.0f;
+    m_translationSensibility = this->width();
     m_leftMouseButtonPressed = false;
-    m_translationOffsetX = 0.f;
-    m_translationOffsetY = 0.f;
+    m_translationX = 0.f;
+    m_translationY = 0.f;
 
     m_stationsLoaded = false;
     m_tripsLoaded = false;
@@ -56,25 +56,18 @@ void MapGLWidget::initializeGL()
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);
     glEnable(GL_MULTISAMPLE);
 
-    m_shaderProgramStations = new QOpenGLShaderProgram(this->context());
-    m_shaderProgramStations->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/stations.vert");
-    m_shaderProgramStations->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/shaders/stations.frag");
-    m_shaderProgramStations->link();
-    m_shaderProgramStations->bind();
-    m_shaderProgramStations->release();
+    if (!initializeShaderStations())
+        onShaderError(m_shaderProgramStations->log());
 
-    m_shaderProgramTrips = new QOpenGLShaderProgram();
-    m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/trips.vert");
-    m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/shaders/trips.frag");
-    m_shaderProgramTrips->link();
-    m_shaderProgramTrips->bind();
-    m_shaderProgramTrips->release();
+    if (!initializeShaderTrips())
+        onShaderError(m_shaderProgramTrips->log());
 
     qDebug() << "MapGLWidget::initializeGL() OpenGL version:" << this->format().version();
 }
 
 void MapGLWidget::resizeGL(int width, int height)
 {
+    m_translationSensibility = width;
     glViewport(0, 0, width, height);
 }
 
@@ -82,43 +75,47 @@ void MapGLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    if (m_stationsLoaded)
-        drawStations();
+    drawStations();
 
-    if (m_tripsLoaded)
-        drawTrips();
+    drawTrips();
 }
 
 
 
 void MapGLWidget::drawStations()
 {
-    m_shaderProgramStations->bind();
+    if (m_stationsLoaded)
+    {
+        m_shaderProgramStations->bind();
 
-    int zoomLoc = m_shaderProgramStations->uniformLocation("zoom");
-    glUniform1f(zoomLoc, m_zoom);
+        const int zoomLoc = m_shaderProgramStations->uniformLocation("zoom");
+        glUniform1f(zoomLoc, m_zoom);
 
-    int translationLoc = m_shaderProgramStations->uniformLocation("translation");
-    glUniform2f(translationLoc, m_translationOffsetX, m_translationOffsetY);
+        const int translationLoc = m_shaderProgramStations->uniformLocation("translation");
+        glUniform2f(translationLoc, m_translationX, m_translationY);
 
-    m_stationRenderer->draw();
+        m_stationRenderer->draw();
 
-    m_shaderProgramStations->release();
+        m_shaderProgramStations->release();
+    }
 }
 
 void MapGLWidget::drawTrips()
 {
-    m_shaderProgramTrips->bind();
+    if (m_tripsLoaded)
+    {
+        m_shaderProgramTrips->bind();
 
-    int zoomLoc = m_shaderProgramTrips->uniformLocation("zoom");
-    glUniform1f(zoomLoc, m_zoom);
+        const int zoomLoc = m_shaderProgramTrips->uniformLocation("zoom");
+        glUniform1f(zoomLoc, m_zoom);
 
-    int translationLoc = m_shaderProgramTrips->uniformLocation("translation");
-    glUniform2f(translationLoc, m_translationOffsetX, m_translationOffsetY);
+        const int translationLoc = m_shaderProgramTrips->uniformLocation("translation");
+        glUniform2f(translationLoc, m_translationX, m_translationY);
 
-    m_tripRenderer->draw();
+        m_tripRenderer->draw();
 
-    m_shaderProgramTrips->release();
+        m_shaderProgramTrips->release();
+    }
 }
 
 void MapGLWidget::loadStationsData(const QVector<float>& data, unsigned int verticesCount)
@@ -165,22 +162,22 @@ void MapGLWidget::calculateBoundingBoxStations(const QVector<float>& data)
     float minLongitude = 180.f;
     float maxLongitude = -180.f;
 
+    // 2 for x,y and 3 for R,G,B
     const int vertexSize = 5;
 
-    // Iterate on x
+    // Find min and max longitude (X)
     for (int i = 0; i < data.size(); i += vertexSize)
     {
         minLongitude = qMin(minLongitude, data[i]);
         maxLongitude = qMax(maxLongitude, data[i]);
     }
 
-    // Iterate on y
+    // Find min and max latitude (Y)
     for (int i = 1; i < data.size(); i += vertexSize)
     {
         minLatitude = qMin(minLatitude, data[i]);
         maxLatitude = qMax(maxLatitude, data[i]);
     }
-
 
     m_boundingBoxStations = QRectF(minLongitude, maxLatitude,
                                    maxLongitude - minLongitude,
@@ -192,8 +189,8 @@ void MapGLWidget::calculateTranslation()
 {
     QPointF center = m_boundingBoxStations.center();
 
-    m_translationOffsetX = -center.x();
-    m_translationOffsetY = center.y();
+    m_translationX = -center.x();
+    m_translationY = center.y();
 }
 
 void MapGLWidget::calculateZoom()
@@ -202,7 +199,7 @@ void MapGLWidget::calculateZoom()
 
     if (x != 0)
     {
-        // OpenGL coordinates from -1 to 1
+        // OpenGL coordinates system from -1 to 1
         const int coordinateSystemLength = 2;
 
         // FIXME: comprendre pourquoi le zoom n'est pas centré sur le centre
@@ -222,9 +219,8 @@ void MapGLWidget::wheelEvent(QWheelEvent* event)
     if (m_zoom < minZoom)
         m_zoom = minZoom;
 
-    qDebug() << "zoom" << m_zoom;
-
-    qDebug() <<  "Wheel event";
+    //    qDebug() << "zoom" << m_zoom;
+    //    qDebug() <<  "Wheel event";
     update();
     event->accept();
 }
@@ -234,8 +230,10 @@ void MapGLWidget::mouseMoveEvent(QMouseEvent* event)
     if (m_leftMouseButtonPressed)
     {
         QPointF currentPos = event->pos();
-        m_translationOffsetX += 1.f / m_zoom * (currentPos.x() - m_previousMousePos.x()) / m_translationSensibility;
-        m_translationOffsetY += 1.f / m_zoom * (currentPos.y() - m_previousMousePos.y()) / m_translationSensibility;
+
+        // TODO: refactoriser
+        m_translationX += 1.f / m_zoom * (currentPos.x() - m_previousMousePos.x()) / m_translationSensibility;
+        m_translationY += 1.f / m_zoom * (currentPos.y() - m_previousMousePos.y()) / m_translationSensibility;
 
         m_previousMousePos = event->pos();
         update();
@@ -250,7 +248,7 @@ void MapGLWidget::mousePressEvent(QMouseEvent* event)
         QGuiApplication::setOverrideCursor(Qt::ClosedHandCursor);
         m_leftMouseButtonPressed = true;
         m_previousMousePos = event->pos();
-        qDebug() <<  "press";
+        //qDebug() <<  "left mouse button pressed";
         event->accept();
     }
 }
@@ -261,7 +259,35 @@ void MapGLWidget::mouseReleaseEvent(QMouseEvent* event)
     {
         QGuiApplication::restoreOverrideCursor();
         m_leftMouseButtonPressed = false;
-        qDebug() <<  "release";
+        //        qDebug() <<  "left mouse button released";
         event->accept();
     }
+}
+
+bool MapGLWidget::initializeShaderTrips()
+{
+    bool initializationIsOk = true;
+
+    m_shaderProgramTrips = new QOpenGLShaderProgram();
+    initializationIsOk &= m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/trips.vert");
+    initializationIsOk &= m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/shaders/trips.frag");
+    initializationIsOk &= m_shaderProgramTrips->link();
+    initializationIsOk &= m_shaderProgramTrips->bind();
+    m_shaderProgramTrips->release();
+
+    return initializationIsOk;
+}
+
+bool MapGLWidget::initializeShaderStations()
+{
+    bool initializationIsOk = true;
+
+    m_shaderProgramStations = new QOpenGLShaderProgram(this->context());
+    initializationIsOk &= m_shaderProgramStations->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/stations.vert");
+    initializationIsOk &= m_shaderProgramStations->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/shaders/stations.frag");
+    initializationIsOk &= m_shaderProgramStations->link();
+    initializationIsOk &= m_shaderProgramStations->bind();
+    m_shaderProgramStations->release();
+
+    return initializationIsOk;
 }

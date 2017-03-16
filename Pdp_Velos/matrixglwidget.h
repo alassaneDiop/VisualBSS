@@ -1,27 +1,23 @@
 #ifndef MATRIXOPENGLWIDGET_H
 #define MATRIXOPENGLWIDGET_H
 
+#include "selectorrenderer.h"
+#include "glyphrenderer.h"
+
 #include <QWheelEvent>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QColor>
-
-#include "selectorrenderer.h"
-#include "glyphrenderer.h"
-
-#include "typedefs.h"
-
 #include <QVector>
 #include <QPair>
+
 
 namespace bss {
 class MatrixGLWidget;
 }
 
 class QMouseEvent;
-class Station;
-class Trip;
-class QPoint;
+class QPointF;
 class QOpenGLShaderProgram;
 
 class MatrixGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
@@ -45,37 +41,40 @@ protected:
 private:
     void drawSelector();
     void drawGlyphs();
+    void updateSelector() const;
 
-    QPair<QPair<char, char>, QPair<int, int>>& tripsInSelector();
+    bool initializeShaderSelector();
+    bool initializeShaderGlyphs();
 
-private:
-    const int   m_matrixOffsetX = 10;
 
-    int         m_matrixViewWidth;
+    QPair<QPair<char, char>, QPair<int, int>>& tripsInSelector() const;
 
-    QVector<QPoint> m_ellipses;
+    int m_matrixViewWidth;
 
-    bool    m_leftMouseButtonPressed;
+    bool m_leftMouseButtonPressed;
     QPointF m_previousMousePos;
-    float   m_translationOffsetY;
+    float m_translationY;
 
-    QPointF     m_topLeftSelectionRectangle;
-    QPointF     m_bottomRightSelectionRectangle;
+    QPointF m_topLeftSelectionRectangle;
+    QPointF m_bottomRightSelectionRectangle;
 
-    bool    m_drawRectangle;
+    bool m_drawSelector;
 
-    QList<const Station*>   m_stations;
-    QList<const Trip*>      m_trips;
+    const QColor m_backgroundColor = QColor(Qt::white);
 
-    const QColor            m_backgroundColor = QColor(Qt::white);
+    bool m_glyphsLoaded;
 
-    bool                    m_glyphsLoaded;
-
-    SelectorRenderer*       m_selectorRenderer;
-    GlyphRenderer*          m_glyphRenderer;
-    QOpenGLShaderProgram*   m_shaderProgramSelector;
-    QOpenGLShaderProgram*   m_shaderProgramGlyph;
+    SelectorRenderer* m_selectorRenderer;
+    GlyphRenderer* m_glyphRenderer;
+    QOpenGLShaderProgram* m_shaderProgramSelector;
+    QOpenGLShaderProgram* m_shaderProgramGlyph;
 
     bool m_isGlyphsVAOCreated;
+
+
+signals:
+    void onSelectionChanged(short minTime, short maxTime, int fromStationIndex, int toStationIndex);
+
+    void onShaderError(const QString& message);
 };
 #endif // MATRIXOPENGLWIDGET_H

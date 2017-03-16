@@ -15,7 +15,6 @@ class TimeLineWidget : public QWidget
 public:
     TimeLineWidget(QWidget *parent = 0);
 
-    // TODO: supprimer
     int length() const;
 
 protected:

@@ -279,7 +279,7 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     {
         for (int j = 0; j < bss::NB_OF_HOUR; ++j)
         {
-            //for (int k = 0; k < stations.size(); k++)
+            for (int k = 0; k < 1; k++)
             {
                 // JUST DRAWING LINE
                 // VERTEX #1

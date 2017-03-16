@@ -12,9 +12,8 @@ namespace bss {
 class MapGLWidget;
 }
 
-class Point;
+class PointF;
 class QOpenGLShaderProgram;
-class QOpenGLBuffer;
 
 class MapGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -45,23 +44,25 @@ private:
     void calculateZoom();
     void calculateBoundingBoxStations(const QVector<float>& data);
 
-private:
-    //FIXME: calculer en fonction de la largeur hauteur du widget
-    const float m_translationSensibility = 200.f;
+    bool initializeShaderTrips();
+    bool initializeShaderStations();
+
+
+    float m_translationSensibility;
 
     QRectF m_boundingBoxStations;
 
-    float   m_zoom;
-    bool    m_leftMouseButtonPressed;
-    float   m_translationOffsetX;
-    float   m_translationOffsetY;
+    float m_zoom;
+    bool m_leftMouseButtonPressed;
+    float m_translationX;
+    float m_translationY;
     QPointF m_previousMousePos;
 
-    QOpenGLShaderProgram*   m_shaderProgramStations;
-    QOpenGLShaderProgram*   m_shaderProgramTrips;
+    QOpenGLShaderProgram* m_shaderProgramStations;
+    QOpenGLShaderProgram* m_shaderProgramTrips;
 
-    StationRenderer*        m_stationRenderer;
-    TripRenderer*           m_tripRenderer;
+    StationRenderer* m_stationRenderer;
+    TripRenderer* m_tripRenderer;
 
     bool m_stationsLoaded;
     bool m_tripsLoaded;
@@ -70,6 +71,9 @@ private:
 
     bool m_isTripsShaderCreated;
     bool m_isStationsShaderCreated;
+
+signals:
+    void onShaderError(const QString& message);
 };
 
 #endif // OPENGLWIDGET_H

@@ -12,11 +12,11 @@
 MatrixGLWidget::MatrixGLWidget(QWidget* p) : QOpenGLWidget(p)
 {
     // Multiply by 2 to get offset on left and right
-    m_matrixViewWidth = this->width() - 2 * m_matrixOffsetX;
+    m_matrixViewWidth = this->width() - 2 * bss::TIMELINE_OFFSET_X;
 
-    m_drawRectangle = false;
+    m_drawSelector = false;
     m_leftMouseButtonPressed = false;
-    m_translationOffsetY = 0.f;
+    m_translationY = 0.f;
 
     m_isGlyphsVAOCreated = false;
     m_glyphsLoaded = false;
@@ -42,6 +42,7 @@ MatrixGLWidget::~MatrixGLWidget()
         delete m_glyphRenderer;
 }
 
+
 void MatrixGLWidget::initializeGL()
 {
     initializeOpenGLFunctions();
@@ -58,20 +59,11 @@ void MatrixGLWidget::initializeGL()
                  m_backgroundColor.blue(),
                  1.f);
 
-    // TODO: faire des tests sur les shaders, chargement, linkage
-    m_shaderProgramSelector = new QOpenGLShaderProgram();
-    m_shaderProgramSelector->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/selector.vert");
-    m_shaderProgramSelector->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/shaders/selector.frag");
-    m_shaderProgramSelector->link();
-    m_shaderProgramSelector->bind();
-    m_shaderProgramSelector->release();
+    if (!initializeShaderGlyphs())
+        emit onShaderError(m_shaderProgramGlyph->log());
 
-    m_shaderProgramGlyph = new QOpenGLShaderProgram();
-    m_shaderProgramGlyph->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/glyph.vert");
-    m_shaderProgramGlyph->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/shaders/glyph.frag");
-    m_shaderProgramGlyph->link();
-    m_shaderProgramGlyph->bind();
-    m_shaderProgramGlyph->release();
+    if (!initializeShaderSelector())
+        emit onShaderError(m_shaderProgramSelector->log());
 
     qDebug() << "MatrixGLWidget::initializeGL() OpenGL version:" << this->format().version();
 }
@@ -81,27 +73,24 @@ void MatrixGLWidget::resizeGL(int width, int height)
     Q_UNUSED(width);
     Q_UNUSED(height);
 
-    m_matrixViewWidth = this->width() - 2 * m_matrixOffsetX;
+    m_matrixViewWidth = this->width() - 2 * bss::TIMELINE_OFFSET_X;
 }
 
 void MatrixGLWidget::paintGL()
 {
-    if (m_glyphsLoaded)
-        drawGlyphs();
-
+    drawGlyphs();
     drawSelector();
 }
 
+
 void MatrixGLWidget::drawSelector()
 {
-    initializeOpenGLFunctions();
-
-    if (m_drawRectangle)
+    if (m_drawSelector)
     {
         m_shaderProgramSelector->bind();
 
-        int translationLoc = m_shaderProgramSelector->uniformLocation("translation");
-        glUniform1f(translationLoc, m_translationOffsetY);
+        const int translationLoc = m_shaderProgramSelector->uniformLocation("translation");
+        glUniform1f(translationLoc, m_translationY);
         m_selectorRenderer->draw();
 
         m_shaderProgramSelector->release();
@@ -110,14 +99,17 @@ void MatrixGLWidget::drawSelector()
 
 void MatrixGLWidget::drawGlyphs()
 {
-    m_shaderProgramGlyph->bind();
+    if (m_glyphsLoaded)
+    {
+        m_shaderProgramGlyph->bind();
 
-    int translationLoc = m_shaderProgramGlyph->uniformLocation("translation");
-    glUniform1f(translationLoc, m_translationOffsetY);
+        const int translationLoc = m_shaderProgramGlyph->uniformLocation("translation");
+        glUniform1f(translationLoc, m_translationY);
 
-    m_glyphRenderer->draw();
+        m_glyphRenderer->draw();
 
-    m_shaderProgramGlyph->release();
+        m_shaderProgramGlyph->release();
+    }
 }
 
 void MatrixGLWidget::loadGlyphsData(const QVector<float> &data, unsigned int verticesCount)
@@ -131,6 +123,8 @@ void MatrixGLWidget::loadGlyphsData(const QVector<float> &data, unsigned int ver
 
     m_glyphsLoaded = true;
     m_glyphRenderer->sendData(data, verticesCount);
+
+    update();
 }
 
 void MatrixGLWidget::wheelEvent(QWheelEvent* event)
@@ -140,10 +134,10 @@ void MatrixGLWidget::wheelEvent(QWheelEvent* event)
         i *= -1;
 
     const float scrollValue = 0.05f;
-    m_translationOffsetY += i * scrollValue;
+    m_translationY += i * scrollValue;
 
-    if (m_translationOffsetY > 0)
-        m_translationOffsetY = 0;
+    if (m_translationY > 0)
+        m_translationY = 0;
 
     //qDebug() << m_translationOffsetY;
 
@@ -157,48 +151,19 @@ void MatrixGLWidget::mouseMoveEvent(QMouseEvent* event)
     if (m_leftMouseButtonPressed)
     {
         m_previousMousePos = event->pos();
-        m_previousMousePos.setY(m_previousMousePos.y() - m_translationOffsetY);
+        m_previousMousePos.setY(m_previousMousePos.y() - m_translationY);
         m_bottomRightSelectionRectangle = event->pos();
         m_bottomRightSelectionRectangle.setY(
-                    m_bottomRightSelectionRectangle.y() - m_translationOffsetY);
+                    m_bottomRightSelectionRectangle.y() - m_translationY);
 
-        float topLeftX = m_topLeftSelectionRectangle.x() / this->width() * 2 - 1;
-        float topLeftY = (m_topLeftSelectionRectangle.y() / this->height() * 2 - 1) - m_translationOffsetY;
-
-        float bottomRightX = m_bottomRightSelectionRectangle.x() / this->width() * 2 - 1;
-        float bottomRightY = (m_bottomRightSelectionRectangle.y() / this->height() * 2 - 1) - m_translationOffsetY;
-
-        QVector<float> data;
-        data.append(topLeftX);
-        data.append(-topLeftY);
-
-        data.append(bottomRightX);
-        data.append(-topLeftY);
-
-        data.append(topLeftX);
-        data.append(-bottomRightY);
-
-        data.append(topLeftX);
-        data.append(-bottomRightY);
-
-        data.append(bottomRightX);
-        data.append(-bottomRightY);
-
-        data.append(bottomRightX);
-        data.append(-topLeftY);
-
-        m_selectorRenderer->updateData(data);
-//        m_selectorRenderer->sendData(data, 6);
-
-        //        QVector<QPoint> out = hit();
-        //        qDebug() <<  "out size : " << out.size();
+        updateSelector();
 
         tripsInSelector();
 
         update();
         event->accept();
     }
-    qDebug() <<  "move";
+    //qDebug() <<  "move";
 }
 
 void MatrixGLWidget::mousePressEvent(QMouseEvent* event)
@@ -206,21 +171,21 @@ void MatrixGLWidget::mousePressEvent(QMouseEvent* event)
     if (event->button() == Qt::LeftButton)
     {
         QGuiApplication::setOverrideCursor(Qt::CrossCursor);
-        m_drawRectangle = true;
+        m_drawSelector = true;
         m_leftMouseButtonPressed = true;
 
         m_previousMousePos = event->pos();
-        m_previousMousePos.setY(m_previousMousePos.y() - m_translationOffsetY);
+        m_previousMousePos.setY(m_previousMousePos.y() - m_translationY);
 
         m_topLeftSelectionRectangle = event->pos();
         m_topLeftSelectionRectangle.setY(m_topLeftSelectionRectangle.y()
-                                         - m_translationOffsetY);
+                                         - m_translationY);
         event->accept();
         //qDebug() <<  "left mouse button pressed";
     }
     else if (event->button() == Qt::RightButton)
     {
-        m_drawRectangle = false;
+        m_drawSelector = false;
         event->accept();
         update();
         //qDebug() <<  "right mouse button pressed";
@@ -238,7 +203,8 @@ void MatrixGLWidget::mouseReleaseEvent(QMouseEvent* event)
     }
 }
 
-QPair<QPair<char, char>, QPair<int, int>>& MatrixGLWidget::tripsInSelector()
+// TODO: refactoriser
+QPair<QPair<char, char>, QPair<int, int>>& MatrixGLWidget::tripsInSelector() const
 {
     QPair<char, char> timeInterval;
 
@@ -266,7 +232,7 @@ QPair<QPair<char, char>, QPair<int, int>>& MatrixGLWidget::tripsInSelector()
 
     const float sizeInterval = this->height() / ((glyphIntervalY + bss::GLYPH_HEIGHT) * 2 - 1);
 
-    const float normalizedTranslationY = m_translationOffsetY * height() / 2.f;
+    const float normalizedTranslationY = m_translationY * height() / 2.f;
 
     stationsInterval.first = (m_topLeftSelectionRectangle.y() - normalizedTranslationY)
             / sizeInterval;
@@ -292,4 +258,68 @@ QPair<QPair<char, char>, QPair<int, int>>& MatrixGLWidget::tripsInSelector()
     trips.second.second = stationsInterval.second;
 
     return trips;
+}
+
+void MatrixGLWidget::updateSelector() const
+{
+    QPointF topLeft;
+    topLeft.setX(m_topLeftSelectionRectangle.x() / this->width() * 2 - 1);
+
+    topLeft.setY((m_topLeftSelectionRectangle.y() / this->height() * 2 - 1)
+                 - m_translationY);
+
+    QPointF bottomRight;
+    bottomRight.setX(m_bottomRightSelectionRectangle.x() / this->width() * 2 - 1);
+
+    bottomRight.setY((m_bottomRightSelectionRectangle.y() / this->height() * 2 - 1)
+                     - m_translationY);
+
+    QVector<float> data;
+    data.append(topLeft.x());
+    data.append(-topLeft.y());
+
+    data.append(bottomRight.x());
+    data.append(-topLeft.y());
+
+    data.append(topLeft.x());
+    data.append(-bottomRight.y());
+
+    data.append(topLeft.x());
+    data.append(-bottomRight.y());
+
+    data.append(bottomRight.x());
+    data.append(-bottomRight.y());
+
+    data.append(bottomRight.x());
+    data.append(-topLeft.y());
+
+    m_selectorRenderer->updateData(data);
+}
+
+bool MatrixGLWidget::initializeShaderSelector()
+{
+    bool initializationIsOk = true;
+
+    m_shaderProgramSelector = new QOpenGLShaderProgram();
+    initializationIsOk &= m_shaderProgramSelector->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/selector.vert");
+    initializationIsOk &= m_shaderProgramSelector->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/shaders/selector.frag");
+    initializationIsOk &= m_shaderProgramSelector->link();
+    initializationIsOk &= m_shaderProgramSelector->bind();
+    m_shaderProgramSelector->release();
+
+    return initializationIsOk;
+}
+
+bool MatrixGLWidget::initializeShaderGlyphs()
+{
+    bool initializationIsOk = true;
+
+    m_shaderProgramGlyph = new QOpenGLShaderProgram();
+    initializationIsOk &= m_shaderProgramGlyph->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/glyph.vert");
+    initializationIsOk &= m_shaderProgramGlyph->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/shaders/glyph.frag");
+    initializationIsOk &= m_shaderProgramGlyph->link();
+    initializationIsOk &= m_shaderProgramGlyph->bind();
+    m_shaderProgramGlyph->release();
+
+    return initializationIsOk;
 }

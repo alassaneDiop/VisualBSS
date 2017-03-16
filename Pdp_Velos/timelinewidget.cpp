@@ -14,12 +14,6 @@ TimeLineWidget::TimeLineWidget(QWidget *parent)
     this->setPalette(pal);
 }
 
-// TODO: supprimer
-//int TimeLineWidget::length() const
-//{
-//    return m_timeLineLength;
-//}
-
 void TimeLineWidget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
