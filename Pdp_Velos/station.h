@@ -32,9 +32,9 @@ struct Station
     quint64 avgTripDuration;
     qreal avgTripDistance = 0;
     int originDestinationFlow = 0;
-    QVector<bss::tripId> arrivalsId;
-    QVector<bss::tripId> departuresId;
-    QVector<bss::tripId> cyclesId;
+    QVector<bss::tripId> arrivalsIds;
+    QVector<bss::tripId> departuresIds;
+    QVector<bss::tripId> cyclesIds;
 };
 
 #endif // STATION_H

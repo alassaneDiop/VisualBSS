@@ -32,19 +32,19 @@ qreal Station::direction(const Station& to) const
 
 void Station::appendArrival(const Trip& trip)
 {
-    arrivalsId.append(trip.id);
+    arrivalsIds.append(trip.id);
     updateAppend(trip);
 }
 
 void Station::appendDeparture(const Trip& trip)
 {
-    departuresId.append(trip.id);
+    departuresIds.append(trip.id);
     updateAppend(trip);
 }
 
 void Station::appendCycle(const Trip& trip)
 {
-    cyclesId.append(trip.id);
+    cyclesIds.append(trip.id);
     updateAppend(trip);
 }
 
@@ -53,7 +53,7 @@ void Station::updateAppend(const Trip& trip)
     // TODO : SEB originDesinationFlow : a vérifier
     originDestinationFlow++;
 
-    const int totalTripsCount = arrivalsId.size() + departuresId.size() + cyclesId.size();
+    const int totalTripsCount = arrivalsIds.size() + departuresIds.size() + cyclesIds.size();
     const int totalDuration = (originDestinationFlow * avgTripDuration) + trip.duration;
     avgTripDuration = totalDuration / totalTripsCount;
 }

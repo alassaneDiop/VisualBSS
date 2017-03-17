@@ -28,12 +28,12 @@ MainWindow::MainWindow(QWidget* parent) :
     ui->actionClose_all->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirClosedIcon));
     ui->widget_bottom->hide();
 
-    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::onActionOpenTriggered);
-    connect(ui->actionClose_all, &QAction::triggered, this, &MainWindow::onActionCloseAllTriggered);
+    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::on_action_open_triggered);
+    connect(ui->actionClose_all, &QAction::triggered, this, &MainWindow::on_action_closeAll_triggered);
 
     m_model = new Model();
 
-    m_futureWatcher = new QFutureWatcher<void>(); 
+    m_futureWatcher = new QFutureWatcher<void>();
     connect(m_futureWatcher, &QFutureWatcher<void>::started, this, &MainWindow::onAsyncTaskStarted, connectionType);
     connect(m_futureWatcher, &QFutureWatcher<void>::finished, this, &MainWindow::onAsyncTaskFinished, connectionType);
 
@@ -81,6 +81,8 @@ void MainWindow::runAsync(const QFuture<T>& future)
     m_futureWatcher->setFuture(future);
 }
 
+
+
 bool MainWindow::loadData(const QStringList& filenames)
 {
     bool hasLoadedData = false;
@@ -108,6 +110,8 @@ bool MainWindow::unloadData()
         return true;
     }
 }
+
+
 
 void MainWindow::filterTrips(const TripsFilterParams& params)
 {
@@ -148,18 +152,14 @@ void MainWindow::sortStations(const bss::SortOrder& param, QVector<Station>& sta
 
 
 
-void MainWindow::onActionOpenTriggered()
+void MainWindow::drawMap(const QVector<Station>& stations, const QVector<Trip>& arrivals, const QVector<Trip>& departures, const QVector<Trip>& cycles)
 {
-    const QString caption = "Choose files to open";
-    const QString filter = "*.csv *.xml *.json";
-    const QString dirPath = QDir::rootPath();
-    const QStringList filenames = QFileDialog::getOpenFileNames(this, caption, dirPath, filter);
-    runAsync(QtConcurrent::run(this, &MainWindow::loadData, filenames));
+    // TODO : Damien : drawStations
 }
 
-void MainWindow::onActionCloseAllTriggered()
+void MainWindow::drawTimelineMatrix(const QVector<Trip>& arrivals, const QVector<Trip>& departures, const QVector<Trip>& cycles)
 {
-    runAsync(QtConcurrent::run(this, &MainWindow::unloadData));
+    // TODO : Damien : drawTrips
 }
 
 
@@ -318,17 +318,62 @@ void MainWindow::onDataUnloaded()
 
 void MainWindow::onFilteredTripsChanged(const QVector<bss::tripId>& filteredTrips)
 {
-    // TODO : onFilteredTripsChanged
+    // TODO : SEB onFilteredTripsChanged
+    QVector<Station> stations;
+    QVector<Trip> arrivals, departures, cycles;
+
+    for (const bss::stationId& stationId : m_orderedStationsIds)
+    {
+        const Station s = m_model->constStation(stationId);
+        stations.append(s);
+
+        for (const bss::tripId& id : s.arrivalsIds)
+            arrivals.append(m_model->constTrip(id));
+
+        for (const bss::tripId& id : s.departuresIds)
+            departures.append(m_model->constTrip(id));
+
+        for (const bss::tripId& id : s.cyclesIds)
+            cycles.append(m_model->constTrip(id));
+    }
+
+    drawMap(stations, arrivals, departures, cycles);
+    drawTimelineMatrix(arrivals, departures, cycles);
 }
 
 void MainWindow::onSelectionChanged(const QVector<bss::tripId>& selection)
 {
-    // TODO : onSelectionChanged
+    // TODO : SEB onSelectionChanged
+    /*QVector<Trip> trips;
+    for (const bss::tripId& id : selection)
+        trips.append(m_model->constTrip(id));
+
+    drawTimelineMatrix(arrivals, departures, cycles);*/
 }
 
 void MainWindow::onStationsOrderChanged(const QVector<bss::stationId>& stationsOrder)
 {
-    // TODO : onStationsOrderChanged
+    // TODO : SEB onStationsOrderChanged
+    QVector<Station> stations;
+    QVector<Trip> arrivals, departures, cycles;
+
+    for (const bss::stationId& stationId : stationsOrder)
+    {
+        const Station s = m_model->constStation(stationId);
+        stations.append(s);
+
+        for (const bss::tripId& id : s.arrivalsIds)
+            arrivals.append(m_model->constTrip(id));
+
+        for (const bss::tripId& id : s.departuresIds)
+            departures.append(m_model->constTrip(id));
+
+        for (const bss::tripId& id : s.cyclesIds)
+            cycles.append(m_model->constTrip(id));
+    }
+
+    drawMap(stations, arrivals, departures, cycles);
+    drawTimelineMatrix(arrivals, departures, cycles);
 }
 
 void MainWindow::onHighlightChanged(const bss::stationId& highlight)
@@ -352,6 +397,20 @@ void MainWindow::onStationsSorterParamChanged(const bss::SortOrder& param)
 }
 
 
+
+void MainWindow::on_action_open_triggered()
+{
+    const QString caption = "Choose files to open";
+    const QString filter = "*.csv *.xml *.json";
+    const QString dirPath = QDir::rootPath();
+    const QStringList filenames = QFileDialog::getOpenFileNames(this, caption, dirPath, filter);
+    runAsync(QtConcurrent::run(this, &MainWindow::loadData, filenames));
+}
+
+void MainWindow::on_action_closeAll_triggered()
+{
+    runAsync(QtConcurrent::run(this, &MainWindow::unloadData));
+}
 
 void MainWindow::on_comboBox_period_currentIndexChanged(int index)
 {

@@ -143,9 +143,9 @@ DataFileReadInfo DataFileReader::readCsvData(QHash<QString, Station>& stations, 
     // to optimize memory usage (because QVector allocates more than needed)
     const auto squeeze = [](Station& s)
     {
-        s.arrivalsId.squeeze();
-        s.cyclesId.squeeze();
-        s.departuresId.squeeze();
+        s.arrivalsIds.squeeze();
+        s.cyclesIds.squeeze();
+        s.departuresIds.squeeze();
     };
 
     // squeeze trips from station in parallel

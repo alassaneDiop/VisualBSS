@@ -795,21 +795,6 @@
                    </item>
                    <item>
                     <widget class="QQuickWidget" name="rangeSlider_distance">
-                     <property name="enabled">
-                      <bool>false</bool>
-                     </property>
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>120</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
                      <property name="resizeMode">
                       <enum>QQuickWidget::SizeRootObjectToView</enum>
                      </property>

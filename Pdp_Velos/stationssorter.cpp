@@ -6,7 +6,8 @@
 #include "station.h"
 
 
-StationsSorter::StationsSorter(const bss::SortOrder& param)
+StationsSorter::StationsSorter(const bss::SortOrder& param) :
+    m_sortParam((bss::SortOrder) -1)
 {
     setSortParam(param);
 }
@@ -20,17 +21,17 @@ void StationsSorter::setSortParam(const bss::SortOrder& param)
         {
         case bss::ARRIVALS:
             m_greaterThan = [](const Station& s1, const Station& s2)
-            { return (s1.arrivalsId.count() > s2.arrivalsId.count()); };
+            { return (s1.arrivalsIds.count() > s2.arrivalsIds.count()); };
             break;
 
         case bss::CYCLES:
             m_greaterThan = [](const Station& s1, const Station& s2)
-            { return (s1.cyclesId.count() > s2.cyclesId.count()); };
+            { return (s1.cyclesIds.count() > s2.cyclesIds.count()); };
             break;
 
         case bss::DEPARTURES:
             m_greaterThan = [](const Station& s1, const Station& s2)
-            { return (s1.departuresId.count() > s2.departuresId.count()); };
+            { return (s1.departuresIds.count() > s2.departuresIds.count()); };
             break;
 
         case bss::DISTANCE:
