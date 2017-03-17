@@ -38,7 +38,9 @@ private:
     void sortStations(const bss::SortOrder& param, QVector<Station>& stations);
 
     void drawMap(const QVector<Station>& stations, const QVector<Trip>& arrivals, const QVector<Trip>& departures, const QVector<Trip>& cycles);
-    void drawTimelineMatrix(const QVector<Trip>& arrivals, const QVector<Trip>& departures, const QVector<Trip>& cycles);
+    void drawTimelineMatrix(const QHash<QPair<short, int>, QVector<Trip>>& arrivals,
+                            const QHash<QPair<short, int>, QVector<Trip>>& departures,
+                            const QHash<QPair<short, int>, QVector<Trip>>& cycles);
 
 
     bool m_canApplicationExit = true;

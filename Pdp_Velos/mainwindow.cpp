@@ -53,7 +53,6 @@ MainWindow::MainWindow(QWidget* parent) :
     connect(directionRangeSlider, SIGNAL(firstValueChanged(qreal)), SLOT(on_rangeSlider_direction_firstValueChanged(qreal)));
     connect(directionRangeSlider, SIGNAL(secondValueChanged(qreal)), SLOT(on_rangeSlider_direction_secondValueChanged(qreal)));
     directionRangeSlider->setProperty("snapMode", "NoSnap");
-    directionRangeSlider->setProperty("stepSize", 0.01);
     directionRangeSlider->setProperty("from", 0);
     directionRangeSlider->setProperty("to", 360);
 }
@@ -157,7 +156,9 @@ void MainWindow::drawMap(const QVector<Station>& stations, const QVector<Trip>& 
     // TODO : Damien : drawStations
 }
 
-void MainWindow::drawTimelineMatrix(const QVector<Trip>& arrivals, const QVector<Trip>& departures, const QVector<Trip>& cycles)
+void MainWindow::drawTimelineMatrix(const QHash<QPair<short, int>, QVector<Trip>>& arrivals,
+                                    const QHash<QPair<short, int>, QVector<Trip>>& departures,
+                                    const QHash<QPair<short, int>, QVector<Trip>>& cycles)
 {
     // TODO : Damien : drawTrips
 }
@@ -321,7 +322,6 @@ void MainWindow::onFilteredTripsChanged(const QVector<bss::tripId>& filteredTrip
     // TODO : SEB onFilteredTripsChanged
     QVector<Station> stations;
     QVector<Trip> arrivals, departures, cycles;
-
     for (const bss::stationId& stationId : m_orderedStationsIds)
     {
         const Station s = m_model->constStation(stationId);
@@ -336,9 +336,31 @@ void MainWindow::onFilteredTripsChanged(const QVector<bss::tripId>& filteredTrip
         for (const bss::tripId& id : s.cyclesIds)
             cycles.append(m_model->constTrip(id));
     }
-
     drawMap(stations, arrivals, departures, cycles);
-    drawTimelineMatrix(arrivals, departures, cycles);
+
+
+    QHash<QPair<short, int>, QVector<Trip>> arrivalsHash, departuresHash, cyclesHash;
+    arrivalsHash.reserve(24 * m_orderedStationsIds.size());
+    departuresHash.reserve(24 * m_orderedStationsIds.size());
+    cyclesHash.reserve(24 * m_orderedStationsIds.size());
+    for (int hour = 0; hour < 24; ++hour)
+    {
+        for (int stationIndex = 0; stationIndex < m_orderedStationsIds.size(); ++stationIndex)
+        {
+            const QPair<short, int> key = QPair<short, int>(hour, stationIndex);
+            const auto filter = [this, &hour](const Trip& t) { return t.startDateTime.time().hour() == hour; };
+
+            const QFuture<Trip> arrivalsFuture = QtConcurrent::filtered(arrivals, filter);
+            const QFuture<Trip> departuresFuture = QtConcurrent::filtered(departures, filter);
+            const QFuture<Trip> cyclesFuture = QtConcurrent::filtered(cycles, filter);
+
+            arrivalsHash.insert(key, QVector<Trip>::fromList(arrivalsFuture.results()));
+            departuresHash.insert(key, QVector<Trip>::fromList(departuresFuture.results()));
+            cyclesHash.insert(key, QVector<Trip>::fromList(cyclesFuture.results()));
+        }
+    }
+
+    drawTimelineMatrix(arrivalsHash, departuresHash, cyclesHash);
 }
 
 void MainWindow::onSelectionChanged(const QVector<bss::tripId>& selection)
@@ -356,7 +378,6 @@ void MainWindow::onStationsOrderChanged(const QVector<bss::stationId>& stationsO
     // TODO : SEB onStationsOrderChanged
     QVector<Station> stations;
     QVector<Trip> arrivals, departures, cycles;
-
     for (const bss::stationId& stationId : stationsOrder)
     {
         const Station s = m_model->constStation(stationId);
@@ -371,9 +392,30 @@ void MainWindow::onStationsOrderChanged(const QVector<bss::stationId>& stationsO
         for (const bss::tripId& id : s.cyclesIds)
             cycles.append(m_model->constTrip(id));
     }
-
     drawMap(stations, arrivals, departures, cycles);
-    drawTimelineMatrix(arrivals, departures, cycles);
+
+
+    QHash<QPair<short, int>, QVector<Trip>> arrivalsHash, departuresHash, cyclesHash;
+    arrivalsHash.reserve(24 * m_orderedStationsIds.size());
+    departuresHash.reserve(24 * m_orderedStationsIds.size());
+    cyclesHash.reserve(24 * m_orderedStationsIds.size());
+    for (int hour = 0; hour < 24; ++hour)
+    {
+        for (int stationIndex = 0; stationIndex < m_orderedStationsIds.size(); ++stationIndex)
+        {
+            const QPair<short, int> key = QPair<short, int>(hour, stationIndex);
+            const auto filter = [this, &hour](const Trip& t) { return t.startDateTime.time().hour() == hour; };
+
+            const QFuture<Trip> arrivalsFuture = QtConcurrent::filtered(arrivals, filter);
+            const QFuture<Trip> departuresFuture = QtConcurrent::filtered(departures, filter);
+            const QFuture<Trip> cyclesFuture = QtConcurrent::filtered(cycles, filter);
+
+            arrivalsHash.insert(key, QVector<Trip>::fromList(arrivalsFuture.results()));
+            departuresHash.insert(key, QVector<Trip>::fromList(departuresFuture.results()));
+            cyclesHash.insert(key, QVector<Trip>::fromList(cyclesFuture.results()));
+        }
+    }
+    drawTimelineMatrix(arrivalsHash, departuresHash, cyclesHash);
 }
 
 void MainWindow::onHighlightChanged(const bss::stationId& highlight)
