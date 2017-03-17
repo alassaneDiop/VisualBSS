@@ -1,11 +1,9 @@
 #include "tripsselector.h"
-#include "trip.h"
+
 #include <QtConcurrent>
 
-TripsSelector::TripsSelector()
-{
+#include "trip.h"
 
-}
 
 TripsSelector::TripsSelector(const TripsSelectionParams& params) :
     m_params(params)
@@ -15,26 +13,15 @@ TripsSelector::TripsSelector(const TripsSelectionParams& params) :
 
 
 
-QVector<bss::tripId> TripsSelector::selectTripsFrom(const QVector<Trip>& trips) const
+QVector<Trip> TripsSelector::selectTripsFrom(const QVector<Trip>& trips) const
 {
-    QMutex lock;
-    QVector<bss::tripId> ids;
-
-    const auto selectFunctor = [this, &lock, &ids](const Trip& t)
+    const auto select = [this](const Trip& t)
     {
-        bool b = true;
-        b &= t.startDateTime.time().hour() >= params().startHour;
-        b &= t.endDateTime.time().hour() <= params().endHour;
-        b |= params().stations.contains(t.startStationId);
-        b |= params().stations.contains(t.endStationId);
-        if (b)
-        {
-            lock.lock();
-            ids.append(t.id);
-            lock.unlock();
-        }
+        return (t.startDateTime.time().hour() >= params().startHour)
+            && (t.endDateTime.time().hour() <= params().endHour)
+            && (params().stations.contains(t.startStationId))
+            || (params().stations.contains(t.endStationId));
     };
 
-    QtConcurrent::blockingMap(trips, selectFunctor);
-    return ids;
+    return QtConcurrent::blockingFiltered(trips, select);
 }

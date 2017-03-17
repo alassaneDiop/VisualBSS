@@ -1,10 +1,10 @@
 #ifndef TRIP_H
 #define TRIP_H
 
-#include "typedefs.h"
-
 #include <QString>
 #include <QDateTime>
+
+#include "typedefs.h"
 
 namespace bss {
 struct Trip;

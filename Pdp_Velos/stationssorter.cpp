@@ -1,59 +1,60 @@
 #include "stationssorter.h"
-#include "station.h"
+
 #include <QtConcurrent>
+#include <QtAlgorithms>
 
-StationsSorter::StationsSorter()
+#include "station.h"
+
+
+StationsSorter::StationsSorter(const bss::SortOrder& param)
 {
-
+    setSortParam(param);
 }
 
-StationsSorter::StationsSorter(const bss::SortOrder& param) :
-    m_sortParam(param)
+void StationsSorter::setSortParam(const bss::SortOrder& param)
 {
-
-}
-
-QVector<bss::stationId> StationsSorter::sort(const QVector<Station>& stations) const
-{
-    typedef bool(*greaterThanFctPtr)(const Station&, const Station&);
-    greaterThanFctPtr greaterThan;
-
-    switch (sortParam())
+    if (m_sortParam != param)
     {
-    case bss::ARRIVALS:
-        greaterThan = [](const Station& s1, const Station& s2)
-        { return (s1.arrivalsId.count() > s2.arrivalsId.count()); };
-        break;
+        m_sortParam = param;
+        switch (param)
+        {
+        case bss::ARRIVALS:
+            m_greaterThan = [](const Station& s1, const Station& s2)
+            { return (s1.arrivalsId.count() > s2.arrivalsId.count()); };
+            break;
 
-    case bss::CYCLES:
-        greaterThan = [](const Station& s1, const Station& s2)
-        { return (s1.cyclesId.count() > s2.cyclesId.count()); };
-        break;
+        case bss::CYCLES:
+            m_greaterThan = [](const Station& s1, const Station& s2)
+            { return (s1.cyclesId.count() > s2.cyclesId.count()); };
+            break;
 
-    case bss::DEPARTURES:
-        greaterThan = [](const Station& s1, const Station& s2)
-        { return (s1.departuresId.count() > s2.departuresId.count()); };
-        break;
+        case bss::DEPARTURES:
+            m_greaterThan = [](const Station& s1, const Station& s2)
+            { return (s1.departuresId.count() > s2.departuresId.count()); };
+            break;
 
-    case bss::DISTANCE:
-        greaterThan = [](const Station& s1, const Station& s2)
-        { return (s1.avgTripDistance > s2.avgTripDistance); };
-        break;
+        case bss::DISTANCE:
+            m_greaterThan = [](const Station& s1, const Station& s2)
+            { return (s1.avgTripDistance > s2.avgTripDistance); };
+            break;
 
-    case bss::DURATION:
-        greaterThan = [](const Station& s1, const Station& s2)
-        { return (s1.avgTripDuration > s2.avgTripDuration); };
-        break;
+        case bss::DURATION:
+            m_greaterThan = [](const Station& s1, const Station& s2)
+            { return (s1.avgTripDuration > s2.avgTripDuration); };
+            break;
+        }
     }
+}
 
+QVector<Station> StationsSorter::sort(const QVector<Station>& stations) const
+{
     QVector<Station> sortedStations = QVector<Station>(stations);
-    std::sort(sortedStations.begin(), sortedStations.end(), greaterThan);
+    sort(sortedStations);
+    return sortedStations;
+}
 
-    QVector<bss::stationId> sortedIds;
-    sortedIds.reserve(sortedStations.size());
-
-    for (const Station s : sortedStations)
-        sortedIds.append(s.id);
-
-    return sortedIds;
+void StationsSorter::sort(QVector<Station>& stations) const
+{
+    // Qt recommends to use the std function instead of its own, and include QtAlgorithms
+    std::stable_sort(stations.begin(), stations.end(), m_greaterThan);
 }

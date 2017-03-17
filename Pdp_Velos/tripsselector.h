@@ -1,8 +1,9 @@
 #ifndef SELECTOR_H
 #define SELECTOR_H
 
-#include "typedefs.h"
 #include <QVector>
+
+#include "typedefs.h"
 
 
 namespace bss {
@@ -18,18 +19,16 @@ struct TripsSelectionParams
 };
 
 
-struct Station;
 struct Trip;
 class TripsSelector
 {
 public:
-    TripsSelector();
     TripsSelector(const TripsSelectionParams& params);
 
     inline const TripsSelectionParams& params() const { return m_params; }
     inline void setParams(const TripsSelectionParams& params) { m_params = params; }
 
-    QVector<bss::tripId> selectTripsFrom(const QVector<Trip>& trips) const;
+    QVector<Trip> selectTripsFrom(const QVector<Trip>& trips) const;
 
 private:
     TripsSelectionParams m_params;

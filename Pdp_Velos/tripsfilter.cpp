@@ -1,11 +1,9 @@
 #include "tripsfilter.h"
-#include "trip.h"
+
 #include <QtConcurrent>
 
-TripsFilter::TripsFilter()
-{
+#include "trip.h"
 
-}
 
 TripsFilter::TripsFilter(const TripsFilterParams& params) :
     m_params(params)
@@ -13,26 +11,18 @@ TripsFilter::TripsFilter(const TripsFilterParams& params) :
 
 }
 
-QVector<bss::tripId> TripsFilter::filter(const QVector<Trip>& trips) const
+QVector<Trip> TripsFilter::filter(const QVector<Trip>& trips) const
 {
-    // TODO : finir TripsFilter::filter
-    QMutex lock;
-    QVector<bss::tripId> ids;
-
-    const auto filterFunctor = [this, &lock, &ids](const Trip& t)
+    // TODO : SEB finir TripsFilter::filter
+    const auto filter = [this](const Trip& t)
     {
-        bool b = true;
-        b &= (t.direction <= params().maxDirection) && (t.direction >= params().minDirection);
-        b &= (t.distance <= params().maxDistance) && (t.distance >= params().minDistance);
-        b &= (t.duration <= params().maxDuration) && (t.duration >= params().minDuration);
-        if (b)
-        {
-            lock.lock();
-            ids.append(t.id);
-            lock.unlock();
-        }
+        return (t.direction <= params().maxDirection)
+            && (t.direction >= params().minDirection)
+            && (t.distance <= params().maxDistance)
+            && (t.distance >= params().minDistance)
+            && (t.duration <= params().maxDuration)
+            && (t.duration >= params().minDuration);
     };
 
-    QtConcurrent::blockingMap(trips, filterFunctor);
-    return ids;
+    return QtConcurrent::blockingFiltered(trips, filter);
 }

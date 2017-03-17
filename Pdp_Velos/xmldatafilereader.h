@@ -5,6 +5,7 @@
 
 #include <QString>
 
+
 namespace bss {
 class XmlDataFileReader;
 }

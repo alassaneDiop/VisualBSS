@@ -1,15 +1,17 @@
 #ifndef STATION_H
 #define STATION_H
 
-#include "typedefs.h"
-
 #include <QVector>
 #include <QString>
 #include <QTime>
 
+#include "typedefs.h"
+
+
 namespace bss {
 struct Station;
 }
+
 
 struct Trip;
 struct Station
@@ -23,7 +25,7 @@ struct Station
     void appendCycle(const Trip& trip);
     void updateAppend(const Trip& trip);
 
-    bss::tripId id = (bss::tripId) -1;
+    bss::stationId id = (bss::stationId) -1;
     QString name;
     qreal latitude = 0;
     qreal longitude = 0;

@@ -4,6 +4,7 @@
 #include <QMutex>
 #include <QtConcurrent>
 
+
 DataFileReader::DataFileReader(const DataFileParams& params) :
     m_params(params)
 {

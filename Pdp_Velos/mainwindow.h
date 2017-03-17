@@ -2,17 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
-#include "model.h"
-#include "tripsfilter.h"
-#include "tripsselector.h"
-#include "stationsfilter.h"
-#include "stationssorter.h"
-#include "typedefs.h"
-
 #include <QVector>
 #include <QFutureWatcher>
 
+#include "model.h"
+#include "typedefs.h"
+#include "tripsfilter.h"
+#include "stationsfilter.h"
+#include "stationssorter.h"
 
 namespace Ui {
 class MainWindow;
@@ -27,41 +24,39 @@ public:
     ~MainWindow();
 
 protected:
-    void closeEvent(QCloseEvent* event) override;
+    virtual void closeEvent(QCloseEvent* event) override;
 
 private:
-    QMenu* createFilesMenu() const;  
-
     template<typename T>
     void runAsync(const QFuture<T>& future);
     bool loadData(const QStringList& filenames);
     bool unloadData();
     void filterTrips(const TripsFilterParams& params);
-    void sortStations(const bss::SortOrder& param);
+    void filterStations(const StationsFilterParams& params);
+    void sortStations(const bss::SortOrder& param, QVector<Station>& stations);
 
+    bool m_canApplicationExit = true;
     bool m_shouldEnableMenuBar = true;
     bool m_shouldEnableControlsFrame = false;
 
     Ui::MainWindow* ui;
     Model* m_model = nullptr;
-    TripsFilterParams m_filterParams;
-    TripsFilter* m_filter = nullptr;
-    TripsSelector* m_selector = nullptr;
-    StationsFilter* m_stationsFilter = nullptr;
-    StationsSorter* m_stationsSorter = nullptr;
+    bss::SortOrder m_sortOrder = bss::DISTANCE;
+    TripsFilterParams m_tripsFilterParams;
+    StationsFilterParams m_stationsFilterParams;
     QFutureWatcher<void>* m_futureWatcher = nullptr;
 
-    QVector<bss::tripId> m_filteredTrips;               // id's of filtered trips
+    QVector<bss::tripId> m_filteredTripsIds;
     QVector<bss::tripId> m_selection;                   // currently selected trips's id's
-    QVector<bss::stationId> m_stationsOrder;            // ids of stations, sorted by user's specification
+    QVector<bss::stationId> m_orderedStationsIds;       // ids of stations, sorted by user's specification
     bss::stationId m_highlight = (bss::stationId) -1;   // currently highlighted station's id (-1 if there is none)
 
 private slots:
     void onAsyncTaskStarted();
     void onAsyncTaskFinished();
 
-    void onOpenFilesActionTriggered();
-    void onCloseFilesActionTriggered();
+    void onActionOpenTriggered();
+    void onActionCloseAllTriggered();
 
     void onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations);
     void onFailedToLoadData(const QString& filename, const QString& errorDesc);

@@ -12,24 +12,30 @@ MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-    ui->menuBar->addMenu(createFilesMenu());
+    /* If the signal is queued, the parameters must be of types that are known to Qt's meta-object system,
+     * because Qt needs to copy the arguments to store them in an event behind the scenes.
+     * */
+    qRegisterMetaType<QVector<Trip>>("QVector<Trip>");
+    qRegisterMetaType<QVector<Station>>("QVector<Station>");
 
-    // instantiate all useful objects
-    m_model = new Model();
-    m_filter = new TripsFilter();
-    m_selector = new TripsSelector();
-    m_stationsFilter = new StationsFilter();
-    m_stationsSorter = new StationsSorter();
-
-    m_futureWatcher = new QFutureWatcher<void>();
     const Qt::ConnectionType connectionType = (Qt::ConnectionType)(Qt::QueuedConnection | Qt::UniqueConnection);
-    connect(m_futureWatcher, &QFutureWatcher<void>::started, this, &MainWindow::onAsyncTaskStarted, connectionType);
-    connect(m_futureWatcher, &QFutureWatcher<void>::finished, this, &MainWindow::onAsyncTaskFinished, connectionType);
-
     connect(this, &MainWindow::dataLoaded, this, &MainWindow::onDataLoaded, connectionType);
     connect(this, &MainWindow::failedToLoadData, this, &MainWindow::onFailedToLoadData, connectionType);
     connect(this, &MainWindow::dataUnloaded, this, &MainWindow::onDataUnloaded, connectionType);
+
+    ui->setupUi(this);
+    ui->actionOpen->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirOpenIcon));
+    ui->actionClose_all->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirClosedIcon));
+    ui->widget_bottom->hide();
+
+    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::onActionOpenTriggered);
+    connect(ui->actionClose_all, &QAction::triggered, this, &MainWindow::onActionCloseAllTriggered);
+
+    m_model = new Model();
+
+    m_futureWatcher = new QFutureWatcher<void>(); 
+    connect(m_futureWatcher, &QFutureWatcher<void>::started, this, &MainWindow::onAsyncTaskStarted, connectionType);
+    connect(m_futureWatcher, &QFutureWatcher<void>::finished, this, &MainWindow::onAsyncTaskFinished, connectionType);
 
     const QObject* distanceRangeSlider = reinterpret_cast<QObject*>((QObject*)ui->rangeSlider_distance->rootObject());
     connect(distanceRangeSlider, SIGNAL(firstValueChanged(qreal)), SLOT(on_rangeSlider_distance_firstValueChanged(qreal)));
@@ -47,58 +53,27 @@ MainWindow::MainWindow(QWidget* parent) :
     connect(directionRangeSlider, SIGNAL(firstValueChanged(qreal)), SLOT(on_rangeSlider_direction_firstValueChanged(qreal)));
     connect(directionRangeSlider, SIGNAL(secondValueChanged(qreal)), SLOT(on_rangeSlider_direction_secondValueChanged(qreal)));
     directionRangeSlider->setProperty("snapMode", "NoSnap");
+    directionRangeSlider->setProperty("stepSize", 0.01);
     directionRangeSlider->setProperty("from", 0);
     directionRangeSlider->setProperty("to", 360);
-    directionRangeSlider->setProperty("stepSize", 0.0001);
-
-
-    /* It's needed to pass parameters of type QVector<T> to queued signals (it' apparently a Qt bug)
-     * https://forum.qt.io/topic/2826/solved-cross-thread-signal-cannot-queue-arguments-of-type-qvector-qvector-int/3
-     * By the way, the typedef suggested in the answer from the forum is not needed
-     * */
-    qRegisterMetaType<QVector<Trip>>("QVector<Trip>");
-    qRegisterMetaType<QVector<Station>>("QVector<Station>");
 }
 
 MainWindow::~MainWindow()
 {
-    delete m_filter;
-    delete m_selector;
-    delete m_stationsFilter;
-    delete m_stationsSorter;
     delete m_futureWatcher;
     delete m_model;
     delete ui;
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
-{
-    if (m_futureWatcher->isRunning())
+{  
+    if (!m_canApplicationExit)
         event->ignore();
-    else
-        QMainWindow::closeEvent(event);
+
+    QMainWindow::closeEvent(event);
 }
 
 
-
-QMenu* MainWindow::createFilesMenu() const
-{
-    QApplication::setAttribute(Qt::AA_DontShowIconsInMenus, false);
-
-    QAction* const openFilesAction = new QAction("Open");
-    openFilesAction->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirOpenIcon));
-    connect(openFilesAction, &QAction::triggered, this, &MainWindow::onOpenFilesActionTriggered);
-
-    QAction* const closeFilesAction = new QAction("Close all");
-    closeFilesAction->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirClosedIcon));
-    connect(closeFilesAction, &QAction::triggered, this, &MainWindow::onCloseFilesActionTriggered);
-
-    QMenu* const filesMenu = new QMenu("File");
-    filesMenu->addAction(openFilesAction);
-    filesMenu->addAction(closeFilesAction); 
-
-    return filesMenu;
-}
 
 template<typename T>
 void MainWindow::runAsync(const QFuture<T>& future)
@@ -136,39 +111,53 @@ bool MainWindow::unloadData()
 
 void MainWindow::filterTrips(const TripsFilterParams& params)
 {
-    m_filter->setParams(params);
-    const QVector<bss::tripId> filteredTrips = m_filter->filter(m_model->constTrips());
-    if (m_filteredTrips != filteredTrips)
+    const TripsFilter filter = TripsFilter(params);
+    const QVector<Trip> filteredTrips = filter.filter(m_model->constTrips());
+    bss::tripId (*returnId)(const Trip& t) = [](const Trip& t) { return t.id; };
+    const QVector<bss::tripId> filteredTripsIds = QtConcurrent::blockingMapped(filteredTrips, returnId);
+    if (m_filteredTripsIds != filteredTripsIds)
     {
-        m_filteredTrips = filteredTrips;
-        onFilteredTripsChanged(filteredTrips);
+        m_filteredTripsIds = filteredTripsIds;
+        onFilteredTripsChanged(filteredTripsIds);
     }
 }
 
-void MainWindow::sortStations(const bss::SortOrder& param)
+void MainWindow::filterStations(const StationsFilterParams& params)
 {
-    m_stationsSorter->setSortParam(param);
-    const QVector<bss::stationId> sortedStations = m_stationsSorter->sort(m_model->constStations());
-    if (m_stationsOrder != sortedStations)
+    const StationsFilter filter = StationsFilter(params);
+    QVector<Station> filteredStations = filter.filter(m_model->constStations());
+    bss::stationId (*returnId)(const Station& s) = [](const Station& s) { return s.id; };
+    const QVector<bss::stationId> filteredStationsIds = QtConcurrent::blockingMapped(filteredStations, returnId);
+    if (QSet<bss::stationId>::fromList(m_orderedStationsIds.toList()) != QSet<bss::stationId>::fromList(filteredStationsIds.toList()))
+        sortStations(m_sortOrder, filteredStations);
+}
+
+void MainWindow::sortStations(const bss::SortOrder& param, QVector<Station>& stations)
+{
+    const StationsSorter sorter = StationsSorter(param);
+    sorter.sort(stations);
+
+    bss::stationId (*returnId)(const Station& s) = [](const Station& s) { return s.id; };
+    const QVector<bss::stationId> stationsOrder = QtConcurrent::blockingMapped(stations, returnId);
+    if (m_orderedStationsIds != stationsOrder)
     {
-        m_stationsOrder = sortedStations;
-        onStationsOrderChanged(sortedStations);
+        m_orderedStationsIds = stationsOrder;
+        onStationsOrderChanged(stationsOrder);
     }
 }
 
 
 
-void MainWindow::onOpenFilesActionTriggered()
+void MainWindow::onActionOpenTriggered()
 {
     const QString caption = "Choose files to open";
     const QString filter = "*.csv *.xml *.json";
     const QString dirPath = QDir::rootPath();
     const QStringList filenames = QFileDialog::getOpenFileNames(this, caption, dirPath, filter);
-
     runAsync(QtConcurrent::run(this, &MainWindow::loadData, filenames));
 }
 
-void MainWindow::onCloseFilesActionTriggered()
+void MainWindow::onActionCloseAllTriggered()
 {
     runAsync(QtConcurrent::run(this, &MainWindow::unloadData));
 }
@@ -177,14 +166,16 @@ void MainWindow::onCloseFilesActionTriggered()
 
 void MainWindow::onAsyncTaskStarted()
 {
-    // disables menu bar and filter controls when an async task has finished running
+    m_canApplicationExit = false;
+
     ui->menuBar->setEnabled(false);
     ui->frame_controls->setEnabled(false);
 }
 
 void MainWindow::onAsyncTaskFinished()
 {
-    // restores menu bar and filter controls when an async task has finished running
+    m_canApplicationExit = true;
+
     ui->menuBar->setEnabled(m_shouldEnableMenuBar);
     ui->frame_controls->setEnabled(m_shouldEnableControlsFrame);
 }
@@ -193,8 +184,8 @@ void MainWindow::onAsyncTaskFinished()
 
 void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations)
 {
-    // we know we have data to display and manipulate so we can enable controls
     m_shouldEnableControlsFrame = true;
+    filterStations(m_stationsFilterParams);
 
     qDebug() << "onDataLoaded" << "Trip number" << trips.size() << "Station number" << stations.size();
 
@@ -320,9 +311,9 @@ void MainWindow::onFailedToLoadData(const QString& filename, const QString& erro
 
 void MainWindow::onDataUnloaded()
 {
-    // data aren't available anymore so controls are disabled
     m_shouldEnableControlsFrame = false;
 }
+
 
 
 void MainWindow::onFilteredTripsChanged(const QVector<bss::tripId>& filteredTrips)
@@ -352,7 +343,12 @@ void MainWindow::onTripsFilterParamsChanged(const TripsFilterParams& params)
 
 void MainWindow::onStationsSorterParamChanged(const bss::SortOrder& param)
 {
-    runAsync(QtConcurrent::run(this, &MainWindow::sortStations, param));
+    QVector<Station> stationsToSort;
+    stationsToSort.reserve(m_orderedStationsIds.size());
+    for (const bss::stationId id : m_orderedStationsIds)
+        stationsToSort.append(m_model->station(id));
+
+    runAsync(QtConcurrent::run(this, &MainWindow::sortStations, param, stationsToSort));
 }
 
 
@@ -374,20 +370,20 @@ void MainWindow::on_comboBox_dayOfWeek_currentIndexChanged(int index)
 
 void MainWindow::on_checkBox_arrivals_stateChanged(int arg1)
 {
-    m_filterParams.shouldShowArrivals = (arg1 == Qt::Checked);
-    onTripsFilterParamsChanged(m_filterParams);
+    m_tripsFilterParams.shouldShowArrivals = (arg1 == Qt::Checked);
+    onTripsFilterParamsChanged(m_tripsFilterParams);
 }
 
 void MainWindow::on_checkBox_departures_stateChanged(int arg1)
 {
-    m_filterParams.shouldShowDepartures = (arg1 == Qt::Checked);
-    onTripsFilterParamsChanged(m_filterParams);
+    m_tripsFilterParams.shouldShowDepartures = (arg1 == Qt::Checked);
+    onTripsFilterParamsChanged(m_tripsFilterParams);
 }
 
 void MainWindow::on_checkBox_cycles_stateChanged(int arg1)
 {
-    m_filterParams.shouldShowCycles = (arg1 == Qt::Checked);
-    onTripsFilterParamsChanged(m_filterParams);
+    m_tripsFilterParams.shouldShowCycles = (arg1 == Qt::Checked);
+    onTripsFilterParamsChanged(m_tripsFilterParams);
 }
 
 void MainWindow::on_checkBox_duration_stateChanged(int arg1)
@@ -397,17 +393,17 @@ void MainWindow::on_checkBox_duration_stateChanged(int arg1)
 
 void MainWindow::on_checkBox_distance_stateChanged(int arg1)
 {
-    m_filterParams.shouldShowDistance = (arg1 == Qt::Checked);
-    onTripsFilterParamsChanged(m_filterParams);
+    m_tripsFilterParams.shouldShowDistance = (arg1 == Qt::Checked);
+    onTripsFilterParamsChanged(m_tripsFilterParams);
 }
 
 void MainWindow::on_comboBox_order_currentIndexChanged(int index)
 {
-    // hard-coded array, order depends on UI's combobox
+    // order corresponds to UI's combobox
     const QVector<bss::SortOrder> sortParams = QVector<bss::SortOrder>(
     { bss::DISTANCE, bss::DURATION, bss::ARRIVALS, bss::DEPARTURES, bss::CYCLES });
-
-    onStationsSorterParamChanged(sortParams.at(index));
+    m_sortOrder = sortParams.at(index);
+    onStationsSorterParamChanged(m_sortOrder);
 }
 
 void MainWindow::on_rangeSlider_distance_firstValueChanged(qreal v)

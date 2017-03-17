@@ -1,11 +1,13 @@
 #include "csvdatafilereader.h"
-#include "trip.h"
-#include "station.h"
 
 #include <QFile>
 #include <QVector>
 #include <QMap>
 #include <QtConcurrent>
+
+#include "trip.h"
+#include "station.h"
+
 
 CsvDataFileReader::CsvDataFileReader(const DataFileParams& params) :
     DataFileReader(params)

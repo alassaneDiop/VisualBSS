@@ -1455,6 +1455,9 @@
     </item>
     <item>
      <widget class="QWidget" name="widget_bottom" native="true">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
@@ -1479,6 +1482,9 @@
        </property>
        <item>
         <widget class="QPlainTextEdit" name="plainTextEdit_log">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -1510,6 +1516,27 @@
      <height>19</height>
     </rect>
    </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="defaultUp">
+    <bool>false</bool>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionClose_all"/>
+   </widget>
+   <widget class="QMenu" name="menuDisplay">
+    <property name="title">
+     <string>Display</string>
+    </property>
+    <addaction name="actionShow_logs"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuDisplay"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -1520,6 +1547,24 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionClose_all">
+   <property name="text">
+    <string>Close all</string>
+   </property>
+  </action>
+  <action name="actionShow_logs">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show logs</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

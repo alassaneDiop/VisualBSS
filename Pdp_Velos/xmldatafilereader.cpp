@@ -3,11 +3,13 @@
 #include <QFile>
 #include <QXmlStreamReader>
 
+
 XmlDataFileReader::XmlDataFileReader(const DataFileParams& params) :
     DataFileReader(params)
 {
 
 }
+
 XmlDataFileReader::~XmlDataFileReader()
 {
 

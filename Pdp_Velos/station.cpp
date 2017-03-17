@@ -1,15 +1,16 @@
 #include "station.h"
-#include "trip.h"
+
 #include <QtMath>
+
+#include "trip.h"
+
 
 qreal Station::distance(const Station& to) const
 {
-    // https://openclassrooms.com/forum/sujet/calcul-d-une-distance-95555
+    // Algorithm from https://openclassrooms.com/forum/sujet/calcul-d-une-distance-95555
 
-    // Earth's radius approximation
-    const qreal R = 6378000;
+    const qreal earthRadius = 6378000;
 
-    // converts degrees to radians
     const qreal fromLat = qDegreesToRadians(latitude);
     const qreal fromLon = qDegreesToRadians(longitude);
     const qreal toLat = qDegreesToRadians(to.latitude);
@@ -17,7 +18,8 @@ qreal Station::distance(const Station& to) const
 
     const qreal a = qSin(fromLat) * qSin(toLat);
     const qreal b = qCos(fromLat) * qCos(toLat) * qCos(toLon - fromLon);
-    return R * qAcos(a + b);
+
+    return earthRadius * qAcos(a + b);
 }
 
 qreal Station::direction(const Station& to) const
@@ -48,10 +50,9 @@ void Station::appendCycle(const Trip& trip)
 
 void Station::updateAppend(const Trip& trip)
 {
-    // TODO : originDesinationFlow : a vérifier
+    // TODO : SEB originDesinationFlow : a vérifier
     originDestinationFlow++;
 
-    // calculates the average trips duration
     const int totalTripsCount = arrivalsId.size() + departuresId.size() + cyclesId.size();
     const int totalDuration = (originDestinationFlow * avgTripDuration) + trip.duration;
     avgTripDuration = totalDuration / totalTripsCount;

@@ -1,17 +1,18 @@
 #ifndef STATIONSFILTER_H
 #define STATIONSFILTER_H
 
-#include "station.h"
-#include <QSet>
+#include <QVector>
+
+#include "typedefs.h"
 
 
 struct StationsFilterParams
 {
     qreal minOriginDestinationFlow = 0;
-    qreal maxOriginDestinationFlow = 0;
+    qreal maxOriginDestinationFlow = 1000000;
 };
 
-
+struct Station;
 class StationsFilter
 {
 public:
@@ -21,7 +22,7 @@ public:
     inline const StationsFilterParams& params() const { return m_params; }
     inline void setParams(const StationsFilterParams& params) { m_params = params; }
 
-    QVector<bss::stationId> filter(const QVector<Station>& stations) const;
+    QVector<Station> filter(const QVector<Station>& stations) const;
 
 private:
     StationsFilterParams m_params;

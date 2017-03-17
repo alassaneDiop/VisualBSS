@@ -3,8 +3,8 @@
 
 #include "typedefs.h"
 
-#include <QVector>
 #include <QDate>
+#include <QVector>
 
 
 namespace bss {
@@ -34,13 +34,12 @@ struct Trip;
 class TripsFilter
 {  
 public:
-    TripsFilter();
     TripsFilter(const TripsFilterParams& params);
 
     inline const TripsFilterParams& params() const { return m_params; }
     inline void setParams(const TripsFilterParams& params) { m_params = params; }
 
-    QVector<bss::tripId> filter(const QVector<Trip>& trips) const;
+    QVector<Trip> filter(const QVector<Trip>& trips) const;
 
 private:
     TripsFilterParams m_params;

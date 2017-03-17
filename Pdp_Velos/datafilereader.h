@@ -1,10 +1,11 @@
 #ifndef DATAFILEREADER_H
 #define DATAFILEREADER_H
 
-#include "trip.h"
-#include "station.h"
 #include <QString>
 #include <QVector>
+
+#include "trip.h"
+#include "station.h"
 
 
 namespace bss {
