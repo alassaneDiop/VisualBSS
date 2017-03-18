@@ -50,7 +50,6 @@ void Station::appendCycle(const Trip& trip)
 
 void Station::updateAppend(const Trip& trip)
 {
-    // TODO : SEB originDesinationFlow : a vérifier
     originDestinationFlow++;
 
     const int totalTripsCount = arrivalsIds.size() + departuresIds.size() + cyclesIds.size();

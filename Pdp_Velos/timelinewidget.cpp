@@ -28,7 +28,7 @@ void TimeLineWidget::paintEvent(QPaintEvent *event)
         QPoint p2(bss::TIMELINE_OFFSET_X + (i * m_lineInterval), m_lineHeight);
         painter.begin(this);
         painter.drawLine(p1, p2);
-        QString number = QString::number((m_timeInterval * i) % bss::NB_OF_HOUR);
+        QString number = QString::number((m_timeInterval * i) % bss::NB_OF_HOURS);
 
         painter.drawText(
                     QPoint(bss::TIMELINE_OFFSET_X + m_textOffsetX + (i * m_lineInterval),

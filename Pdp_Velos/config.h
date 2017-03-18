@@ -3,7 +3,7 @@
 
 namespace bss {
 
-static const unsigned int NB_OF_HOUR = 24;
+static const unsigned int NB_OF_HOURS = 24;
 
 static const int TIMELINE_OFFSET_X = 10;
 

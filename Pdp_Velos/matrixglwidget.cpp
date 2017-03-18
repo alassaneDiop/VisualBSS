@@ -209,7 +209,7 @@ QPair<QPair<char, char>, QPair<int, int>>& MatrixGLWidget::tripsInSelector() con
     QPair<char, char> timeInterval;
 
     const int width = this->width();
-    const float oneHour = width / bss::NB_OF_HOUR;
+    const float oneHour = width / bss::NB_OF_HOURS;
 
     timeInterval.first = (char)(m_topLeftSelectionRectangle.x() / oneHour);
     timeInterval.second = (char)(m_bottomRightSelectionRectangle.x() / oneHour);
@@ -221,7 +221,7 @@ QPair<QPair<char, char>, QPair<int, int>>& MatrixGLWidget::tripsInSelector() con
     timeInterval.second = qMax(tmp1, tmp2);
 
     timeInterval.first = qMax((char)0, timeInterval.first);
-    timeInterval.second = qMin((unsigned int)timeInterval.second, bss::NB_OF_HOUR);
+    timeInterval.second = qMin((unsigned int)timeInterval.second, bss::NB_OF_HOURS);
 
     //qDebug() << "Time interval"<< (int)timeInterval.first << (int)timeInterval.second;
 
