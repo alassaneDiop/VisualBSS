@@ -5,6 +5,8 @@
 #include <QtConcurrent>
 #include <QFileDialog>
 
+#include "trip.h"
+#include "station.h"
 #include "config.h"
 
 
@@ -321,28 +323,39 @@ void MainWindow::onFilteredTripsChanged(const QVector<bss::tripId>& filteredTrip
 {
     // TODO : SEB onFilteredTripsChanged
     QVector<Station> stations;
+    stations.reserve(m_orderedStationsIds.size());
+
     QVector<Trip> arrivals, departures, cycles;
     for (const bss::stationId& stationId : m_orderedStationsIds)
     {
         const Station s = m_model->constStation(stationId);
         stations.append(s);
 
+        arrivals.reserve(s.arrivalsIds.size());
         for (const bss::tripId& id : s.arrivalsIds)
             arrivals.append(m_model->constTrip(id));
 
+        departures.reserve(s.departuresIds.size());
         for (const bss::tripId& id : s.departuresIds)
             departures.append(m_model->constTrip(id));
 
+        cycles.reserve(s.cyclesIds.size());
         for (const bss::tripId& id : s.cyclesIds)
             cycles.append(m_model->constTrip(id));
+
+        arrivals.squeeze();
+        departures.squeeze();
+        cycles.squeeze();
     }
+    stations.squeeze();
     drawMap(stations, arrivals, departures, cycles);
 
 
+    const int glyphsCount = 24 * m_orderedStationsIds.size();
     QHash<QPair<short, int>, QVector<Trip>> arrivalsHash, departuresHash, cyclesHash;
-    arrivalsHash.reserve(24 * m_orderedStationsIds.size());
-    departuresHash.reserve(24 * m_orderedStationsIds.size());
-    cyclesHash.reserve(24 * m_orderedStationsIds.size());
+    arrivalsHash.reserve(glyphsCount);
+    departuresHash.reserve(glyphsCount);
+    cyclesHash.reserve(glyphsCount);
     for (int hour = 0; hour < 24; ++hour)
     {
         for (int stationIndex = 0; stationIndex < m_orderedStationsIds.size(); ++stationIndex)
@@ -359,7 +372,9 @@ void MainWindow::onFilteredTripsChanged(const QVector<bss::tripId>& filteredTrip
             cyclesHash.insert(key, QVector<Trip>::fromList(cyclesFuture.results()));
         }
     }
-
+    arrivalsHash.squeeze();
+    departuresHash.squeeze();
+    cyclesHash.squeeze();
     drawTimelineMatrix(arrivalsHash, departuresHash, cyclesHash);
 }
 
@@ -377,28 +392,39 @@ void MainWindow::onStationsOrderChanged(const QVector<bss::stationId>& stationsO
 {
     // TODO : SEB onStationsOrderChanged
     QVector<Station> stations;
+    stations.reserve(stationsOrder.size());
+
     QVector<Trip> arrivals, departures, cycles;
     for (const bss::stationId& stationId : stationsOrder)
     {
         const Station s = m_model->constStation(stationId);
         stations.append(s);
 
+        arrivals.reserve(s.arrivalsIds.size());
         for (const bss::tripId& id : s.arrivalsIds)
             arrivals.append(m_model->constTrip(id));
 
+        departures.reserve(s.departuresIds.size());
         for (const bss::tripId& id : s.departuresIds)
             departures.append(m_model->constTrip(id));
 
+        cycles.reserve(s.cyclesIds.size());
         for (const bss::tripId& id : s.cyclesIds)
             cycles.append(m_model->constTrip(id));
+
+        arrivals.squeeze();
+        departures.squeeze();
+        cycles.squeeze();
     }
+    stations.squeeze();
     drawMap(stations, arrivals, departures, cycles);
 
 
+    const int glyphsCount = 24 * m_orderedStationsIds.size();
     QHash<QPair<short, int>, QVector<Trip>> arrivalsHash, departuresHash, cyclesHash;
-    arrivalsHash.reserve(24 * m_orderedStationsIds.size());
-    departuresHash.reserve(24 * m_orderedStationsIds.size());
-    cyclesHash.reserve(24 * m_orderedStationsIds.size());
+    arrivalsHash.reserve(glyphsCount);
+    departuresHash.reserve(glyphsCount);
+    cyclesHash.reserve(glyphsCount);
     for (int hour = 0; hour < 24; ++hour)
     {
         for (int stationIndex = 0; stationIndex < m_orderedStationsIds.size(); ++stationIndex)
@@ -415,6 +441,9 @@ void MainWindow::onStationsOrderChanged(const QVector<bss::stationId>& stationsO
             cyclesHash.insert(key, QVector<Trip>::fromList(cyclesFuture.results()));
         }
     }
+    arrivalsHash.squeeze();
+    departuresHash.squeeze();
+    cyclesHash.squeeze();
     drawTimelineMatrix(arrivalsHash, departuresHash, cyclesHash);
 }
 

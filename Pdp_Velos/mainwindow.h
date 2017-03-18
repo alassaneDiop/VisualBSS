@@ -15,7 +15,8 @@ namespace Ui {
 class MainWindow;
 }
 
-
+struct Trip;
+struct Station;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
