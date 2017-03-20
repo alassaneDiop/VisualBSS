@@ -55,6 +55,7 @@ void MapGLWidget::initializeGL()
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);
     glEnable(GL_MULTISAMPLE);
+    //glEnable(GL_LINE_SMOOTH);
 
     if (!initializeShaderStations())
         onShaderError(m_shaderProgramStations->log());
@@ -76,7 +77,6 @@ void MapGLWidget::paintGL()
     glClear(GL_COLOR_BUFFER_BIT);
 
     drawStations();
-
     drawTrips();
 }
 
@@ -202,7 +202,7 @@ void MapGLWidget::calculateZoom()
         // OpenGL coordinates system from -1 to 1
         const int coordinateSystemLength = 2;
 
-        // FIXME: comprendre pourquoi le zoom n'est pas centré sur le centre
+        // FIXME: DAMIEN: comprendre pourquoi le zoom n'est pas centré sur le centre
         // de la bounding box
         // Cette valeur permet de reduire le zoom et affiche toute la bounding box
         const float debugValue = 2.f;
@@ -231,7 +231,7 @@ void MapGLWidget::mouseMoveEvent(QMouseEvent* event)
     {
         QPointF currentPos = event->pos();
 
-        // TODO: refactoriser
+        // FIXME: DAMIEN : refactoriser plus court
         m_translationX += 1.f / m_zoom * (currentPos.x() - m_previousMousePos.x()) / m_translationSensibility;
         m_translationY += 1.f / m_zoom * (currentPos.y() - m_previousMousePos.y()) / m_translationSensibility;
 

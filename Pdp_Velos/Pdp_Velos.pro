@@ -65,4 +65,4 @@ RESOURCES += \
 
 CONFIG += C++14
 QMAKE_CXXFLAGS_RELEASE +=
-QMAKE_CXXFLAGS_DEBUG += -Wunused-parameter -Wunused-variable -Wunused-value -Wunused
+QMAKE_CXXFLAGS_DEBUG += -pg -Wunused-parameter -Wunused-variable -Wunused-value -Wunused

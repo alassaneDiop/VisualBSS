@@ -72,6 +72,8 @@ private:
     bool m_isTripsShaderCreated;
     bool m_isStationsShaderCreated;
 
+    QVector<float> m_stationsPosition;
+
 signals:
     void onShaderError(const QString& message);
 };

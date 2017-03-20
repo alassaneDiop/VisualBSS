@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <QtConcurrent>
 #include <QFileDialog>
+#include <QtMath>
+#include <QPoint>
 
 #include "trip.h"
 #include "station.h"
@@ -93,7 +95,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
-{  
+{
     if (!m_canApplicationExit)
         event->ignore();
 
@@ -185,7 +187,33 @@ void MainWindow::sortStations(const bss::SortOrder& param, QVector<Station>& sta
 // affiche sur la map les stations
 void MainWindow::drawStationsOnMap(const QVector<stationId>& stationsIds)
 {
+    qDebug() << "MainWindow::drawStationsOnMap";
+
+    // x and y;
+    const unsigned short positionTupleSize = 2;
+
+    // R, G, B
+    const unsigned short colorTupleSize = 3;
+
     // TODO : Damien drawStations
+    QVector<float> stationsVertices;
+    const int stationsVerticesCount = stationsIds.size();
+    stationsVertices.reserve(stationsVerticesCount * positionTupleSize * colorTupleSize);
+
+    const float maxLongitude = 180.f;
+    const float maxLatitude = 90.f;
+
+    for (const stationId id : stationsIds)
+    {
+        const Station s = m_model->constStation(id);
+        stationsVertices.append(s.longitude / maxLongitude);
+        stationsVertices.append(s.latitude / maxLatitude);
+
+        stationsVertices += QVector<float>({ 1.f, 1.f, 0.3f });
+    }
+
+    ui->mapwidget->loadStationsData(stationsVertices, stationsVerticesCount);
+    ui->mapwidget->centerView(stationsVertices);
 }
 
 // affiche sur la map les trajets filtres et selectionnes par l'utilisateur
@@ -193,7 +221,82 @@ void MainWindow::drawSelectedTripsOnMap(const QVector<tripId>& arrivalsIds,
                                         const QVector<tripId>& departuresIds,
                                         const QVector<tripId>& cyclesIds)
 {
-// TODO : Damien drawSelectedTrips
+    m_shouldEnableControlsFrame = true;
+
+    runAsync(QtConcurrent::run(this, &MainWindow::filterStations, m_stationsFilterParams));
+
+    // x and y;
+    const unsigned short positionTupleSize = 2;
+
+    // 1 trip has 2 points (start/end)
+    const unsigned short pointPerTrip = 2;
+
+    // R, G, B
+    const unsigned short colorTupleSize = 3;
+
+
+    QVector<float> tripsVertices;
+    const int arrivalsVertices = arrivalsIds.size() * pointPerTrip * positionTupleSize * colorTupleSize;
+    const int departuresVertices = departuresIds.size() * pointPerTrip * positionTupleSize * colorTupleSize;
+    const int cyclesVertices = cyclesIds.size() * positionTupleSize * colorTupleSize;
+
+    tripsVertices.reserve(arrivalsVertices + departuresVertices + cyclesVertices);
+
+    int tripsVerticesCount = 0;
+
+    const float maxLongitude = 180.f;
+    const float maxLatitude = 90.f;
+
+    for (const tripId arrivalTripId : arrivalsIds)
+    {
+        const Trip trip = m_model->constTrip(arrivalTripId);
+
+        const bss::stationId startStationId = trip.startStationId;
+        const Station startStation = m_model->constStation(startStationId);
+
+        tripsVertices.append((float) (startStation.longitude / maxLongitude));
+        tripsVertices.append((float) (startStation.latitude / maxLatitude));
+
+        tripsVertices += bss::ARRIVAL_ORIGIN_COLOR;
+
+
+        const bss::stationId endStationId = trip.endStationId;
+        const Station endStation = m_model->station(endStationId);
+
+        tripsVertices.append((float) (endStation.longitude / maxLongitude));
+        tripsVertices.append((float) (endStation.latitude / maxLatitude));
+
+        tripsVertices += bss::ARRIVAL_DESTINATION_COLOR;
+
+        tripsVertices += 2;
+    }
+
+    for (const tripId departureTripId : departuresIds)
+    {
+        const Trip trip = m_model->constTrip(departureTripId);
+
+        const bss::stationId startStationId = trip.startStationId;
+        const Station startStation = m_model->constStation(startStationId);
+
+        tripsVertices.append((float) (startStation.longitude / maxLongitude));
+        tripsVertices.append((float) (startStation.latitude / maxLatitude));
+
+        tripsVertices += bss::DEPARTURE_ORIGIN_COLOR;
+
+
+        const bss::stationId endStationId = trip.endStationId;
+        const Station endStation = m_model->constStation(endStationId);
+
+        tripsVertices.append((float) (endStation.longitude / maxLongitude));
+        tripsVertices.append((float) (endStation.latitude / maxLatitude));
+
+        tripsVertices += bss::DEPARTURE_DESTINATION_COLOR;
+
+        tripsVertices += 2;
+    }
+
+    ui->mapwidget->loadTripsData(tripsVertices, tripsVerticesCount);
+    ui->mapwidget->centerView(tripsVertices);
 }
 
     // affiche sur la matrice les trajets nouvellement filtres
@@ -203,6 +306,102 @@ void MainWindow::drawFilteredTripsOnMatrix(const QVector<QVector<tripId>>& arriv
                                            const bool& showDistance)
 {
     // TODO : Damien drawFilteredTrips
+
+    // x and y;
+    const unsigned short positionTupleSize = 2;
+
+    // 1 trip has 2 points (start/end)
+    const unsigned short pointPerTrip = 2;
+
+    // R, G, B
+    const unsigned short colorTupleSize = 3;
+
+    const float width = ui->timelinematrixwidget->width();
+    const float heigth = ui->timelinematrixwidget->height();
+
+    // TODO: Seb : passer le nombre de stations
+    const int numberOfStations = 20;
+    const float intervalX = ui->timelinematrixwidget->width() / (bss::NB_OF_HOURS * 1.f);
+
+    const int glyphIntervalY = bss::GLYPH_HEIGHT + bss::SPACE_BETWEEN_GLYPHS;
+
+    QVector<float> glyphVertices;
+    // TODO: DAMIEN: recalculer
+    //glyphVertices.reserve();
+
+    int verticesCount = 0;
+
+    for (int i = 0; i < numberOfStations; ++i)
+    {
+        for (unsigned int j = 0; j < bss::NB_OF_HOURS; ++j)
+        {
+            QVector<tripId> arrivalTripsId = arrivalsIds.at(j);
+
+            for (const bss::tripId tripId : arrivalTripsId)
+            {
+                Trip t = m_model->constTrip(tripId);
+
+                // VERTEX #1
+                float positionX = bss::TIMELINE_OFFSET_X + j * intervalX;
+                float positionY = i * glyphIntervalY;
+
+                float rotationCenterX = bss::TIMELINE_OFFSET_X + j * intervalX;
+                float rotationCenterY = i * glyphIntervalY + bss::GLYPH_HEIGHT / 2;
+
+                const auto rotatePointAroundTarget = [](float angle, QPointF position, QPointF target)
+                {
+                    const float sin = qSin(angle);
+                    const float cos = qCos(angle);
+
+                    float pX = target.x() - position.x();
+                    float pY = target.y() - position.y();
+
+                    float newX = pX * cos - pY * sin;
+                    float newY = pX * sin + pY * cos;
+
+                    newX += position.x();
+                    newY += position.y();
+
+                    return QPointF(newX, newY);
+                };
+
+                const float tripDirection = t.direction;
+
+                QPointF newP;
+                newP = rotatePointAroundTarget(tripDirection,
+                                               QPointF(positionX, positionY),
+                                               QPointF(rotationCenterX, rotationCenterY));
+
+                // TODO: DAMIEN : Faire une fonction pour normaliser la position
+                // des vertices (raster space => screen space)
+
+                positionX = newP.x() / width * 2 - 1;
+                positionY = newP.y() / heigth * 2 - 1;
+
+                glyphVertices += QVector<float>({ positionX, -positionY });
+                glyphVertices += bss::GLYPH_ARRIVAL_COLOR;
+
+
+                // VERTEX #2
+                positionX = bss::TIMELINE_OFFSET_X + j * intervalX;
+                positionY = i * glyphIntervalY + bss::GLYPH_HEIGHT;
+
+                newP = rotatePointAroundTarget(tripDirection,
+                                               QPoint(positionX, positionY),
+                                               QPoint(rotationCenterX, rotationCenterY));
+
+                positionX = newP.x() / width * 2 - 1;
+                positionY = newP.y() / heigth * 2 - 1;
+
+                glyphVertices += QVector<float>({ positionX, -positionY });
+                glyphVertices += bss::GLYPH_ARRIVAL_COLOR;
+
+                verticesCount+= 2;
+            }
+        }
+    }
+
+    ui->timelinematrixwidget->loadGlyphsData(glyphVertices, verticesCount);
 }
 
 
@@ -226,7 +425,6 @@ void MainWindow::onAsyncTaskFinished()
 void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations)
 {
     m_shouldEnableControlsFrame = true;
-
     runAsync(QtConcurrent::run(this, &MainWindow::filterStations, m_stationsFilterParams));
 
     QVector<stationId> stationsIds;
@@ -236,120 +434,6 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     drawStationsOnMap(stationsIds);
 
     qDebug() << "onDataLoaded" << "Trip number" << trips.size() << "Station number" << stations.size();
-
-    // x and y;
-    const unsigned short positionTupleSize = 2;
-
-    // 1 trip has 2 points (start/end)
-    const unsigned short pointPerTrip = 2;
-
-    // R, G, B
-    const unsigned short colorTupleSize = 3;
-
-    QVector<float> tripsVertices;
-    tripsVertices.reserve((trips.size() * positionTupleSize + trips.size() * colorTupleSize) * pointPerTrip);
-    const int tripsVerticesCount = trips.size() * pointPerTrip;
-
-    const float maxLongitude = 180.f;
-    const float maxLatitude = 90.f;
-
-    for (const Trip t : trips)
-    {
-        int startStationId = t.startStationId;
-        const Station startStation = m_model->constStation(startStationId);
-
-        //        tripsVertices.append((float) (startStation.longitude / maxLongitude));
-        //        tripsVertices.append((float) (startStation.latitude / maxLatitude));
-
-        tripsVertices.append((float) (startStation.longitude / maxLongitude));
-        tripsVertices.append((float) (startStation.latitude / maxLatitude));
-
-        // incoming
-        // red origin           1, 0, 0
-        // yellow destination   1, 1, 0
-
-        // outgoing
-        // cyan origin          0, 1, 1
-        // blue end             0, 0, 1
-        tripsVertices.append(1.f);
-        tripsVertices.append(0.f);
-        tripsVertices.append(0.f);
-
-        int endStationId = t.endStationId;
-        const Station endStation = m_model->constStation(endStationId);
-
-        tripsVertices.append((float) (endStation.longitude / maxLongitude));
-        tripsVertices.append((float) (endStation.latitude / maxLatitude));
-
-        tripsVertices.append(0.f);
-        tripsVertices.append(0.f);
-        tripsVertices.append(1.f);
-    }
-
-    QVector<float> stationsVertices;
-    const int stationsVerticesCount = stations.size();
-    stationsVertices.reserve(stationsVerticesCount * positionTupleSize + stationsVerticesCount * colorTupleSize);
-
-    for (const Station s : stations)
-    {
-        stationsVertices.append(s.longitude / maxLongitude);
-        stationsVertices.append(s.latitude / maxLatitude);
-
-        stationsVertices.append(1.f);
-        stationsVertices.append(1.f);
-        stationsVertices.append(.3f);
-    }
-
-    // TEST D'AFFICHAGE DES GLYPHS
-    // LARGEUR ET HAUTEUR
-    const float width = ui->timelinematrixwidget->width();
-    const float heigth = ui->timelinematrixwidget->height();
-    const int numberOfStations = stations.size();
-
-    // TODO: appeler un methode de timeline pour recuperer la valeur de numberOfHour
-    const float intervalX = ui->timelinematrixwidget->width() / (bss::NB_OF_HOURS * 1.f);
-
-    const int glyphHeight = bss::GLYPH_HEIGHT;
-    const int glyphSpaceBetweenToLines = bss::SPACE_BETWEEN_GLYPHS;
-    const int glyphIntervalY = glyphHeight + glyphSpaceBetweenToLines;
-
-    QVector<float> glyphVertices;
-    for (int i = 0; i < numberOfStations; ++i)
-    {
-        for (int j = 0; j < bss::NB_OF_HOURS; ++j)
-        {
-            for (int k = 0; k < 1; k++)
-            {
-                // JUST DRAWING LINE
-                // VERTEX #1
-                float positionX = bss::TIMELINE_OFFSET_X + j * intervalX;
-                float positionY = i * glyphIntervalY;
-
-                //float positionXT =
-
-                positionX = positionX / width * 2 - 1;
-                positionY = positionY / heigth * 2 - 1;
-
-                glyphVertices.append(positionX);
-                glyphVertices.append(-positionY);
-
-                // VERTEX #2
-                positionX = bss::TIMELINE_OFFSET_X + j * intervalX;
-                positionY = i * glyphIntervalY + glyphHeight;
-
-                positionX = positionX / width * 2 - 1;
-                positionY = positionY / heigth * 2 - 1;
-
-                glyphVertices.append(positionX);
-                glyphVertices.append(-positionY);
-            }
-        }
-    }
-
-    ui->mapwidget->loadStationsData(stationsVertices, stationsVerticesCount);
-    ui->mapwidget->loadTripsData(tripsVertices, tripsVerticesCount);
-    ui->mapwidget->centerView(stationsVertices);
-    ui->timelinematrixwidget->loadGlyphsData(glyphVertices, 2 * bss::NB_OF_HOURS * numberOfStations);
 }
 
 void MainWindow::onFailedToLoadData(const QString& filename, const QString& errorDesc)
