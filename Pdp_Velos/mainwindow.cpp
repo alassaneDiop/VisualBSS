@@ -22,6 +22,8 @@ MainWindow::MainWindow(QWidget* parent) :
      * */
     qRegisterMetaType<QVector<Trip>>("QVector<Trip>");
     qRegisterMetaType<QVector<Station>>("QVector<Station>");
+    qRegisterMetaType<QVector<bss::tripId>>("QVector<bss::tripId>");
+    qRegisterMetaType<QVector<bss::stationId>>("QVector<bss::stationId>");
 
     const Qt::ConnectionType connectionType = (Qt::ConnectionType)(Qt::QueuedConnection | Qt::UniqueConnection);
     connect(this, &MainWindow::dataLoaded, this, &MainWindow::onDataLoaded, connectionType);
@@ -59,22 +61,21 @@ MainWindow::MainWindow(QWidget* parent) :
     QObject* const directionRangeSlider = reinterpret_cast<QObject*>((QObject*)ui->rangeSlider_direction->rootObject());
     connect(directionRangeSlider, SIGNAL(firstValueChanged(qreal)), SLOT(on_rangeSlider_direction_firstValueChanged(qreal)));
     connect(directionRangeSlider, SIGNAL(secondValueChanged(qreal)), SLOT(on_rangeSlider_direction_secondValueChanged(qreal)));
-    directionRangeSlider->setProperty("snapMode", "NoSnap");
     directionRangeSlider->setProperty("from", 0);
     directionRangeSlider->setProperty("to", 360);
 
     // TODO : SEB
     /*m_tripsFilterParams.period
     m_tripsFilterParams.day = QDate() ui->lineEdit_day->*/
-    m_tripsFilterParams.maxDirection = directionRangeSlider->property("second.value").value<qreal>();
-    m_tripsFilterParams.minDirection = directionRangeSlider->property("first.value").value<qreal>();
-    m_tripsFilterParams.maxDistance = distanceRangeSlider->property("second.value").value<qreal>();
-    m_tripsFilterParams.minDistance = distanceRangeSlider->property("first.value").value<qreal>();
-    m_tripsFilterParams.maxDuration = durationRangeSlider->property("second.value").value<qreal>();
-    m_tripsFilterParams.minDuration = durationRangeSlider->property("first.value").value<qreal>();
+    m_tripsFilterParams.maxDirection = 360;
+    m_tripsFilterParams.minDirection = 0;
+    m_tripsFilterParams.maxDistance = 100000;
+    m_tripsFilterParams.minDistance = 0;
+    m_tripsFilterParams.maxDuration = 100000;
+    m_tripsFilterParams.minDuration = 0;
 
-    m_stationsFilterParams.maxOriginDestinationFlow = odFlowRangeSlider->property("second.value").value<qreal>();
-    m_stationsFilterParams.minOriginDestinationFlow = odFlowRangeSlider->property("first.value").value<qreal>();
+    m_stationsFilterParams.maxOriginDestinationFlow = 100000;
+    m_stationsFilterParams.minOriginDestinationFlow = 0;
 
     m_sortOrder = SORT_PARAMS.at(ui->comboBox_order->currentIndex());
 
@@ -104,6 +105,9 @@ void MainWindow::closeEvent(QCloseEvent* event)
 template<typename T>
 void MainWindow::runAsync(const QFuture<T>& future)
 {
+    if (m_asyncTaskMonitor->isRunning())
+        m_asyncTaskMonitor->waitForFinished();
+
     m_asyncTaskMonitor->setFuture(future);
 }
 
@@ -206,7 +210,6 @@ void MainWindow::drawFilteredTripsOnMatrix(const QVector<QVector<tripId>>& arriv
 void MainWindow::onAsyncTaskStarted()
 {
     m_canApplicationExit = false;
-
     ui->menuBar->setEnabled(false);
     ui->frame_controls->setEnabled(false);
 }
@@ -214,7 +217,6 @@ void MainWindow::onAsyncTaskStarted()
 void MainWindow::onAsyncTaskFinished()
 {
     m_canApplicationExit = true;
-
     ui->menuBar->setEnabled(m_shouldEnableMenuBar);
     ui->frame_controls->setEnabled(m_shouldEnableControlsFrame);
 }
@@ -224,7 +226,7 @@ void MainWindow::onAsyncTaskFinished()
 void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations)
 {
     m_shouldEnableControlsFrame = true;
-    filterStations(m_stationsFilterParams);
+    runAsync(QtConcurrent::run(this, &MainWindow::filterStations, m_stationsFilterParams));
 
     qDebug() << "onDataLoaded" << "Trip number" << trips.size() << "Station number" << stations.size();
 
@@ -422,13 +424,26 @@ void MainWindow::onStationsOrderChanged(const QVector<stationId>& stationsOrder)
 
     for (int stationIndex = 0; stationIndex < stationsOrder.size(); ++stationIndex)
     {
-        const stationId sId = m_orderedStationsIds.at(stationIndex);
+        const stationId sId = stationsOrder.at(stationIndex);
         const Station s = m_model->constStation(sId);
         for (int hour = 0; hour < bss::NB_OF_HOURS; ++hour)
         {
-            const int glyphIndex = (bss::NB_OF_HOURS * stationIndex) + hour;
+            const auto filter = [this, &hour](const tripId& id)
+            { return (m_model->constTrip(id).startDateTime.time().hour() == hour); };
 
-            for (const tripId tId : s.arrivalsIds)
+            QFuture<tripId> arrivalsFuture = QtConcurrent::filtered(s.arrivalsIds, filter);
+            QFuture<tripId> departuresFuture = QtConcurrent::filtered(s.departuresIds, filter);
+            QFuture<tripId> cyclesFuture = QtConcurrent::filtered(s.cyclesIds, filter);
+
+            arrivalsFuture.waitForFinished();
+            departuresFuture.waitForFinished();
+            cyclesFuture.waitForFinished();
+
+            arrivalsIds += QVector<tripId>::fromList(arrivalsFuture.results());
+            departuresIds += QVector<tripId>::fromList(departuresFuture.results());
+            cyclesIds += QVector<tripId>::fromList(cyclesFuture.results());
+
+            /*for (const tripId tId : s.arrivalsIds)
                 if (m_model->trip(tId).startDateTime.time().hour() == hour)
                     arrivalsIds[glyphIndex].append(tId);
 
@@ -438,7 +453,7 @@ void MainWindow::onStationsOrderChanged(const QVector<stationId>& stationsOrder)
 
             for (const tripId tId : s.cyclesIds)
                 if (m_model->trip(tId).startDateTime.time().hour() == hour)
-                    cyclesIds[glyphIndex].append(tId);
+                    cyclesIds[glyphIndex].append(tId);*/
         }
     }
 

@@ -488,6 +488,12 @@
                      <property name="text">
                       <string>Incoming trips</string>
                      </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                     <property name="tristate">
+                      <bool>false</bool>
+                     </property>
                     </widget>
                    </item>
                    <item>
@@ -495,12 +501,18 @@
                      <property name="text">
                       <string>Cyclic trips</string>
                      </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
                     </widget>
                    </item>
                    <item>
                     <widget class="QCheckBox" name="checkBox_distance">
                      <property name="text">
                       <string>Trips distance</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -530,12 +542,18 @@
                      <property name="text">
                       <string>Outgoing trips</string>
                      </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
                     </widget>
                    </item>
                    <item>
                     <widget class="QCheckBox" name="checkBox_duration">
                      <property name="text">
                       <string>Trips duration</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
