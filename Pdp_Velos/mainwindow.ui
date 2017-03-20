@@ -484,7 +484,7 @@
                     <number>0</number>
                    </property>
                    <item>
-                    <widget class="QCheckBox" name="checkBox_arrivals">
+                    <widget class="QCheckBox" name="checkBox_showArrivals">
                      <property name="text">
                       <string>Incoming trips</string>
                      </property>
@@ -497,7 +497,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QCheckBox" name="checkBox_cycles">
+                    <widget class="QCheckBox" name="checkBox_showCycles">
                      <property name="text">
                       <string>Cyclic trips</string>
                      </property>
@@ -507,7 +507,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QCheckBox" name="checkBox_distance">
+                    <widget class="QCheckBox" name="checkBox_showDistance">
                      <property name="text">
                       <string>Trips distance</string>
                      </property>
@@ -538,7 +538,7 @@
                     <number>0</number>
                    </property>
                    <item>
-                    <widget class="QCheckBox" name="checkBox_departures">
+                    <widget class="QCheckBox" name="checkBox_showDepartures">
                      <property name="text">
                       <string>Outgoing trips</string>
                      </property>
@@ -548,7 +548,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QCheckBox" name="checkBox_duration">
+                    <widget class="QCheckBox" name="checkBox_showDuration">
                      <property name="text">
                       <string>Trips duration</string>
                      </property>
