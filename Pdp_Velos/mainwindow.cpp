@@ -226,7 +226,14 @@ void MainWindow::onAsyncTaskFinished()
 void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations)
 {
     m_shouldEnableControlsFrame = true;
+
     runAsync(QtConcurrent::run(this, &MainWindow::filterStations, m_stationsFilterParams));
+
+    QVector<stationId> stationsIds;
+    for (const Station s : stations)
+        stationsIds.append(s.id);
+
+    drawStationsOnMap(stationsIds);
 
     qDebug() << "onDataLoaded" << "Trip number" << trips.size() << "Station number" << stations.size();
 
@@ -402,11 +409,37 @@ void MainWindow::onFilteredTripsChanged(const QVector<tripId>& filteredTrips)
 void MainWindow::onSelectionChanged(const QVector<tripId>& selection)
 {
     // TODO : SEB onSelectionChanged
-    /*QVector<Trip> trips;
-    for (const tripId& id : selection)
-        trips.append(m_model->constTrip(id));
+    if (selection.isEmpty())
+        drawStationsOnMap(m_orderedStationsIds);
+    else
+    {
+        QVector<tripId> arrivalsId;
+        QVector<tripId> departuresId;
+        QVector<tripId> cyclesId;
 
-    drawTimelineMatrix(arrivals, departures, cycles);*/
+        for (const tripId tId : selection)
+        {
+            for (const stationId sId : m_orderedStationsIds)
+            {
+                const Trip t = m_model->constTrip(sId);
+                if (t.isCyclic)
+                    cyclesId.append(t.id);
+                else
+                {
+                    if (sId == t.startStationId)
+                        departuresId.append(t.id);
+                    else
+                        arrivalsId.append(t.id);
+                }
+            }
+        }
+
+        arrivalsId.squeeze();
+        departuresId.squeeze();
+        cyclesId.squeeze();
+
+        drawSelectedTripsOnMap(arrivalsId, departuresId, cyclesId);
+    }
 }
 
 void MainWindow::onStationsOrderChanged(const QVector<stationId>& stationsOrder)
