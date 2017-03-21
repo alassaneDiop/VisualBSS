@@ -134,7 +134,7 @@ void MatrixGLWidget::wheelEvent(QWheelEvent* event)
         i *= -1;
 
     const float scrollValue = ((float)bss::GLYPH_HEIGHT) / height();
-    qDebug() << scrollValue;
+
     m_translationY += i * scrollValue;
 
     if (m_translationY > 0)
@@ -207,11 +207,11 @@ void MatrixGLWidget::mouseReleaseEvent(QMouseEvent* event)
 // FIXME: DAMIEN: refactoriser et changer le type
 QPair<QPair<char, char>, QPair<int, int>> MatrixGLWidget::tripsInSelector() const
 {
-    QPair<char, char> timeInterval;
 
     const int width = this->width();
     const float oneHour = width / bss::NB_OF_HOURS;
 
+    QPair<char, char> timeInterval;
     timeInterval.first = (char)(m_topLeftSelectionRectangle.x() / oneHour);
     timeInterval.second = (char)(m_bottomRightSelectionRectangle.x() / oneHour);
 
@@ -229,12 +229,12 @@ QPair<QPair<char, char>, QPair<int, int>> MatrixGLWidget::tripsInSelector() cons
 
     // FIND STATIONS
     const int glyphIntervalY = bss::GLYPH_HEIGHT + bss::SPACE_BETWEEN_GLYPHS;
-    QPair<int, int> stationsInterval;
 
     const float sizeInterval = this->height() / ((glyphIntervalY + bss::GLYPH_HEIGHT) * 2 - 1);
 
     const float normalizedTranslationY = m_translationY * height() / 2.f;
 
+    QPair<int, int> stationsInterval;
     stationsInterval.first = (m_topLeftSelectionRectangle.y() - normalizedTranslationY)
             / sizeInterval;
 
@@ -246,7 +246,6 @@ QPair<QPair<char, char>, QPair<int, int>> MatrixGLWidget::tripsInSelector() cons
 
     stationsInterval.first = qMin(tmp3, tmp4);
     stationsInterval.second = qMax(tmp3, tmp4);
-
     stationsInterval.first = qMax(0, stationsInterval.first);
 
     qDebug() << "Stations interval"<< stationsInterval.first << stationsInterval.second;
