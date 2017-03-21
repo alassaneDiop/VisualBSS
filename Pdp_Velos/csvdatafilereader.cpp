@@ -44,7 +44,7 @@ DataFileReadInfo CsvDataFileReader::readData(QHash<QString, Station>& stations, 
     trips.reserve(lines.size());
 
     // parsing is parallelized so we need locks to synchronize data access
-    QMutex tripsLock, stationsMapLock;
+    QReadWriteLock tripsLock, stationsMapLock;
 
     // the functor that will be run in parallel
     const auto runFunction = [this, &trips, &tripsLock, &stations, &stationsMapLock](QString& line)
@@ -70,7 +70,7 @@ DataFileReadInfo CsvDataFileReader::readData(QHash<QString, Station>& stations, 
         {
             Station s;
 
-            stationsMapLock.lock();
+            stationsMapLock.lockForRead();
             const auto it = stations.constFind(name);
             const bool found = (it != stations.constEnd());
             if (found)
@@ -86,7 +86,7 @@ DataFileReadInfo CsvDataFileReader::readData(QHash<QString, Station>& stations, 
                 s.latitude = latitudeStr.toDouble();
                 s.longitude = longitudeStr.toDouble();
 
-                stationsMapLock.lock();
+                stationsMapLock.lockForWrite();
                 s.id = stations.size();
                 stations.insert(name, s);
                 stationsMapLock.unlock();
@@ -102,25 +102,30 @@ DataFileReadInfo CsvDataFileReader::readData(QHash<QString, Station>& stations, 
         t.endStationId = endStation.id;
         t.isCyclic = (startName == endName);
         t.duration = durationStr.toDouble();
-        t.distance = startStation.distance(endStation);
         t.direction = startStation.direction(endStation);
         t.startDateTime = QDateTime::fromString(startDateTimeStr, params().dateFormat);
         t.endDateTime = QDateTime::fromString(endDateTimeStr, params().dateFormat);
 
-        tripsLock.lock();
+        // "For cyclic trips, we estimated the distance by multiplying the duration by the average speed of 2.7m/s."
+        if (t.isCyclic)
+            t.distance = 2.7 * t.duration;
+        else
+            t.distance = startStation.distance(endStation);
+
+        tripsLock.lockForWrite();
         t.id = trips.size();
         trips.append(t);
         tripsLock.unlock();
 
         if (t.isCyclic)
         {
-            stationsMapLock.lock();
+            stationsMapLock.lockForWrite();
             stations[startName].appendCycle(t);
             stationsMapLock.unlock();
         }
         else
         {
-            stationsMapLock.lock();
+            stationsMapLock.lockForWrite();
             stations[startName].appendDeparture(t);
             stations[endName].appendArrival(t);
             stationsMapLock.unlock();

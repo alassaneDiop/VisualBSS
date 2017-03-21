@@ -31,9 +31,3 @@ QVector<Trip> TripsFilter::filter(const QVector<Trip>& trips) const
 
     return QtConcurrent::blockingFiltered(trips, filter);
 }
-
-/*
- *  QDate period;
-    QDate day;
-    Qt::DayOfWeek dayOfWeek = Qt::DayOfWeek::Monday;
-    */

@@ -14,7 +14,6 @@ struct Trip;
 struct Trip
 {
     inline bool operator ==(const Trip& other) { return (id == other.id); }
-    static qreal calculateDistance(const Trip& trip);
 
     bss::tripId id = (bss::tripId) -1;
     bss::stationId startStationId = (bss::stationId) -1;
