@@ -56,6 +56,9 @@ private:
     void filterStations(const StationsFilterParams& params);
     void sortStations(const bss::SortOrder& param, QVector<Station>& stations);
 
+    void prepareToDrawSelectionOnMap(const QVector<tripId>& selection);
+    void prepareToDrawTripsOnMatrix(const QVector<tripId>& trips);
+
     // affiche sur la map les stations
     void drawStationsOnMap(const QVector<stationId>& stationsIds);
 
@@ -65,14 +68,14 @@ private:
                                 const QVector<tripId>& cyclesIds);
 
     // affiche sur la matrice les trajets nouvellement filtres
-    void drawFilteredTripsOnMatrix(const QVector<QVector<tripId>>& arrivalsIds,
-                                   const QVector<QVector<tripId>>& departuresIds,
-                                   const QVector<QVector<tripId>>& cyclesIds,
-                                   const bool& showDistance);
+    void drawTripsOnMatrix(const QVector<QVector<tripId>>& arrivalsIds,
+                           const QVector<QVector<tripId>>& departuresIds,
+                           const QVector<QVector<tripId>>& cyclesIds,
+                           const bool& showDistance);
 
     bool m_canApplicationExit = true;
     bool m_shouldEnableMenuBar = true;
-    bool m_shouldEnableControlsFrame = false;
+    bool m_shouldEnableControls = false;
 
     bss::SortOrder m_sortOrder = bss::DISTANCE;
     TripsDisplayParams m_tripsDisplayParams;
@@ -83,10 +86,10 @@ private:
     Model* m_model = nullptr;
     QFutureWatcher<void>* m_asyncTaskMonitor = nullptr;    // an object used to monitor threads
 
-    QVector<tripId> m_filteredTripsIds;
-    QVector<tripId> m_selection;               // currently selected trips's id's
-    QVector<stationId> m_orderedStationsIds;   // ids of stations, sorted by user's specification
-    stationId m_highlight = (stationId) -1;    // currently highlighted station's id (-1 if there is none)
+    QVector<tripId> m_tripsIds;                 // filtered trips ids
+    QVector<tripId> m_selection;                // currently selected trips ids
+    QVector<stationId> m_stationsIds;           // filtered and sorted trips ids
+    stationId m_highlight = (stationId) -1;     // currently highlighted station's id (-1 if there is none)
 
 private slots:
     void onAsyncTaskStarted();
@@ -96,7 +99,7 @@ private slots:
     void onFailedToLoadData(const QString& filename, const QString& errorDesc);
     void onDataUnloaded();
 
-    void onFilteredTripsChanged(const QVector<tripId>& filteredTrips);
+    void onTripsChanged(const QVector<tripId>& filteredTrips);
     void onStationsOrderChanged(const QVector<stationId>& stationsOrder);
     void onSelectionChanged(const QVector<tripId>& selection);
     void onHighlightChanged(const stationId& highlight);
@@ -105,17 +108,30 @@ private slots:
     void onStationsSorterParamChanged(const bss::SortOrder& param);
     void onStationsFilterParamsChanged(const StationsFilterParams& params);
 
+    void onReadyToDrawSelectionOnMap(const QVector<tripId>& arrivalsIds,
+                                     const QVector<tripId>& departuresIds,
+                                     const QVector<tripId>& cyclesIds);
+
+    void onReadyToDrawTripsOnMatrix(const QVector<QVector<tripId>>& arrivalsIds,
+                                    const QVector<QVector<tripId>>& departuresIds,
+                                    const QVector<QVector<tripId>>& cyclesIds,
+                                    const bool& showDistance);
+
     void on_action_open_triggered();
     void on_action_closeAll_triggered();
+
     void on_comboBox_period_currentIndexChanged(int index);
     void on_lineEdit_day_editingFinished();
     void on_comboBox_dayOfWeek_currentIndexChanged(int index);
+
     void on_checkBox_showArrivals_stateChanged(int arg1);
     void on_checkBox_showDepartures_stateChanged(int arg1);
     void on_checkBox_showCycles_stateChanged(int arg1);
     void on_checkBox_showDuration_stateChanged(int arg1);
     void on_checkBox_showDistance_stateChanged(int arg1);
+
     void on_comboBox_order_currentIndexChanged(int index);
+
     void on_rangeSlider_distance_firstValueChanged(qreal v);
     void on_rangeSlider_distance_secondValueChanged(qreal v);
     void on_rangeSlider_duration_firstValueChanged(qreal v);
@@ -130,12 +146,22 @@ signals:
     void failedToLoadData(const QString& filename, const QString& errorDesc);
     void dataUnloaded();
 
-    void filteredTripsChanged(const QVector<tripId>& filteredTrips);
-    void stationsOrderChanged(const QVector<bss::stationId>& stationsOrder);
+    void tripsChanged(const QVector<tripId>& trips);
+    void stationsChanged(const QVector<bss::stationId>& stationsOrder);
     void selectionChanged(const QVector<tripId>& selection);
     void highlightChanged(const stationId& highlight);
     void tripsFilterParamsChanged(const TripsFilterParams& params);
     void stationsSorterParamChanged(const bss::SortOrder& param);
+
+    void readyToDrawSelectionOnMap(const QVector<tripId>& arrivalsIds,
+                                   const QVector<tripId>& departuresIds,
+                                   const QVector<tripId>& cyclesIds);
+
+    void readyToDrawTripsOnMatrix(const QVector<QVector<tripId>>& arrivalsIds,
+                                  const QVector<QVector<tripId>>& departuresIds,
+                                  const QVector<QVector<tripId>>& cyclesIds,
+                                  const bool& showDistance);
+
 };
 
 #endif // MAINWINDOW_H
