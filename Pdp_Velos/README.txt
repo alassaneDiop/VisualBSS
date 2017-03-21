@@ -1,6 +1,6 @@
 # VisualBSS
 
-VisualBikeSharingSystem - version 0.1 - 11/03/2017
+VisualBikeSharingSystem - version 0.2 - 19/03/2017
 
 ===============================================================================
 Authors:
@@ -12,7 +12,7 @@ Il affiche les trajets et les stations à partir d'un fichier chargé.
 
 ===============================================================================
 Requierement:
-	-Qt 5.6 or sup
+	-Qt 5.7 or sup
 	-OpenGL 3.3 ou sup
 	-C++14 compiler
 
@@ -25,14 +25,6 @@ Compilation:
 
 ===============================================================================
 Execution:
-	./Pdp_Velos <DATA-FILE-NAME.csv>
+	./Pdp_Velos
 
 ===============================================================================
-Bugs:
-
--Trips and stations in the map widget are not shown correctly in the center of
-the widget, due a zoom calculation issue.
-
--Stations/Trips and Glyphs cannot be displayed in the same time. There is a
-VAO/VBO issue.
-

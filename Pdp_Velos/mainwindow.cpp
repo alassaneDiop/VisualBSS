@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <QtConcurrent>
 #include <QFileDialog>
+#include <QtMath>
+#include <QPoint>
 
 #include "trip.h"
 #include "station.h"
@@ -22,6 +24,8 @@ MainWindow::MainWindow(QWidget* parent) :
      * */
     qRegisterMetaType<QVector<Trip>>("QVector<Trip>");
     qRegisterMetaType<QVector<Station>>("QVector<Station>");
+    qRegisterMetaType<QVector<bss::tripId>>("QVector<bss::tripId>");
+    qRegisterMetaType<QVector<bss::stationId>>("QVector<bss::stationId>");
 
     const Qt::ConnectionType connectionType = (Qt::ConnectionType)(Qt::QueuedConnection | Qt::UniqueConnection);
     connect(this, &MainWindow::dataLoaded, this, &MainWindow::onDataLoaded, connectionType);
@@ -59,29 +63,28 @@ MainWindow::MainWindow(QWidget* parent) :
     QObject* const directionRangeSlider = reinterpret_cast<QObject*>((QObject*)ui->rangeSlider_direction->rootObject());
     connect(directionRangeSlider, SIGNAL(firstValueChanged(qreal)), SLOT(on_rangeSlider_direction_firstValueChanged(qreal)));
     connect(directionRangeSlider, SIGNAL(secondValueChanged(qreal)), SLOT(on_rangeSlider_direction_secondValueChanged(qreal)));
-    directionRangeSlider->setProperty("snapMode", "NoSnap");
     directionRangeSlider->setProperty("from", 0);
     directionRangeSlider->setProperty("to", 360);
 
     // TODO : SEB
     /*m_tripsFilterParams.period
     m_tripsFilterParams.day = QDate() ui->lineEdit_day->*/
-    m_tripsFilterParams.maxDirection = directionRangeSlider->property("second.value").value<qreal>();
-    m_tripsFilterParams.minDirection = directionRangeSlider->property("first.value").value<qreal>();
-    m_tripsFilterParams.maxDistance = distanceRangeSlider->property("second.value").value<qreal>();
-    m_tripsFilterParams.minDistance = distanceRangeSlider->property("first.value").value<qreal>();
-    m_tripsFilterParams.maxDuration = durationRangeSlider->property("second.value").value<qreal>();
-    m_tripsFilterParams.minDuration = durationRangeSlider->property("first.value").value<qreal>();
+    m_tripsFilterParams.maxDirection = 360;
+    m_tripsFilterParams.minDirection = 0;
+    m_tripsFilterParams.maxDistance = 100000;
+    m_tripsFilterParams.minDistance = 0;
+    m_tripsFilterParams.maxDuration = 100000;
+    m_tripsFilterParams.minDuration = 0;
 
-    m_stationsFilterParams.maxOriginDestinationFlow = odFlowRangeSlider->property("second.value").value<qreal>();
-    m_stationsFilterParams.minOriginDestinationFlow = odFlowRangeSlider->property("first.value").value<qreal>();
+    m_stationsFilterParams.maxOriginDestinationFlow = 100000;
+    m_stationsFilterParams.minOriginDestinationFlow = 0;
 
     m_sortOrder = SORT_PARAMS.at(ui->comboBox_order->currentIndex());
 
-    m_tripsDisplayParams.shouldShowArrivals = ui->checkBox_arrivals->isChecked();
-    m_tripsDisplayParams.shouldShowCycles = ui->checkBox_cycles->isChecked();
-    m_tripsDisplayParams.shouldShowDepartures = ui->checkBox_departures->isChecked();
-    m_tripsDisplayParams.shouldShowDistance = ui->checkBox_distance->isChecked();
+    m_tripsDisplayParams.shouldShowArrivals = ui->checkBox_showArrivals->isChecked();
+    m_tripsDisplayParams.shouldShowCycles = ui->checkBox_showCycles->isChecked();
+    m_tripsDisplayParams.shouldShowDepartures = ui->checkBox_showDepartures->isChecked();
+    m_tripsDisplayParams.shouldShowDistance = ui->checkBox_showDistance->isChecked();
 }
 
 MainWindow::~MainWindow()
@@ -92,7 +95,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
-{  
+{
     if (!m_canApplicationExit)
         event->ignore();
 
@@ -104,6 +107,9 @@ void MainWindow::closeEvent(QCloseEvent* event)
 template<typename T>
 void MainWindow::runAsync(const QFuture<T>& future)
 {
+    if (m_asyncTaskMonitor->isRunning())
+        m_asyncTaskMonitor->waitForFinished();
+
     m_asyncTaskMonitor->setFuture(future);
 }
 
@@ -181,7 +187,33 @@ void MainWindow::sortStations(const bss::SortOrder& param, QVector<Station>& sta
 // affiche sur la map les stations
 void MainWindow::drawStationsOnMap(const QVector<stationId>& stationsIds)
 {
+    qDebug() << "MainWindow::drawStationsOnMap";
+
+    // x and y;
+    const unsigned short positionTupleSize = 2;
+
+    // R, G, B
+    const unsigned short colorTupleSize = 3;
+
     // TODO : Damien drawStations
+    QVector<float> stationsVertices;
+    const int stationsVerticesCount = stationsIds.size();
+    stationsVertices.reserve(stationsVerticesCount * positionTupleSize * colorTupleSize);
+
+    const float maxLongitude = 180.f;
+    const float maxLatitude = 90.f;
+
+    for (const stationId id : stationsIds)
+    {
+        const Station s = m_model->constStation(id);
+        stationsVertices.append(s.longitude / maxLongitude);
+        stationsVertices.append(s.latitude / maxLatitude);
+
+        stationsVertices += QVector<float>({ 1.f, 1.f, 0.3f });
+    }
+
+    ui->mapwidget->loadStationsData(stationsVertices, stationsVerticesCount);
+    ui->mapwidget->centerView(stationsVertices);
 }
 
 // affiche sur la map les trajets filtres et selectionnes par l'utilisateur
@@ -189,44 +221,9 @@ void MainWindow::drawSelectedTripsOnMap(const QVector<tripId>& arrivalsIds,
                                         const QVector<tripId>& departuresIds,
                                         const QVector<tripId>& cyclesIds)
 {
-// TODO : Damien drawSelectedTrips
-}
-
-    // affiche sur la matrice les trajets nouvellement filtres
-void MainWindow::drawFilteredTripsOnMatrix(const QVector<QVector<tripId>>& arrivalsIds,
-                                           const QVector<QVector<tripId>>& departuresIds,
-                                           const QVector<QVector<tripId>>& cyclesIds,
-                                           const bool& showDistance)
-{
-    // TODO : Damien drawFilteredTrips
-}
-
-
-
-void MainWindow::onAsyncTaskStarted()
-{
-    m_canApplicationExit = false;
-
-    ui->menuBar->setEnabled(false);
-    ui->frame_controls->setEnabled(false);
-}
-
-void MainWindow::onAsyncTaskFinished()
-{
-    m_canApplicationExit = true;
-
-    ui->menuBar->setEnabled(m_shouldEnableMenuBar);
-    ui->frame_controls->setEnabled(m_shouldEnableControlsFrame);
-}
-
-
-
-void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations)
-{
     m_shouldEnableControlsFrame = true;
-    filterStations(m_stationsFilterParams);
 
-    qDebug() << "onDataLoaded" << "Trip number" << trips.size() << "Station number" << stations.size();
+    runAsync(QtConcurrent::run(this, &MainWindow::filterStations, m_stationsFilterParams));
 
     // x and y;
     const unsigned short positionTupleSize = 2;
@@ -237,110 +234,206 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     // R, G, B
     const unsigned short colorTupleSize = 3;
 
+
     QVector<float> tripsVertices;
-    tripsVertices.reserve((trips.size() * positionTupleSize + trips.size() * colorTupleSize) * pointPerTrip);
-    const int tripsVerticesCount = trips.size() * pointPerTrip;
+    const int arrivalsVertices = arrivalsIds.size() * pointPerTrip * positionTupleSize * colorTupleSize;
+    const int departuresVertices = departuresIds.size() * pointPerTrip * positionTupleSize * colorTupleSize;
+    const int cyclesVertices = cyclesIds.size() * positionTupleSize * colorTupleSize;
+
+    tripsVertices.reserve(arrivalsVertices + departuresVertices + cyclesVertices);
+
+    int tripsVerticesCount = 0;
 
     const float maxLongitude = 180.f;
     const float maxLatitude = 90.f;
 
-    for (const Trip t : trips)
+    for (const tripId arrivalTripId : arrivalsIds)
     {
-        int startStationId = t.startStationId;
-        const Station startStation = m_model->constStation(startStationId);
+        const Trip trip = m_model->constTrip(arrivalTripId);
 
-        //        tripsVertices.append((float) (startStation.longitude / maxLongitude));
-        //        tripsVertices.append((float) (startStation.latitude / maxLatitude));
+        const bss::stationId startStationId = trip.startStationId;
+        const Station startStation = m_model->constStation(startStationId);
 
         tripsVertices.append((float) (startStation.longitude / maxLongitude));
         tripsVertices.append((float) (startStation.latitude / maxLatitude));
 
-        // incoming
-        // red origin           1, 0, 0
-        // yellow destination   1, 1, 0
+        tripsVertices += bss::ARRIVAL_ORIGIN_COLOR;
 
-        // outgoing
-        // cyan origin          0, 1, 1
-        // blue end             0, 0, 1
-        tripsVertices.append(1.f);
-        tripsVertices.append(0.f);
-        tripsVertices.append(0.f);
 
-        int endStationId = t.endStationId;
+        const bss::stationId endStationId = trip.endStationId;
+        const Station endStation = m_model->station(endStationId);
+
+        tripsVertices.append((float) (endStation.longitude / maxLongitude));
+        tripsVertices.append((float) (endStation.latitude / maxLatitude));
+
+        tripsVertices += bss::ARRIVAL_DESTINATION_COLOR;
+
+        tripsVertices += 2;
+    }
+
+    for (const tripId departureTripId : departuresIds)
+    {
+        const Trip trip = m_model->constTrip(departureTripId);
+
+        const bss::stationId startStationId = trip.startStationId;
+        const Station startStation = m_model->constStation(startStationId);
+
+        tripsVertices.append((float) (startStation.longitude / maxLongitude));
+        tripsVertices.append((float) (startStation.latitude / maxLatitude));
+
+        tripsVertices += bss::DEPARTURE_ORIGIN_COLOR;
+
+
+        const bss::stationId endStationId = trip.endStationId;
         const Station endStation = m_model->constStation(endStationId);
 
         tripsVertices.append((float) (endStation.longitude / maxLongitude));
         tripsVertices.append((float) (endStation.latitude / maxLatitude));
 
-        tripsVertices.append(0.f);
-        tripsVertices.append(0.f);
-        tripsVertices.append(1.f);
+        tripsVertices += bss::DEPARTURE_DESTINATION_COLOR;
+
+        tripsVertices += 2;
     }
 
-    QVector<float> stationsVertices;
-    const int stationsVerticesCount = stations.size();
-    stationsVertices.reserve(stationsVerticesCount * positionTupleSize + stationsVerticesCount * colorTupleSize);
+    ui->mapwidget->loadTripsData(tripsVertices, tripsVerticesCount);
+    ui->mapwidget->centerView(tripsVertices);
+}
 
-    for (const Station s : stations)
-    {
-        stationsVertices.append(s.longitude / maxLongitude);
-        stationsVertices.append(s.latitude / maxLatitude);
+    // affiche sur la matrice les trajets nouvellement filtres
+void MainWindow::drawFilteredTripsOnMatrix(const QVector<QVector<tripId>>& arrivalsIds,
+                                           const QVector<QVector<tripId>>& departuresIds,
+                                           const QVector<QVector<tripId>>& cyclesIds,
+                                           const bool& showDistance)
+{
+    // TODO : Damien drawFilteredTrips
 
-        stationsVertices.append(1.f);
-        stationsVertices.append(1.f);
-        stationsVertices.append(.3f);
-    }
+    // x and y;
+    const unsigned short positionTupleSize = 2;
 
-    // TEST D'AFFICHAGE DES GLYPHS
-    // LARGEUR ET HAUTEUR
+    // 1 trip has 2 points (start/end)
+    const unsigned short pointPerTrip = 2;
+
+    // R, G, B
+    const unsigned short colorTupleSize = 3;
+
     const float width = ui->timelinematrixwidget->width();
     const float heigth = ui->timelinematrixwidget->height();
-    const int numberOfStations = stations.size();
 
-    // TODO: appeler un methode de timeline pour recuperer la valeur de numberOfHour
+    // TODO: Seb : passer le nombre de stations
+    const int numberOfStations = 20;
     const float intervalX = ui->timelinematrixwidget->width() / (bss::NB_OF_HOURS * 1.f);
 
-    const int glyphHeight = bss::GLYPH_HEIGHT;
-    const int glyphSpaceBetweenToLines = bss::SPACE_BETWEEN_GLYPHS;
-    const int glyphIntervalY = glyphHeight + glyphSpaceBetweenToLines;
+    const int glyphIntervalY = bss::GLYPH_HEIGHT + bss::SPACE_BETWEEN_GLYPHS;
 
     QVector<float> glyphVertices;
+    // TODO: DAMIEN: recalculer
+    //glyphVertices.reserve();
+
+    int verticesCount = 0;
+
     for (int i = 0; i < numberOfStations; ++i)
     {
-        for (int j = 0; j < bss::NB_OF_HOURS; ++j)
+        for (unsigned int j = 0; j < bss::NB_OF_HOURS; ++j)
         {
-            for (int k = 0; k < 1; k++)
+            QVector<tripId> arrivalTripsId = arrivalsIds.at(j);
+
+            for (const bss::tripId tripId : arrivalTripsId)
             {
-                // JUST DRAWING LINE
+                Trip t = m_model->constTrip(tripId);
+
                 // VERTEX #1
                 float positionX = bss::TIMELINE_OFFSET_X + j * intervalX;
                 float positionY = i * glyphIntervalY;
 
-                //float positionXT =
+                float rotationCenterX = bss::TIMELINE_OFFSET_X + j * intervalX;
+                float rotationCenterY = i * glyphIntervalY + bss::GLYPH_HEIGHT / 2;
 
-                positionX = positionX / width * 2 - 1;
-                positionY = positionY / heigth * 2 - 1;
+                const auto rotatePointAroundTarget = [](float angle, QPointF position, QPointF target)
+                {
+                    const float sin = qSin(angle);
+                    const float cos = qCos(angle);
 
-                glyphVertices.append(positionX);
-                glyphVertices.append(-positionY);
+                    float pX = target.x() - position.x();
+                    float pY = target.y() - position.y();
+
+                    float newX = pX * cos - pY * sin;
+                    float newY = pX * sin + pY * cos;
+
+                    newX += position.x();
+                    newY += position.y();
+
+                    return QPointF(newX, newY);
+                };
+
+                const float tripDirection = t.direction;
+
+                QPointF newP;
+                newP = rotatePointAroundTarget(tripDirection,
+                                               QPointF(positionX, positionY),
+                                               QPointF(rotationCenterX, rotationCenterY));
+
+                // TODO: DAMIEN : Faire une fonction pour normaliser la position
+                // des vertices (raster space => screen space)
+
+                positionX = newP.x() / width * 2 - 1;
+                positionY = newP.y() / heigth * 2 - 1;
+
+                glyphVertices += QVector<float>({ positionX, -positionY });
+                glyphVertices += bss::GLYPH_ARRIVAL_COLOR;
+
 
                 // VERTEX #2
                 positionX = bss::TIMELINE_OFFSET_X + j * intervalX;
-                positionY = i * glyphIntervalY + glyphHeight;
+                positionY = i * glyphIntervalY + bss::GLYPH_HEIGHT;
 
-                positionX = positionX / width * 2 - 1;
-                positionY = positionY / heigth * 2 - 1;
+                newP = rotatePointAroundTarget(tripDirection,
+                                               QPoint(positionX, positionY),
+                                               QPoint(rotationCenterX, rotationCenterY));
 
-                glyphVertices.append(positionX);
-                glyphVertices.append(-positionY);
+                positionX = newP.x() / width * 2 - 1;
+                positionY = newP.y() / heigth * 2 - 1;
+
+                glyphVertices += QVector<float>({ positionX, -positionY });
+                glyphVertices += bss::GLYPH_ARRIVAL_COLOR;
+
+                verticesCount+= 2;
             }
         }
     }
 
-    ui->mapwidget->loadStationsData(stationsVertices, stationsVerticesCount);
-    ui->mapwidget->loadTripsData(tripsVertices, tripsVerticesCount);
-    ui->mapwidget->centerView(stationsVertices);
-    ui->timelinematrixwidget->loadGlyphsData(glyphVertices, 2 * bss::NB_OF_HOURS * numberOfStations);
+    ui->timelinematrixwidget->loadGlyphsData(glyphVertices, verticesCount);
+}
+
+
+
+void MainWindow::onAsyncTaskStarted()
+{
+    m_canApplicationExit = false;
+    ui->menuBar->setEnabled(false);
+    ui->frame_controls->setEnabled(false);
+}
+
+void MainWindow::onAsyncTaskFinished()
+{
+    m_canApplicationExit = true;
+    ui->menuBar->setEnabled(m_shouldEnableMenuBar);
+    ui->frame_controls->setEnabled(m_shouldEnableControlsFrame);
+}
+
+
+
+void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations)
+{
+    m_shouldEnableControlsFrame = true;
+    runAsync(QtConcurrent::run(this, &MainWindow::filterStations, m_stationsFilterParams));
+
+    QVector<stationId> stationsIds;
+    for (const Station s : stations)
+        stationsIds.append(s.id);
+
+    drawStationsOnMap(stationsIds);
+
+    qDebug() << "onDataLoaded" << "Trip number" << trips.size() << "Station number" << stations.size();
 }
 
 void MainWindow::onFailedToLoadData(const QString& filename, const QString& errorDesc)
@@ -364,87 +457,179 @@ void MainWindow::onFilteredTripsChanged(const QVector<tripId>& filteredTrips)
     QVector<QVector<tripId>> departuresIds;
     QVector<QVector<tripId>> cyclesIds;
 
-    arrivalsIds.reserve(glyphsCount);
-    departuresIds.reserve(glyphsCount);
-    cyclesIds.reserve(glyphsCount);
-
-    for (int stationIndex = 0; stationIndex < m_orderedStationsIds.size(); ++stationIndex)
+    if (m_tripsDisplayParams.shouldShowArrivals)
     {
-        const stationId sId = m_orderedStationsIds.at(stationIndex);
-        const Station s = m_model->constStation(sId);
-        for (int hour = 0; hour < bss::NB_OF_HOURS; ++hour)
+        arrivalsIds.reserve(glyphsCount);
+        for (int stationIndex = 0; stationIndex < m_orderedStationsIds.size(); ++stationIndex)
         {
-            const int glyphIndex = (bss::NB_OF_HOURS * stationIndex) + hour;
-
-            for (const tripId tId : s.arrivalsIds)
-                if (m_model->trip(tId).startDateTime.time().hour() == hour)
-                    arrivalsIds[glyphIndex].append(tId);
-
-            for (const tripId tId : s.departuresIds)
-                if (m_model->trip(tId).startDateTime.time().hour() == hour)
-                    departuresIds[glyphIndex].append(tId);
-
-            for (const tripId tId : s.cyclesIds)
-                if (m_model->trip(tId).startDateTime.time().hour() == hour)
-                    cyclesIds[glyphIndex].append(tId);
+            const stationId sId = m_orderedStationsIds.at(stationIndex);
+            const Station s = m_model->constStation(sId);
+            for (int hour = 0; hour < bss::NB_OF_HOURS; ++hour)
+            {
+                arrivalsIds += QVector<tripId>();
+                const int glyphIndex = (bss::NB_OF_HOURS * stationIndex) + hour;
+                for (const tripId tId : s.arrivalsIds)
+                    if (m_model->trip(tId).startDateTime.time().hour() == hour)
+                        arrivalsIds[glyphIndex].append(tId);
+            }
         }
+        arrivalsIds.squeeze();
     }
 
-    arrivalsIds.squeeze();
-    departuresIds.squeeze();
-    cyclesIds.squeeze();
+    if (m_tripsDisplayParams.shouldShowDepartures)
+    {
+        departuresIds.reserve(glyphsCount);
+        for (int stationIndex = 0; stationIndex < m_orderedStationsIds.size(); ++stationIndex)
+        {
+            const stationId sId = m_orderedStationsIds.at(stationIndex);
+            const Station s = m_model->constStation(sId);
+            for (int hour = 0; hour < bss::NB_OF_HOURS; ++hour)
+            {
+                departuresIds += QVector<tripId>();
+                const int glyphIndex = (bss::NB_OF_HOURS * stationIndex) + hour;
+                for (const tripId tId : s.departuresIds)
+                    if (m_model->trip(tId).startDateTime.time().hour() == hour)
+                        departuresIds[glyphIndex].append(tId);
+            }
+        }
+        departuresIds.squeeze();
+    }
+
+    if (m_tripsDisplayParams.shouldShowCycles)
+    {
+        cyclesIds.reserve(glyphsCount);
+        for (int stationIndex = 0; stationIndex < m_orderedStationsIds.size(); ++stationIndex)
+        {
+            cyclesIds += QVector<tripId>();
+            const stationId sId = m_orderedStationsIds.at(stationIndex);
+            const Station s = m_model->constStation(sId);
+            for (int hour = 0; hour < bss::NB_OF_HOURS; ++hour)
+            {
+                const int glyphIndex = (bss::NB_OF_HOURS * stationIndex) + hour;
+                for (const tripId tId : s.cyclesIds)
+                    if (m_model->trip(tId).startDateTime.time().hour() == hour)
+                        cyclesIds[glyphIndex].append(tId);
+            }
+        }
+        cyclesIds.squeeze();
+    }
 
     drawFilteredTripsOnMatrix(arrivalsIds, departuresIds, cyclesIds, m_tripsDisplayParams.shouldShowDistance);
 }
 
 void MainWindow::onSelectionChanged(const QVector<tripId>& selection)
 {
-    // TODO : SEB onSelectionChanged
-    /*QVector<Trip> trips;
-    for (const tripId& id : selection)
-        trips.append(m_model->constTrip(id));
+    // TODO : SEB onSelectionChanged à optimiser
+    if (selection.isEmpty())
+        drawStationsOnMap(m_orderedStationsIds);
+    else
+    {
+        QVector<tripId> arrivalsId;
+        QVector<tripId> departuresId;
+        QVector<tripId> cyclesId;
 
-    drawTimelineMatrix(arrivals, departures, cycles);*/
+        for (const tripId tId : selection)
+        {
+            for (const stationId sId : m_orderedStationsIds)
+            {
+                const Trip t = m_model->constTrip(sId);
+                if (t.isCyclic && m_tripsDisplayParams.shouldShowCycles)
+                    cyclesId.append(t.id);
+                else
+                {
+                    if ((sId == t.startStationId) && m_tripsDisplayParams.shouldShowDistance)
+                        departuresId.append(t.id);
+                    else if (m_tripsDisplayParams.shouldShowArrivals)
+                        arrivalsId.append(t.id);
+                }
+            }
+        }
+
+        arrivalsId.squeeze();
+        departuresId.squeeze();
+        cyclesId.squeeze();
+
+        drawSelectedTripsOnMap(arrivalsId, departuresId, cyclesId);
+    }
 }
 
 void MainWindow::onStationsOrderChanged(const QVector<stationId>& stationsOrder)
 {
-    // TODO : SEB onStationsOrderChanged
+    // TODO : SEB onStationsOrderChanged à optimiser
     const int glyphsCount = bss::NB_OF_HOURS * stationsOrder.count();
 
     QVector<QVector<tripId>> arrivalsIds;
     QVector<QVector<tripId>> departuresIds;
     QVector<QVector<tripId>> cyclesIds;
 
-    arrivalsIds.reserve(glyphsCount);
-    departuresIds.reserve(glyphsCount);
-    cyclesIds.reserve(glyphsCount);
-
-    for (int stationIndex = 0; stationIndex < stationsOrder.size(); ++stationIndex)
+    if (m_tripsDisplayParams.shouldShowArrivals)
     {
-        const stationId sId = m_orderedStationsIds.at(stationIndex);
-        const Station s = m_model->constStation(sId);
-        for (int hour = 0; hour < bss::NB_OF_HOURS; ++hour)
+        arrivalsIds.reserve(glyphsCount);
+        for (int stationIndex = 0; stationIndex < stationsOrder.size(); ++stationIndex)
         {
-            const int glyphIndex = (bss::NB_OF_HOURS * stationIndex) + hour;
+            const stationId sId = stationsOrder.at(stationIndex);
+            const Station s = m_model->constStation(sId);
+            for (int hour = 0; hour < bss::NB_OF_HOURS; ++hour)
+            {
+                const auto filter = [this, &hour](const tripId& id)
+                { return (m_model->constTrip(id).startDateTime.time().hour() == hour); };
 
-            for (const tripId tId : s.arrivalsIds)
-                if (m_model->trip(tId).startDateTime.time().hour() == hour)
-                    arrivalsIds[glyphIndex].append(tId);
-
-            for (const tripId tId : s.departuresIds)
-                if (m_model->trip(tId).startDateTime.time().hour() == hour)
-                    departuresIds[glyphIndex].append(tId);
-
-            for (const tripId tId : s.cyclesIds)
-                if (m_model->trip(tId).startDateTime.time().hour() == hour)
-                    cyclesIds[glyphIndex].append(tId);
+                QFuture<tripId> arrivalsFuture = QtConcurrent::filtered(s.arrivalsIds, filter);
+                arrivalsFuture.waitForFinished();
+                arrivalsIds += QVector<tripId>::fromList(arrivalsFuture.results());
+                /*for (const tripId tId : s.arrivalsIds)
+                    if (m_model->trip(tId).startDateTime.time().hour() == hour)
+                        arrivalsIds[glyphIndex].append(tId);*/
+            }
         }
+        arrivalsIds.squeeze();
     }
 
-    arrivalsIds.squeeze();
-    departuresIds.squeeze();
-    cyclesIds.squeeze();
+    if (m_tripsDisplayParams.shouldShowDepartures)
+    {
+        departuresIds.reserve(glyphsCount);
+        for (int stationIndex = 0; stationIndex < stationsOrder.size(); ++stationIndex)
+        {
+            const stationId sId = stationsOrder.at(stationIndex);
+            const Station s = m_model->constStation(sId);
+            for (int hour = 0; hour < bss::NB_OF_HOURS; ++hour)
+            {
+                const auto filter = [this, &hour](const tripId& id)
+                { return (m_model->constTrip(id).startDateTime.time().hour() == hour); };
+
+                QFuture<tripId> departuresFuture = QtConcurrent::filtered(s.departuresIds, filter);
+                departuresFuture.waitForFinished();
+                departuresIds += QVector<tripId>::fromList(departuresFuture.results());
+                /*for (const tripId tId : s.departuresIds)
+                    if (m_model->trip(tId).startDateTime.time().hour() == hour)
+                        departuresIds[glyphIndex].append(tId);*/
+            }
+        }
+        departuresIds.squeeze();
+    }
+
+    if (m_tripsDisplayParams.shouldShowCycles)
+    {
+        cyclesIds.reserve(glyphsCount);
+        for (int stationIndex = 0; stationIndex < stationsOrder.size(); ++stationIndex)
+        {
+            const stationId sId = stationsOrder.at(stationIndex);
+            const Station s = m_model->constStation(sId);
+            for (int hour = 0; hour < bss::NB_OF_HOURS; ++hour)
+            {
+                const auto filter = [this, &hour](const tripId& id)
+                { return (m_model->constTrip(id).startDateTime.time().hour() == hour); };
+
+                QFuture<tripId> cyclesFuture = QtConcurrent::filtered(s.cyclesIds, filter);
+                cyclesFuture.waitForFinished();
+                cyclesIds += QVector<tripId>::fromList(cyclesFuture.results());
+                /*for (const tripId tId : s.cyclesIds)
+                    if (m_model->trip(tId).startDateTime.time().hour() == hour)
+                        cyclesIds[glyphIndex].append(tId);*/
+            }
+        }
+        cyclesIds.squeeze();
+    }
 
     drawFilteredTripsOnMatrix(arrivalsIds, departuresIds, cyclesIds, m_tripsDisplayParams.shouldShowDistance);
 }
@@ -452,6 +637,11 @@ void MainWindow::onStationsOrderChanged(const QVector<stationId>& stationsOrder)
 void MainWindow::onHighlightChanged(const stationId& highlight)
 {
     // TODO : SEB onHighlightChanged
+}
+
+void MainWindow::onTripsDisplayParamsChanged(const TripsDisplayParams &params)
+{
+
 }
 
 void MainWindow::onTripsFilterParamsChanged(const TripsFilterParams& params)
@@ -471,7 +661,7 @@ void MainWindow::onStationsSorterParamChanged(const bss::SortOrder& param)
 
 void MainWindow::onStationsFilterParamsChanged(const StationsFilterParams& params)
 {
-    // TODO : SEB onStationsFilterParamsChanged
+    runAsync(QtConcurrent::run(this, &MainWindow::filterStations, params));
 }
 
 void MainWindow::on_action_open_triggered()
@@ -503,33 +693,33 @@ void MainWindow::on_comboBox_dayOfWeek_currentIndexChanged(int index)
     // TODO : SEB on_comboBox_dayOfWeek_currentIndexChanged
 }
 
-void MainWindow::on_checkBox_arrivals_stateChanged(int arg1)
+void MainWindow::on_checkBox_showArrivals_stateChanged(int arg1)
 {
     m_tripsDisplayParams.shouldShowArrivals = (arg1 == Qt::Checked);
-    // TODO : SEB on_checkBox_arrivals_stateChanged
+    onTripsDisplayParamsChanged(m_tripsDisplayParams);
 }
 
-void MainWindow::on_checkBox_departures_stateChanged(int arg1)
+void MainWindow::on_checkBox_showDepartures_stateChanged(int arg1)
 {
     m_tripsDisplayParams.shouldShowDepartures = (arg1 == Qt::Checked);
-    // TODO : SEB on_checkBox_departures_stateChanged
+    onTripsDisplayParamsChanged(m_tripsDisplayParams);
 }
 
-void MainWindow::on_checkBox_cycles_stateChanged(int arg1)
+void MainWindow::on_checkBox_showCycles_stateChanged(int arg1)
 {
     m_tripsDisplayParams.shouldShowCycles = (arg1 == Qt::Checked);
-    // TODO : SEB on_checkBox_cycles_stateChanged
+    onTripsDisplayParamsChanged(m_tripsDisplayParams);
 }
 
-void MainWindow::on_checkBox_duration_stateChanged(int arg1)
+void MainWindow::on_checkBox_showDuration_stateChanged(int arg1)
 {
-    // TODO : SEB on_checkBox_duration_stateChanged
+    // TODO : SEB on_checkBox_showDuration_stateChanged (aucune idée de ce qu'il faut faire)
 }
 
-void MainWindow::on_checkBox_distance_stateChanged(int arg1)
+void MainWindow::on_checkBox_showDistance_stateChanged(int arg1)
 {
     m_tripsDisplayParams.shouldShowDistance = (arg1 == Qt::Checked);
-    // TODO : SEB on_checkBox_distance_stateChanged
+    onTripsDisplayParamsChanged(m_tripsDisplayParams);
 }
 
 void MainWindow::on_comboBox_order_currentIndexChanged(int index)

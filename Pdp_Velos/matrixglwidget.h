@@ -47,7 +47,7 @@ private:
     bool initializeShaderGlyphs();
 
 
-    QPair<QPair<char, char>, QPair<int, int>>& tripsInSelector() const;
+    QPair<QPair<char, char>, QPair<int, int>> tripsInSelector() const;
 
     int m_matrixViewWidth;
 

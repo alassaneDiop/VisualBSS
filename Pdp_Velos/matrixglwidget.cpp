@@ -133,7 +133,8 @@ void MatrixGLWidget::wheelEvent(QWheelEvent* event)
     if (event->delta() < 0)
         i *= -1;
 
-    const float scrollValue = 0.05f;
+    const float scrollValue = ((float)bss::GLYPH_HEIGHT) / height();
+    qDebug() << scrollValue;
     m_translationY += i * scrollValue;
 
     if (m_translationY > 0)
@@ -203,8 +204,8 @@ void MatrixGLWidget::mouseReleaseEvent(QMouseEvent* event)
     }
 }
 
-// TODO: refactoriser
-QPair<QPair<char, char>, QPair<int, int>>& MatrixGLWidget::tripsInSelector() const
+// FIXME: DAMIEN: refactoriser et changer le type
+QPair<QPair<char, char>, QPair<int, int>> MatrixGLWidget::tripsInSelector() const
 {
     QPair<char, char> timeInterval;
 
@@ -223,7 +224,7 @@ QPair<QPair<char, char>, QPair<int, int>>& MatrixGLWidget::tripsInSelector() con
     timeInterval.first = qMax((char)0, timeInterval.first);
     timeInterval.second = qMin((unsigned int)timeInterval.second, bss::NB_OF_HOURS);
 
-    //qDebug() << "Time interval"<< (int)timeInterval.first << (int)timeInterval.second;
+    qDebug() << "Time interval"<< (int)timeInterval.first << (int)timeInterval.second;
 
 
     // FIND STATIONS
@@ -248,7 +249,7 @@ QPair<QPair<char, char>, QPair<int, int>>& MatrixGLWidget::tripsInSelector() con
 
     stationsInterval.first = qMax(0, stationsInterval.first);
 
-    //qDebug() << "Stations interval"<< stationsInterval.first << stationsInterval.second;
+    qDebug() << "Stations interval"<< stationsInterval.first << stationsInterval.second;
 
     QPair<QPair<char, char>, QPair<int, int>> trips;
     trips.first.first = timeInterval.first;
@@ -275,23 +276,10 @@ void MatrixGLWidget::updateSelector() const
                      - m_translationY);
 
     QVector<float> data;
-    data.append(topLeft.x());
-    data.append(-topLeft.y());
-
-    data.append(bottomRight.x());
-    data.append(-topLeft.y());
-
-    data.append(topLeft.x());
-    data.append(-bottomRight.y());
-
-    data.append(topLeft.x());
-    data.append(-bottomRight.y());
-
-    data.append(bottomRight.x());
-    data.append(-bottomRight.y());
-
-    data.append(bottomRight.x());
-    data.append(-topLeft.y());
+    data += QVector<float>({ topLeft.x(), -topLeft.y(), bottomRight.x() });
+    data += QVector<float>({ -topLeft.y(), topLeft.x(), -bottomRight.y() });
+    data += QVector<float>({ topLeft.x(), -bottomRight.y(), bottomRight.x() });
+    data += QVector<float>({ -bottomRight.y(), bottomRight.x(), -topLeft.y() });
 
     m_selectorRenderer->updateData(data);
 }

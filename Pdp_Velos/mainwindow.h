@@ -100,6 +100,7 @@ private slots:
     void onStationsOrderChanged(const QVector<stationId>& stationsOrder);
     void onSelectionChanged(const QVector<tripId>& selection);
     void onHighlightChanged(const stationId& highlight);
+    void onTripsDisplayParamsChanged(const TripsDisplayParams &params);
     void onTripsFilterParamsChanged(const TripsFilterParams& params);
     void onStationsSorterParamChanged(const bss::SortOrder& param);
     void onStationsFilterParamsChanged(const StationsFilterParams& params);
@@ -109,11 +110,11 @@ private slots:
     void on_comboBox_period_currentIndexChanged(int index);
     void on_lineEdit_day_editingFinished();
     void on_comboBox_dayOfWeek_currentIndexChanged(int index);
-    void on_checkBox_arrivals_stateChanged(int arg1);
-    void on_checkBox_departures_stateChanged(int arg1);
-    void on_checkBox_cycles_stateChanged(int arg1);
-    void on_checkBox_duration_stateChanged(int arg1);
-    void on_checkBox_distance_stateChanged(int arg1);
+    void on_checkBox_showArrivals_stateChanged(int arg1);
+    void on_checkBox_showDepartures_stateChanged(int arg1);
+    void on_checkBox_showCycles_stateChanged(int arg1);
+    void on_checkBox_showDuration_stateChanged(int arg1);
+    void on_checkBox_showDistance_stateChanged(int arg1);
     void on_comboBox_order_currentIndexChanged(int index);
     void on_rangeSlider_distance_firstValueChanged(qreal v);
     void on_rangeSlider_distance_secondValueChanged(qreal v);
