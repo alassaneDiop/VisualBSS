@@ -1,5 +1,5 @@
 #include "model.h"
-
+#include "datafilereader.h"
 
 DataLoadResult Model::loadData(const QString& filename)
 {
@@ -7,7 +7,7 @@ DataLoadResult Model::loadData(const QString& filename)
     for (const Station s : m_stations)
         stationsHash.insert(s.name, s);
 
-    const DataFileReader dataFileReader = DataFileReader(filename);
+    const DataFileReader dataFileReader(filename);
     const DataFileReadInfo info = dataFileReader.readData(stationsHash, m_trips);
 
     DataLoadResult result;

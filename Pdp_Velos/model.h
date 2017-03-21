@@ -6,7 +6,7 @@
 #include "trip.h"
 #include "station.h"
 #include "typedefs.h"
-#include "datafilereader.h"
+#include "abstractdatafilereader.h"
 
 
 namespace bss {

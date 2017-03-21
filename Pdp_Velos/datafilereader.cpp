@@ -4,17 +4,16 @@
 #include <QMutex>
 #include <QtConcurrent>
 
-
 DataFileReader::DataFileReader(const DataFileParams& params) :
-    m_params(params)
+    AbstractDataFileReader(params)
 {
 
 }
 
-DataFileReader::DataFileReader(const QString& filename, const Qt::DateFormat& dateFormat)
+DataFileReader::DataFileReader(const QString& filename, const Qt::DateFormat& dateFormat) :
+    AbstractDataFileReader(filename, dateFormat)
 {
-    m_params.filename = filename;
-    m_params.dateFormat = dateFormat;
+
 }
 
 DataFileReader::~DataFileReader()
@@ -23,11 +22,6 @@ DataFileReader::~DataFileReader()
 }
 
 DataFileReadInfo DataFileReader::readData(QHash<QString, Station>& stations, QVector<Trip>& trips) const
-{
-    return readCsvData(stations, trips);
-}
-
-DataFileReadInfo DataFileReader::readCsvData(QHash<QString, Station>& stations, QVector<Trip>& trips) const
 {
     DataFileReadInfo info;
 
@@ -152,16 +146,6 @@ DataFileReadInfo DataFileReader::readCsvData(QHash<QString, Station>& stations, 
     QtConcurrent::blockingMap(stations, squeeze);
 
     return info;
-}
-
-DataFileReadInfo DataFileReader::readXmlData(QHash<QString, Station>& stations, QVector<Trip>& trips) const
-{
-    return DataFileReadInfo();
-}
-
-DataFileReadInfo DataFileReader::readJsonData(QHash<QString, Station>& stations, QVector<Trip>& trips) const
-{
-    return DataFileReadInfo();
 }
 
 /*

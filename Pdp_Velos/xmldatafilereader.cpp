@@ -5,7 +5,7 @@
 
 
 XmlDataFileReader::XmlDataFileReader(const DataFileParams& params) :
-    DataFileReader(params)
+    AbstractDataFileReader(params)
 {
 
 }

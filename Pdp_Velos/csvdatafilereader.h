@@ -1,7 +1,7 @@
 #ifndef CSVDATAFILEREADER_H
 #define CSVDATAFILEREADER_H
 
-#include "datafilereader.h"
+#include "abstractdatafilereader.h"
 
 namespace bss {
 class CsvDataFileReader;
@@ -9,7 +9,7 @@ class CsvDataFileReader;
 
 struct Trip;
 struct Station;
-class CsvDataFileReader : public DataFileReader
+class CsvDataFileReader : public AbstractDataFileReader
 {
 public:
     CsvDataFileReader(const DataFileParams& params);

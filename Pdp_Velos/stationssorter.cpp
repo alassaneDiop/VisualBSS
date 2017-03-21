@@ -6,13 +6,13 @@
 #include "station.h"
 
 
-StationsSorter::StationsSorter(const bss::SortOrder& param) :
-    m_sortParam((bss::SortOrder) -1)
+StationsSorter::StationsSorter(const bss::SortParam& param) :
+    m_sortParam((bss::SortParam) -1)
 {
     setSortParam(param);
 }
 
-void StationsSorter::setSortParam(const bss::SortOrder& param)
+void StationsSorter::setSortParam(const bss::SortParam& param)
 {
     if (m_sortParam != param)
     {

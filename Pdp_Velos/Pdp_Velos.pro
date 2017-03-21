@@ -17,7 +17,6 @@ SOURCES += main.cpp\
     model.cpp \
     station.cpp \
     trip.cpp \
-    datafilereader.cpp \
     xmldatafilereader.cpp \
     csvdatafilereader.cpp \
     timelinewidget.cpp \
@@ -31,13 +30,14 @@ SOURCES += main.cpp\
     stationssorter.cpp \
     triprenderer.cpp \
     glyphrenderer.cpp \
-    selectorrenderer.cpp
+    selectorrenderer.cpp \
+    abstractdatafilereader.cpp \
+    datafilereader.cpp
 
 HEADERS  += mainwindow.h \
     model.h \
     station.h \
     trip.h \
-    datafilereader.h \
     xmldatafilereader.h \
     csvdatafilereader.h \
     timelinewidget.h \
@@ -54,7 +54,9 @@ HEADERS  += mainwindow.h \
     glyphrenderer.h \
     selectorrenderer.h \
     typedefs.h \
-    config.h
+    config.h \
+    abstractdatafilereader.h \
+    datafilereader.h
 
 FORMS    += mainwindow.ui
 

@@ -10,7 +10,7 @@
 
 
 CsvDataFileReader::CsvDataFileReader(const DataFileParams& params) :
-    DataFileReader(params)
+    AbstractDataFileReader(params)
 {
 
 }

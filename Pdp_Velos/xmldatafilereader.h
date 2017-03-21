@@ -1,7 +1,7 @@
 #ifndef XMLDATAFILEREADER_H
 #define XMLDATAFILEREADER_H
 
-#include "datafilereader.h"
+#include "abstractdatafilereader.h"
 
 #include <QString>
 
@@ -10,7 +10,7 @@ namespace bss {
 class XmlDataFileReader;
 }
 
-class XmlDataFileReader : public DataFileReader
+class XmlDataFileReader : public AbstractDataFileReader
 {
 public:
     XmlDataFileReader(const DataFileParams& params);
