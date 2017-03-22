@@ -90,7 +90,6 @@ private:
     static int minFlow(const QVector<Station>& stations);
 
 
-
     bool m_canApplicationExit = true;
     bool m_shouldEnableMenuBar = true;
     bool m_shouldEnableControls = false;

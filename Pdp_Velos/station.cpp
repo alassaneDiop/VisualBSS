@@ -27,7 +27,7 @@ qreal Station::direction(const Station& to) const
     // https://en.wikipedia.org/wiki/Azimuth
     const float x = (to.longitude - longitude);
     const float y = (to.latitude - latitude);
-    return qRadiansToDegrees(qAtan2(y, x));
+    return qRadiansToDegrees(qAtan2(y, x)) + 180;
 }
 
 void Station::appendArrival(const Trip& trip)

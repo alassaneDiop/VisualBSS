@@ -86,7 +86,7 @@ DataFileReadInfo CsvDataFileReader::readData(QHash<QString, Station>& stations, 
         t.startStationId = startStation.id;
         t.endStationId = endStation.id;
         t.isCyclic = (startName == endName);
-        t.duration = durationStr.toDouble();
+        t.duration = durationStr.toInt();
         t.direction = startStation.direction(endStation);
         t.startDateTime = QDateTime::fromString(startDateTimeStr, params().dateFormat);
         t.endDateTime = QDateTime::fromString(endDateTimeStr, params().dateFormat);
@@ -206,7 +206,7 @@ DataFileReadInfo CsvDataFileReader::parallelReadData(QHash<QString, Station>& st
         t.startStationId = startStation.id;
         t.endStationId = endStation.id;
         t.isCyclic = (startName == endName);
-        t.duration = durationStr.toDouble();
+        t.duration = durationStr.toInt();
         t.direction = startStation.direction(endStation);
         t.startDateTime = QDateTime::fromString(startDateTimeStr, params().dateFormat);
         t.endDateTime = QDateTime::fromString(endDateTimeStr, params().dateFormat);

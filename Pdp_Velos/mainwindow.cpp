@@ -40,7 +40,6 @@ MainWindow::MainWindow(QWidget* parent) :
     connect(this, &MainWindow::readyToDrawSelectionOnMap, this, &MainWindow::onReadyToDrawSelectionOnMap, connectionType);
     connect(this, &MainWindow::readyToDrawTripsOnMatrix, this, &MainWindow::onReadyToDrawTripsOnMatrix, connectionType);
 
-
     m_view->setupUi(this);
     m_view->actionOpen->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirOpenIcon));
     m_view->actionClose_all->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirClosedIcon));
@@ -72,8 +71,10 @@ MainWindow::MainWindow(QWidget* parent) :
     QObject* const directionRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_direction->rootObject());
     connect(directionRangeSlider, SIGNAL(firstValueChanged(qreal)), SLOT(on_rangeSlider_direction_firstValueChanged(qreal)));
     connect(directionRangeSlider, SIGNAL(secondValueChanged(qreal)), SLOT(on_rangeSlider_direction_secondValueChanged(qreal)));
+    directionRangeSlider->blockSignals(true);
     directionRangeSlider->setProperty("from", 0);
     directionRangeSlider->setProperty("to", 360);
+    directionRangeSlider->blockSignals(false);
 
     // TODO : SEB m_tripsFilterParams
     /*m_tripsFilterParams.period
@@ -604,7 +605,6 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
 {
     qDebug() << "onDataLoaded" << "Trip number" << trips.count() << "Station number" << stations.size();
     m_shouldEnableControls = true;
-    runAsync(QtConcurrent::run(this, &MainWindow::filterStations, stations, m_stationsFilterParams));
 
     m_tripsFilterParams.maxDistance = maxDistance(trips);
     m_tripsFilterParams.minDistance = minDistance(trips);
@@ -615,19 +615,31 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     m_stationsFilterParams.minFlow = minFlow(stations);
 
     QObject* const distanceRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_distance->rootObject());
+    distanceRangeSlider->blockSignals(true);
     distanceRangeSlider->setProperty("from", m_tripsFilterParams.minDirection);
     distanceRangeSlider->setProperty("to", m_tripsFilterParams.maxDirection);
+    distanceRangeSlider->blockSignals(false);
 
     QObject* const durationRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_duration->rootObject());
+    durationRangeSlider->blockSignals(true);
     durationRangeSlider->setProperty("from", m_tripsFilterParams.minDuration);
     durationRangeSlider->setProperty("to", m_tripsFilterParams.maxDuration);
+    durationRangeSlider->blockSignals(false);
 
     QObject* const odFlowRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_odFlow->rootObject());
+    odFlowRangeSlider->blockSignals(true);
     odFlowRangeSlider->setProperty("from", m_stationsFilterParams.minFlow);
     odFlowRangeSlider->setProperty("to", m_stationsFilterParams.maxFlow);
+    odFlowRangeSlider->blockSignals(false);
 
-    QVector<QDate> d = dates(trips);
-    d.count();
+    m_view->lineEdit_maxDistance->setText(QString::number(m_tripsFilterParams.maxDirection));
+    m_view->lineEdit_minDistance->setText(QString::number(m_tripsFilterParams.minDirection));
+    m_view->lineEdit_maxDuration->setText(QString::number(m_tripsFilterParams.maxDuration));
+    m_view->lineEdit_minDuration->setText(QString::number(m_tripsFilterParams.minDuration));
+    m_view->lineEdit_maxOdFlow->setText(QString::number(m_stationsFilterParams.maxFlow));
+    m_view->lineEdit_minOdFlow->setText(QString::number(m_stationsFilterParams.minFlow));
+
+    runAsync(QtConcurrent::run(this, &MainWindow::filterStations, stations, m_stationsFilterParams));
 }
 
 void MainWindow::onFailedToLoadData(const QString& filename, const QString& errorDesc)
