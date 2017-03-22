@@ -125,7 +125,7 @@ private slots:
     void onStationsSorterParamChanged(const bss::SortParam& param);
     void onStationsFilterParamsChanged(const StationsFilterParams& params);
 
-    void onMatrixSelectionChanged(const char& fromHour, const char& toHour,
+    void onMatrixSelectionChanged(const int& fromHour, const int& toHour,
                                   const int& fromStationIndex, const int& toStationIndex);
 
     void onReadyToDrawSelectionOnMap(const QVector<bss::tripId>& arrivalsIds,

@@ -234,7 +234,7 @@ void MainWindow::prepareToDrawSelectionOnMap(const QVector<bss::tripId>& selecti
 void MainWindow::prepareToDrawTripsOnMatrix(const QVector<bss::stationId>& stations, const TripsDisplayParams& params)
 {
     // TODO : to optimize if possible
-    const int glyphsCount = bss::NB_OF_HOURS * m_stationsIds.count();
+    const int glyphsCount = bss::NB_OF_HOURS * stations.count();
 
     QVector<QVector<bss::tripId>> arrivalsIds;
     QVector<QVector<bss::tripId>> departuresIds;
@@ -624,6 +624,7 @@ void MainWindow::onDataUnloaded()
 
 void MainWindow::onTripsChanged(const QVector<bss::tripId>& trips)
 {
+    Q_UNUSED(trips);
     runAsync(QtConcurrent::run(this, &MainWindow::prepareToDrawTripsOnMatrix, m_stationsIds, m_tripsDisplayParams));
 }
 
@@ -668,7 +669,7 @@ void MainWindow::onStationsFilterParamsChanged(const StationsFilterParams& param
     runAsync(QtConcurrent::run(this, &MainWindow::filterStations, stations(m_stationsIds), params));
 }
 
-void MainWindow::onMatrixSelectionChanged(const char& startHour, const char& endHour,
+void MainWindow::onMatrixSelectionChanged(const int& startHour, const int& endHour,
                                           const int& startStationIndex, const int& endStationIndex)
 {
     runAsync(QtConcurrent::run(this, &MainWindow::selectTrips, startHour, endHour, startStationIndex, endStationIndex));
