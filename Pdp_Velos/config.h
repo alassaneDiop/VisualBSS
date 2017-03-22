@@ -6,13 +6,13 @@ class QVector;
 
 namespace bss {
 
-static const unsigned int NB_OF_HOURS = 24;
+static const int NB_OF_HOURS = 24;
 
 static const int TIMELINE_OFFSET_X = 10;
 
 // Heigth in pixel
-static const unsigned int GLYPH_HEIGHT = 10;
-static const unsigned int SPACE_BETWEEN_GLYPHS = 15;
+static const int GLYPH_HEIGHT = 10;
+static const int SPACE_BETWEEN_GLYPHS = 15;
 
 
 // TRIPS COLORS

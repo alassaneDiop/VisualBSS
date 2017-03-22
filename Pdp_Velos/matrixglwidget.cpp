@@ -222,11 +222,12 @@ QPair<QPair<char, char>, QPair<int, int>> MatrixGLWidget::tripsInSelector() cons
     timeInterval.second = qMax(tmp1, tmp2);
 
     timeInterval.first = qMax((char)0, timeInterval.first);
-    timeInterval.second = qMin((unsigned int)timeInterval.second, bss::NB_OF_HOURS);
+    timeInterval.second = qMin((int)timeInterval.second, bss::NB_OF_HOURS);
 
     qDebug() << "Time interval"<< (int)timeInterval.first << (int)timeInterval.second;
 
 
+    // FIXME: DAMIEN : bug
     // FIND STATIONS
     const int glyphIntervalY = bss::GLYPH_HEIGHT + bss::SPACE_BETWEEN_GLYPHS;
 

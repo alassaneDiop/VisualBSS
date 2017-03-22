@@ -383,6 +383,9 @@ void MainWindow::drawTripsOnMatrix(const QVector<QVector<bss::tripId>>& arrivals
                                    const QVector<QVector<bss::tripId>>& cyclesIds,
                                    const bool& showDistance)
 {
+    Q_UNUSED(cyclesIds);
+    Q_UNUSED(showDistance);
+
     // x and y;
     const unsigned short positionTupleSize = 2;
     // 1 trip has 2 points (start/end)
@@ -396,12 +399,13 @@ void MainWindow::drawTripsOnMatrix(const QVector<QVector<bss::tripId>>& arrivals
     const int glyphIntervalY = bss::GLYPH_HEIGHT + bss::SPACE_BETWEEN_GLYPHS;
 
     QVector<float> glyphVertices;
-    // TODO: DAMIEN: recalculer glyphVertices.reserve();
+    int reserved = arrivalsIds.size() * bss::NB_OF_HOURS * pointPerTrip * colorTupleSize * positionTupleSize;
+    reserved += departuresIds.size() * bss::NB_OF_HOURS * pointPerTrip * colorTupleSize * positionTupleSize;
+    glyphVertices.reserve(reserved);
 
     int verticesCount = 0;
 
     // TOOD: DAMIEN : Factoriser faire des fonctions
-
     int stationIndex;
     stationIndex = 0;
     for (const QVector<bss::tripId> arrivals : arrivalsIds)
