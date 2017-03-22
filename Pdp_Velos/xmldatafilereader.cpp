@@ -16,7 +16,10 @@ XmlDataFileReader::~XmlDataFileReader()
 }
 
 DataFileReadInfo XmlDataFileReader::readData(QHash<QString, Station>& stations, QVector<Trip>& trips) const
-{   
+{
+    Q_UNUSED(stations);
+    Q_UNUSED(trips);
+
     /*QFile file(DataFileReader::getFilename());
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;

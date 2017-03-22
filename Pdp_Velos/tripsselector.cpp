@@ -19,8 +19,8 @@ QVector<Trip> TripsSelector::selectTripsFrom(const QVector<Trip>& trips) const
     {
         return (t.startDateTime.time().hour() >= params().startHour)
             && (t.endDateTime.time().hour() <= params().endHour)
-            && (params().stations.contains(t.startStationId))
-            || (params().stations.contains(t.endStationId));
+            && ((params().stations.contains(t.startStationId))
+            || (params().stations.contains(t.endStationId)));
     };
 
     return QtConcurrent::blockingFiltered(trips, select);
