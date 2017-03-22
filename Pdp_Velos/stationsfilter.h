@@ -8,8 +8,8 @@
 
 struct StationsFilterParams
 {
-    qreal minOriginDestinationFlow = 0;
-    qreal maxOriginDestinationFlow = 1000000;
+    qreal minFlow = 0;
+    qreal maxFlow = 1000000;
 };
 
 struct Station;

@@ -50,9 +50,9 @@ void Station::appendCycle(const Trip& trip)
 
 void Station::updateAppend(const Trip& trip)
 {
-    originDestinationFlow++;
+    flow++;
 
     const int totalTripsCount = arrivalsIds.size() + departuresIds.size() + cyclesIds.size();
-    const int totalDuration = (originDestinationFlow * avgTripDuration) + trip.duration;
+    const int totalDuration = (flow * avgTripDuration) + trip.duration;
     avgTripDuration = totalDuration / totalTripsCount;
 }

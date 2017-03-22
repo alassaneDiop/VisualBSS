@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget* parent) :
     connect(this, &MainWindow::failedToLoadData, this, &MainWindow::onFailedToLoadData, connectionType);
     connect(this, &MainWindow::dataUnloaded, this, &MainWindow::onDataUnloaded, connectionType);
     connect(this, &MainWindow::stationsOrderChanged, this, &MainWindow::onStationsOrderChanged, connectionType);
+    connect(this, &MainWindow::selectionChanged, this, &MainWindow::onSelectionChanged, connectionType);
     connect(this, &MainWindow::tripsChanged, this, &MainWindow::onTripsChanged, connectionType);
     connect(this, &MainWindow::readyToDrawSelectionOnMap, this, &MainWindow::onReadyToDrawSelectionOnMap, connectionType);
     connect(this, &MainWindow::readyToDrawTripsOnMatrix, this, &MainWindow::onReadyToDrawTripsOnMatrix, connectionType);
@@ -549,7 +550,7 @@ int MainWindow::maxOriginDestinationFlow(const QVector<Station>& stations)
 {
     int maxOdFlow = 0;
     for (const Station s : stations)
-        maxOdFlow = qMax(maxOdFlow, s.originDestinationFlow);
+        maxOdFlow = qMax(maxOdFlow, s.flow);
 
     return maxOdFlow;
 }
@@ -558,7 +559,7 @@ int MainWindow::minOriginDestinationFlow(const QVector<Station>& stations)
 {
     int minOdFlow = 0;
     for (const Station s : stations)
-        minOdFlow = qMin(minOdFlow, s.originDestinationFlow);
+        minOdFlow = qMin(minOdFlow, s.flow);
 
     return minOdFlow;
 }
@@ -577,13 +578,17 @@ void MainWindow::onAsyncTaskFinished()
     m_canApplicationExit = true;
     m_view->menuBar->setEnabled(m_shouldEnableMenuBar);
     m_view->frame_controls->setEnabled(m_shouldEnableControls);
+
+    // TODO : not implemented functionalities so widgets are disabled
+    m_view->frame_period->setEnabled(false);
+    m_view->checkBox_showDuration->setEnabled(false);
 }
 
 
 
 void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations)
 {
-    qDebug() << "onDataLoaded" << "Trip number" << trips.size() << "Station number" << stations.size();
+    qDebug() << "onDataLoaded" << "Trip number" << trips.count() << "Station number" << stations.size();
     m_shouldEnableControls = true;
     runAsync(QtConcurrent::run(this, &MainWindow::filterStations, stations, m_stationsFilterParams));
 
@@ -592,8 +597,8 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     m_tripsFilterParams.maxDuration = maxDuration(trips);
     m_tripsFilterParams.minDuration = minDuration(trips);
 
-    m_stationsFilterParams.maxOriginDestinationFlow = maxOriginDestinationFlow(stations);
-    m_stationsFilterParams.minOriginDestinationFlow = minOriginDestinationFlow(stations);
+    m_stationsFilterParams.maxFlow = maxOriginDestinationFlow(stations);
+    m_stationsFilterParams.minFlow = minOriginDestinationFlow(stations);
 
     QObject* const distanceRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_distance->rootObject());
     distanceRangeSlider->setProperty("from", m_tripsFilterParams.minDirection);
@@ -604,8 +609,8 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     durationRangeSlider->setProperty("to", m_tripsFilterParams.maxDuration);
 
     QObject* const odFlowRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_odFlow->rootObject());
-    odFlowRangeSlider->setProperty("from", m_stationsFilterParams.minOriginDestinationFlow);
-    odFlowRangeSlider->setProperty("to", m_stationsFilterParams.maxOriginDestinationFlow);
+    odFlowRangeSlider->setProperty("from", m_stationsFilterParams.minFlow);
+    odFlowRangeSlider->setProperty("to", m_stationsFilterParams.maxFlow);
 }
 
 void MainWindow::onFailedToLoadData(const QString& filename, const QString& errorDesc)
@@ -807,13 +812,13 @@ void MainWindow::on_rangeSlider_direction_secondValueChanged(qreal v)
 void MainWindow::on_rangeSlider_odFlow_firstValueChanged(qreal v)
 {
     m_view->lineEdit_minOdFlow->setText(QString::number(v));
-    m_stationsFilterParams.minOriginDestinationFlow = v;
+    m_stationsFilterParams.minFlow = v;
     onStationsFilterParamsChanged(m_stationsFilterParams);
 }
 
 void MainWindow::on_rangeSlider_odFlow_secondValueChanged(qreal v)
 {
     m_view->lineEdit_maxOdFlow->setText(QString::number(v));
-    m_stationsFilterParams.maxOriginDestinationFlow = v;
+    m_stationsFilterParams.maxFlow = v;
     onStationsFilterParamsChanged(m_stationsFilterParams);
 }
