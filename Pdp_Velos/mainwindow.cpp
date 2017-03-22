@@ -254,19 +254,19 @@ void MainWindow::prepareToDrawTripsOnMatrix(const QVector<bss::stationId>& stati
             { return (m_model->trip(id).startDateTime.time().hour() == hour); };
 
             if (params.shouldShowArrivals)
-                arrivalsIds += QtConcurrent::blockingFiltered(s.arrivalsIds, filter);
+                arrivalsIds.append(QtConcurrent::blockingFiltered(s.arrivalsIds, filter));
             else
-                arrivalsIds += QVector<bss::tripId>();
+                arrivalsIds.append(QVector<bss::tripId>());
 
             if (params.shouldShowDepartures)
-                departuresIds += QtConcurrent::blockingFiltered(s.departuresIds, filter);
+                departuresIds.append(QtConcurrent::blockingFiltered(s.departuresIds, filter));
             else
-                departuresIds += QVector<bss::tripId>();
+                departuresIds.append(QVector<bss::tripId>());
 
             if (params.shouldShowCycles)
-                cyclesIds += QtConcurrent::blockingFiltered(s.cyclesIds, filter);
+                cyclesIds.append(QtConcurrent::blockingFiltered(s.cyclesIds, filter));
             else
-                cyclesIds += QVector<bss::tripId>();
+                cyclesIds.append(QVector<bss::tripId>());
         }
     }
 
@@ -477,7 +477,6 @@ void MainWindow::drawTripsOnMatrix(const QVector<QVector<bss::tripId>>& arrivals
 
 
 
-
 QVector<bss::stationId> MainWindow::ids(const QVector<Station>& stations)
 {
     bss::stationId (*returnId)(const Station& s) = [](const Station& s) { return s.id; };
@@ -500,6 +499,21 @@ QVector<Station> MainWindow::stations(const QVector<bss::stationId>& ids)
     return stations;
 }
 
+QVector<QDate> MainWindow::dates(const QVector<Trip>& trips)
+{
+    QVector<QDate> dates;
+    for (const Trip t : trips)
+    {
+        if (!dates.contains(t.startDateTime.date()))
+            dates.append(t.startDateTime.date());
+
+        if (!dates.contains(t.endDateTime.date()))
+            dates.append(t.endDateTime.date());
+    }
+
+    return dates;
+}
+
 QVector<Trip> MainWindow::trips(const QVector<bss::tripId>& ids)
 {
     QVector<Trip> trips;
@@ -508,24 +522,6 @@ QVector<Trip> MainWindow::trips(const QVector<bss::tripId>& ids)
         trips.append(m_model->trip(id));
 
     return trips;
-}
-
-int MainWindow::maxDistance(const QVector<Trip>& trips)
-{
-    int maxDistance = 0;
-    for (const Trip t : trips)
-        maxDistance = qMax(maxDistance, t.distance);
-
-    return maxDistance;
-}
-
-int MainWindow::minDistance(const QVector<Trip>& trips)
-{
-    int minDistance = 0;
-    for (const Trip t : trips)
-        minDistance = qMin(minDistance, t.distance);
-
-    return minDistance;
 }
 
 quint64 MainWindow::maxDuration(const QVector<Trip>& trips)
@@ -546,22 +542,40 @@ quint64 MainWindow::minDuration(const QVector<Trip>& trips)
     return minDuration;
 }
 
-int MainWindow::maxOriginDestinationFlow(const QVector<Station>& stations)
+int MainWindow::maxDistance(const QVector<Trip>& trips)
 {
-    int maxOdFlow = 0;
-    for (const Station s : stations)
-        maxOdFlow = qMax(maxOdFlow, s.flow);
+    int maxDistance = 0;
+    for (const Trip t : trips)
+        maxDistance = qMax(maxDistance, t.distance);
 
-    return maxOdFlow;
+    return maxDistance;
 }
 
-int MainWindow::minOriginDestinationFlow(const QVector<Station>& stations)
+int MainWindow::minDistance(const QVector<Trip>& trips)
 {
-    int minOdFlow = 0;
-    for (const Station s : stations)
-        minOdFlow = qMin(minOdFlow, s.flow);
+    int minDistance = 0;
+    for (const Trip t : trips)
+        minDistance = qMin(minDistance, t.distance);
 
-    return minOdFlow;
+    return minDistance;
+}
+
+int MainWindow::maxFlow(const QVector<Station>& stations)
+{
+    int maxFlow = 0;
+    for (const Station s : stations)
+        maxFlow = qMax(maxFlow, s.flow);
+
+    return maxFlow;
+}
+
+int MainWindow::minFlow(const QVector<Station>& stations)
+{
+    int minFlow = 0;
+    for (const Station s : stations)
+        minFlow = qMin(minFlow, s.flow);
+
+    return minFlow;
 }
 
 
@@ -597,8 +611,8 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     m_tripsFilterParams.maxDuration = maxDuration(trips);
     m_tripsFilterParams.minDuration = minDuration(trips);
 
-    m_stationsFilterParams.maxFlow = maxOriginDestinationFlow(stations);
-    m_stationsFilterParams.minFlow = minOriginDestinationFlow(stations);
+    m_stationsFilterParams.maxFlow = maxFlow(stations);
+    m_stationsFilterParams.minFlow = minFlow(stations);
 
     QObject* const distanceRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_distance->rootObject());
     distanceRangeSlider->setProperty("from", m_tripsFilterParams.minDirection);
@@ -611,6 +625,9 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     QObject* const odFlowRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_odFlow->rootObject());
     odFlowRangeSlider->setProperty("from", m_stationsFilterParams.minFlow);
     odFlowRangeSlider->setProperty("to", m_stationsFilterParams.maxFlow);
+
+    QVector<QDate> d = dates(trips);
+    d.count();
 }
 
 void MainWindow::onFailedToLoadData(const QString& filename, const QString& errorDesc)

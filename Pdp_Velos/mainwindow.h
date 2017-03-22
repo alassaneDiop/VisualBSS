@@ -81,14 +81,15 @@ private:
     QVector<Station> stations(const QVector<bss::stationId>& ids);
     QVector<Trip> trips(const QVector<bss::tripId>& ids);
 
-    static int maxDistance(const QVector<Trip>& trips);
-    static int minDistance(const QVector<Trip>& trips);
-
+    static QVector<QDate> dates(const QVector<Trip>& trips);
     static quint64 maxDuration(const QVector<Trip>& trips);
     static quint64 minDuration(const QVector<Trip>& trips);
+    static int maxDistance(const QVector<Trip>& trips);
+    static int minDistance(const QVector<Trip>& trips);
+    static int maxFlow(const QVector<Station>& stations);
+    static int minFlow(const QVector<Station>& stations);
 
-    static int maxOriginDestinationFlow(const QVector<Station>& stations);
-    static int minOriginDestinationFlow(const QVector<Station>& stations);
+
 
     bool m_canApplicationExit = true;
     bool m_shouldEnableMenuBar = true;

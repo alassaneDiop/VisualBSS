@@ -485,6 +485,9 @@
                    </property>
                    <item>
                     <widget class="QCheckBox" name="checkBox_showArrivals">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wheter or not incoming trips should be displayed on the map and the timeline matrix.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
                      <property name="text">
                       <string>Incoming trips</string>
                      </property>
@@ -498,6 +501,9 @@
                    </item>
                    <item>
                     <widget class="QCheckBox" name="checkBox_showCycles">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wheter or not cyclic trips should be displayed on the map and the timeline matrix.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
                      <property name="text">
                       <string>Cyclic trips</string>
                      </property>
@@ -508,6 +514,9 @@
                    </item>
                    <item>
                     <widget class="QCheckBox" name="checkBox_showDistance">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wheter or not trips distance should be taken in account in the timeline matrix. (if checked, trips are drawn relatively to the maximum trip distance)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
                      <property name="text">
                       <string>Trips distance</string>
                      </property>
@@ -539,6 +548,9 @@
                    </property>
                    <item>
                     <widget class="QCheckBox" name="checkBox_showDepartures">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wheter or not outgoing trips should be displayed on the map and the timeline matrix.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
                      <property name="text">
                       <string>Outgoing trips</string>
                      </property>
@@ -630,6 +642,9 @@
              </item>
              <item>
               <widget class="QComboBox" name="comboBox_order">
+               <property name="toolTip">
+                <string>The property according to which stations will be sorted.</string>
+               </property>
                <item>
                 <property name="text">
                  <string>Trips distance</string>
