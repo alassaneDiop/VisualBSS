@@ -275,10 +275,10 @@ void MatrixGLWidget::updateSelector() const
                      - m_translationY);
 
     QVector<float> data;
-    data += QVector<float>({ topLeft.x(), -topLeft.y(), bottomRight.x() });
-    data += QVector<float>({ -topLeft.y(), topLeft.x(), -bottomRight.y() });
-    data += QVector<float>({ topLeft.x(), -bottomRight.y(), bottomRight.x() });
-    data += QVector<float>({ -bottomRight.y(), bottomRight.x(), -topLeft.y() });
+    data += QVector<float>({ (float)topLeft.x(), (float)-topLeft.y(), (float)bottomRight.x() });
+    data += QVector<float>({ (float)-topLeft.y(), (float)topLeft.x(), (float)-bottomRight.y() });
+    data += QVector<float>({ (float)topLeft.x(), (float)-bottomRight.y(), (float)bottomRight.x() });
+    data += QVector<float>({ (float)-bottomRight.y(), (float)bottomRight.x(), (float)-topLeft.y() });
 
     m_selectorRenderer->updateData(data);
 }
