@@ -21,7 +21,7 @@ struct Trip
     bool isCyclic = false;
     quint64 duration = 0;
     qreal direction = 0;
-    qreal distance = 0;
+    int distance = 0;
     QDateTime startDateTime;
     QDateTime endDateTime;
 };

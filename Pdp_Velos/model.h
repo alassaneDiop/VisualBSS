@@ -6,8 +6,7 @@
 #include "trip.h"
 #include "station.h"
 #include "typedefs.h"
-#include "abstractdatafilereader.h"
-
+#include "datafilereader.h"
 
 namespace bss {
 class Model;
@@ -32,16 +31,13 @@ public:
     inline const Trip& trip(const bss::tripId& id) const { return m_trips.at((int) id); }
     inline const Station& station(const bss::stationId& id) const { return m_stations.at((int) id); }
 
-    inline QVector<Trip> trips() const { return QVector<Trip>(m_trips); }
-    inline QVector<Station> stations() const { return QVector<Station>(m_stations); }
-
-    inline const QVector<Trip>& constTrips() const { return m_trips; }
-    inline const QVector<Station>& constStations() const { return m_stations; }
+    inline const QVector<Trip>& trips() const { return m_trips; }
+    inline const QVector<Station>& stations() const { return m_stations; }
 
     DataLoadResult loadData(const QString& filename);
     bool unloadData();
 
-private:
+private:   
     bool m_hasData = false;
     QVector<Trip> m_trips;
     QVector<Station> m_stations;

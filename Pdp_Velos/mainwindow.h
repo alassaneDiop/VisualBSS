@@ -42,15 +42,15 @@ public:
 protected:
     virtual void closeEvent(QCloseEvent* event) override;
 
-private:
+private:  
     template<typename T>
     void runAsync(const QFuture<T>& future);
 
     bool loadData(const QStringList& filenames);
     bool unloadData();
 
-    void filterTrips(const TripsFilterParams& params);
-    void filterStations(const StationsFilterParams& params);
+    void filterTrips(const QVector<Trip>& trips, const TripsFilterParams& params);
+    void filterStations(const QVector<Station>& stations, const StationsFilterParams& params);
     void sortStations(QVector<Station>& stations, const bss::SortParam& param);
 
     void prepareToDrawSelectionOnMap(const QVector<bss::tripId>& selection);
@@ -70,6 +70,19 @@ private:
                            const QVector<QVector<bss::tripId>>& cyclesIds,
                            const bool& showDistance);
 
+
+
+    static int maxDistance(const QVector<Trip>& trips);
+    static int minDistance(const QVector<Trip>& trips);
+
+    static quint64 maxDuration(const QVector<Trip>& trips);
+    static quint64 minDuration(const QVector<Trip>& trips);
+
+    static int maxOriginDestinationFlow(const QVector<Station>& stations);
+    static int minOriginDestinationFlow(const QVector<Station>& stations);
+
+
+
     bool m_canApplicationExit = true;
     bool m_shouldEnableMenuBar = true;
     bool m_shouldEnableControls = false;
@@ -79,7 +92,7 @@ private:
     TripsFilterParams m_tripsFilterParams;
     StationsFilterParams m_stationsFilterParams;
 
-    Ui::MainWindow* ui;
+    Ui::MainWindow* m_view;
     Model* m_model = nullptr;
     QFutureWatcher<void>* m_asyncTaskMonitor = nullptr;    // an object used to monitor threads
 
