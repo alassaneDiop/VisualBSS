@@ -48,3 +48,15 @@ DataFileReadInfo XmlDataFileReader::readData(QHash<QString, Station>& stations, 
     }*/
     return DataFileReadInfo();
 }
+
+DataFileReadInfo XmlDataFileReader::parallelReadData(QHash<QString, Station>& stations,
+                                                     QVector<Trip>& trips,
+                                                     QReadWriteLock& stationsLock,
+                                                     QReadWriteLock& tripsLock) const
+{
+    Q_UNUSED(stations);
+    Q_UNUSED(trips);
+    Q_UNUSED(stationsLock);
+    Q_UNUSED(tripsLock);
+    return DataFileReadInfo();
+}

@@ -13,7 +13,7 @@ TripsSelector::TripsSelector(const TripsSelectionParams& params) :
 
 
 
-QVector<Trip> TripsSelector::selectTripsFrom(const QVector<Trip>& trips) const
+QVector<Trip> TripsSelector::select(const QVector<Trip>& trips) const
 {
     const auto select = [this](const Trip& t)
     {

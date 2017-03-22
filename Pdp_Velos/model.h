@@ -2,6 +2,7 @@
 #define MODEL_H
 
 #include <QVector>
+#include <QReadWriteLock>
 
 #include "trip.h"
 #include "station.h"
@@ -34,7 +35,7 @@ public:
     inline const QVector<Trip>& trips() const { return m_trips; }
     inline const QVector<Station>& stations() const { return m_stations; }
 
-    DataLoadResult loadData(const QString& filename);
+    DataLoadResult loadData(const QString& filename, const bool& parallel);
     bool unloadData();
 
 private:   

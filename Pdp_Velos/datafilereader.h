@@ -12,6 +12,10 @@ public:
     virtual ~DataFileReader();
     virtual DataFileReadInfo readData(QHash<QString, Station>& stations, QVector<Trip>& trips) const;
 
+    virtual DataFileReadInfo parallelReadData(QHash<QString, Station>& stations,
+                                              QVector<Trip>& trips,
+                                              QReadWriteLock& stationsLock,
+                                              QReadWriteLock& tripsLock) const;
 };
 
 #endif // DATAFILEPARSER_H

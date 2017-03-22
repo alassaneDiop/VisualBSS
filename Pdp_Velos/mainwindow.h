@@ -5,7 +5,6 @@
 #include <QVector>
 #include <QFutureWatcher>
 
-#include "model.h"
 #include "typedefs.h"
 #include "tripsfilter.h"
 #include "stationsfilter.h"
@@ -29,6 +28,7 @@ struct TripsDisplayParams
 
 struct Trip;
 struct Station;
+class Model;
 class MainWindow : public QMainWindow
 {
     // order corresponds to UI's combobox
@@ -46,15 +46,19 @@ private:
     template<typename T>
     void runAsync(const QFuture<T>& future);
 
-    bool loadData(const QStringList& filenames);
+    bool loadDataFromFile(const QString& filename, const bool& parallel);
+    bool loadDataFromFiles(const QStringList& filenames, const bool& parallel);
+
     bool unloadData();
 
     void filterTrips(const QVector<Trip>& trips, const TripsFilterParams& params);
     void filterStations(const QVector<Station>& stations, const StationsFilterParams& params);
     void sortStations(QVector<Station>& stations, const bss::SortParam& param);
+    void selectTrips(const char& startHour, const char& endHour,
+                     const int& startStationIndex, const int& endStationIndex);
 
     void prepareToDrawSelectionOnMap(const QVector<bss::tripId>& selection);
-    void prepareToDrawTripsOnMatrix(const QVector<bss::tripId>& trips);
+    void prepareToDrawTripsOnMatrix(const QVector<bss::stationId>& stations, const TripsDisplayParams& params);
 
     // affiche sur la map les stations
     void drawStationsOnMap(const QVector<bss::stationId>& stationsIds);
@@ -72,6 +76,11 @@ private:
 
 
 
+    QVector<bss::stationId> ids(const QVector<Station>& stations);
+    QVector<bss::tripId> ids(const QVector<Trip>& trips);
+    QVector<Station> stations(const QVector<bss::stationId>& ids);
+    QVector<Trip> trips(const QVector<bss::tripId>& ids);
+
     static int maxDistance(const QVector<Trip>& trips);
     static int minDistance(const QVector<Trip>& trips);
 
@@ -80,8 +89,6 @@ private:
 
     static int maxOriginDestinationFlow(const QVector<Station>& stations);
     static int minOriginDestinationFlow(const QVector<Station>& stations);
-
-
 
     bool m_canApplicationExit = true;
     bool m_shouldEnableMenuBar = true;
@@ -117,6 +124,9 @@ private slots:
     void onTripsFilterParamsChanged(const TripsFilterParams& params);
     void onStationsSorterParamChanged(const bss::SortParam& param);
     void onStationsFilterParamsChanged(const StationsFilterParams& params);
+
+    void onMatrixSelectionChanged(const char& fromHour, const char& toHour,
+                                  const int& fromStationIndex, const int& toStationIndex);
 
     void onReadyToDrawSelectionOnMap(const QVector<bss::tripId>& arrivalsIds,
                                      const QVector<bss::tripId>& departuresIds,

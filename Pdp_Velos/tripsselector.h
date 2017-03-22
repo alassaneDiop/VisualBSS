@@ -28,7 +28,7 @@ public:
     inline const TripsSelectionParams& params() const { return m_params; }
     inline void setParams(const TripsSelectionParams& params) { m_params = params; }
 
-    QVector<Trip> selectTripsFrom(const QVector<Trip>& trips) const;
+    QVector<Trip> select(const QVector<Trip>& trips) const;
 
 private:
     TripsSelectionParams m_params;

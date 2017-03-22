@@ -47,6 +47,31 @@ DataFileReadInfo DataFileReader::readData(QHash<QString, Station>& stations, QVe
     }
 }
 
+DataFileReadInfo DataFileReader::parallelReadData(QHash<QString, Station>& stations,
+                                                  QVector<Trip>& trips,
+                                                  QReadWriteLock& stationsLock,
+                                                  QReadWriteLock& tripsLock) const
+{
+    const QString suffix = QFileInfo(params().filename).completeSuffix();
+    if (suffix == "csv")
+    {
+        const CsvDataFileReader reader = CsvDataFileReader(params());
+        return reader.parallelReadData(stations, trips, stationsLock, tripsLock);
+    }
+    if (suffix == "xml")
+    {
+        const XmlDataFileReader reader = XmlDataFileReader(params());
+        return reader.parallelReadData(stations, trips, stationsLock, tripsLock);
+    }
+    else
+    {
+        DataFileReadInfo info;
+        info.ok = false;
+        info.errorString = "Error : unsupported format";
+        return info;
+    }
+}
+
 /*
  * For CitiBike:
  * "tripduration",

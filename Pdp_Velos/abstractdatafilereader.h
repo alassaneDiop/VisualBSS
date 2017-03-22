@@ -3,9 +3,7 @@
 
 #include <QString>
 #include <QVector>
-
-#include "trip.h"
-#include "station.h"
+#include <QReadWriteLock>
 
 
 namespace bss {
@@ -26,6 +24,8 @@ struct DataFileReadInfo
     QString errorString;
 };
 
+struct Trip;
+struct Station;
 class AbstractDataFileReader
 {
 public:
@@ -33,7 +33,13 @@ public:
     AbstractDataFileReader(const QString& filename, const Qt::DateFormat& dateFormat = Qt::ISODate);
 
     virtual ~AbstractDataFileReader();
-    virtual DataFileReadInfo readData(QHash<QString, Station>& stations, QVector<Trip>& trips) const = 0;
+    virtual DataFileReadInfo readData(QHash<QString, Station>& stations,
+                                      QVector<Trip>& trips) const = 0;
+
+    virtual DataFileReadInfo parallelReadData(QHash<QString, Station>& stations,
+                                              QVector<Trip>& trips,
+                                              QReadWriteLock& stationsLock,
+                                              QReadWriteLock& tripsLock) const = 0;
 
     inline DataFileParams params() const { return m_params; }
 
