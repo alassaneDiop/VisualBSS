@@ -10,6 +10,7 @@
 #include <QPair>
 
 
+
 namespace bss {
 class MatrixGLWidget;
 }
@@ -20,9 +21,25 @@ class QMouseEvent;
 class QPointF;
 class QOpenGLShaderProgram;
 
+struct SelectionTimeSatations {
+    char minTime;
+    char maxTime;
+    int fromStationIndex;
+    int toStationIndex;
+
+    inline bool operator ==(const SelectionTimeSatations& other)
+    {
+        return (minTime == other.minTime)
+                && (maxTime == other.maxTime)
+                && (fromStationIndex == other.fromStationIndex)
+                && (toStationIndex == other.toStationIndex);
+    }
+};
+
 class MatrixGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
+
 public:
     MatrixGLWidget(QWidget* p = 0);
     ~MatrixGLWidget();
@@ -46,8 +63,7 @@ private:
     bool initializeShaderSelector();
     bool initializeShaderGlyphs();
 
-
-    QPair<QPair<char, char>, QPair<int, int>> tripsInSelector() const;
+    SelectionTimeSatations tripsInSelector() const;
 
     int m_matrixViewWidth;
 
@@ -71,9 +87,10 @@ private:
 
     bool m_isGlyphsVAOCreated;
 
+    SelectionTimeSatations m_selectionnedTrips;
 
 signals:
-    void onSelectionChanged(short minTime, short maxTime, int fromStationIndex, int toStationIndex);
+    void onSelectionChanged(char minTime, char maxTime, int fromStationIndex, int toStationIndex);
 
     void onShaderError(const QString& message);
 };

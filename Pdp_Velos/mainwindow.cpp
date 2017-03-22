@@ -312,10 +312,6 @@ void MainWindow::drawSelectedTripsOnMap(const QVector<bss::tripId>& arrivalsIds,
 
     int tripsVerticesCount = 0;
 
-    // TODO: DAMIEN: refactoriser DRY
-
-
-
     // TODO: damien : renommer des variables
     const auto drawTrips = [this](  const QVector<bss::tripId>& ids,
                                 QVector<float> tripsVertices,
@@ -350,55 +346,6 @@ void MainWindow::drawSelectedTripsOnMap(const QVector<bss::tripId>& arrivalsIds,
             verticesCount += 2;
         }
     };
-
-//    // TODO: DAMIEN : refactoriser DRY
-//    for (const bss::tripId arrivalId : arrivalsIds)
-//    {
-//        const Trip trip = m_model->trip(arrivalId);
-
-//        const bss::stationId startStationId = trip.startStationId;
-//        const Station startStation = m_model->station(startStationId);
-
-//        tripsVertices.append((float) (startStation.longitude / maxLongitude));
-//        tripsVertices.append((float) (startStation.latitude / maxLatitude));
-
-//        tripsVertices += bss::ARRIVAL_ORIGIN_COLOR;
-
-
-//        const bss::stationId endStationId = trip.endStationId;
-//        const Station endStation = m_model->station(endStationId);
-
-//        tripsVertices.append((float) (endStation.longitude / maxLongitude));
-//        tripsVertices.append((float) (endStation.latitude / maxLatitude));
-
-//        tripsVertices += bss::ARRIVAL_DESTINATION_COLOR;
-
-//        tripsVertices += 2;
-//    }
-
-//    for (const bss::tripId departureId : departuresIds)
-//    {
-//        const Trip trip = m_model->trip(departureId);
-
-//        const bss::stationId startStationId = trip.startStationId;
-//        const Station startStation = m_model->station(startStationId);
-
-//        tripsVertices.append((float) (startStation.longitude / maxLongitude));
-//        tripsVertices.append((float) (startStation.latitude / maxLatitude));
-
-//        tripsVertices += bss::DEPARTURE_ORIGIN_COLOR;
-
-
-//        const bss::stationId endStationId = trip.endStationId;
-//        const Station endStation = m_model->station(endStationId);
-
-//        tripsVertices.append((float) (endStation.longitude / maxLongitude));
-//        tripsVertices.append((float) (endStation.latitude / maxLatitude));
-
-//        tripsVertices += bss::DEPARTURE_DESTINATION_COLOR;
-
-//        tripsVertices += 2;
-//    }
 
     drawTrips(arrivalsIds, tripsVertices, tripsVerticesCount, bss::ARRIVAL_ORIGIN_COLOR, bss::ARRIVAL_DESTINATION_COLOR);
     drawTrips(departuresIds, tripsVertices, tripsVerticesCount, bss::DEPARTURE_ORIGIN_COLOR, bss::DEPARTURE_DESTINATION_COLOR);
