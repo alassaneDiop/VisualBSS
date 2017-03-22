@@ -20,11 +20,8 @@ Renderer::~Renderer()
     if (m_VAO && m_VBO->isCreated())
         m_VBO->destroy();
 
-    if (m_VAO)
-        delete m_VAO;
-
-    if (m_VBO)
-        delete m_VBO;
+    delete m_VAO;
+    delete m_VBO;
 }
 
 void Renderer::initGLFunc()

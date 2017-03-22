@@ -7,6 +7,7 @@ namespace bss {
 class SelectorRenderer;
 }
 
+class QRectF;
 class SelectorRenderer : public Renderer
 {
 public:
@@ -14,8 +15,7 @@ public:
     ~SelectorRenderer();
 
     virtual void draw() override;
-    void updateData(const QVector<float> &data);
-    void prepareData(unsigned int verticesCount, unsigned int dataCount);
+    void updateData(const QRectF &data);
 };
 
 #endif // SELECTORRENDERER_H

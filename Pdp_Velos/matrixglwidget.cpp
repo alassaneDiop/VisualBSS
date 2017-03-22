@@ -7,6 +7,8 @@
 #include <QOpenGLShaderProgram>
 
 #include "config.h"
+#include "selectorrenderer.h"
+#include "glyphrenderer.h"
 
 
 MatrixGLWidget::MatrixGLWidget(QWidget* p) : QOpenGLWidget(p)
@@ -21,25 +23,16 @@ MatrixGLWidget::MatrixGLWidget(QWidget* p) : QOpenGLWidget(p)
     m_isGlyphsVAOCreated = false;
     m_glyphsLoaded = false;
 
-    m_selectorRenderer = Q_NULLPTR;
-    m_glyphRenderer = Q_NULLPTR;
-
     m_selectorRenderer = new SelectorRenderer();
     m_glyphRenderer = new GlyphRenderer();
 }
 
 MatrixGLWidget::~MatrixGLWidget()
 {
-    if (m_shaderProgramSelector)
-        delete m_shaderProgramSelector;
-    if (m_shaderProgramGlyph)
-        delete m_shaderProgramGlyph;
-
-    if (m_selectorRenderer)
-        delete m_selectorRenderer;
-
-    if (m_glyphRenderer)
-        delete m_glyphRenderer;
+    delete m_shaderProgramSelector;
+    delete m_shaderProgramGlyph;
+    delete m_selectorRenderer;
+    delete m_glyphRenderer;
 }
 
 
@@ -51,8 +44,8 @@ void MatrixGLWidget::initializeGL()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    m_selectorRenderer->initGLFunc();
     m_selectorRenderer->createVAO();
-    m_selectorRenderer->prepareData(6, 6 * 2);
 
     glClearColor(m_backgroundColor.red(),
                  m_backgroundColor.green(),
@@ -207,7 +200,6 @@ void MatrixGLWidget::mouseReleaseEvent(QMouseEvent* event)
 // FIXME: DAMIEN: refactoriser et changer le type
 QPair<QPair<char, char>, QPair<int, int>> MatrixGLWidget::tripsInSelector() const
 {
-
     const int width = this->width();
     const float oneHour = width / bss::NB_OF_HOURS;
 
@@ -224,7 +216,7 @@ QPair<QPair<char, char>, QPair<int, int>> MatrixGLWidget::tripsInSelector() cons
     timeInterval.first = qMax((char)0, timeInterval.first);
     timeInterval.second = qMin((int)timeInterval.second, bss::NB_OF_HOURS);
 
-    qDebug() << "Time interval"<< (int)timeInterval.first << (int)timeInterval.second;
+    //qDebug() << "Time interval"<< (int)timeInterval.first << (int)timeInterval.second;
 
 
     // FIXME: DAMIEN : bug
@@ -249,7 +241,7 @@ QPair<QPair<char, char>, QPair<int, int>> MatrixGLWidget::tripsInSelector() cons
     stationsInterval.second = qMax(tmp3, tmp4);
     stationsInterval.first = qMax(0, stationsInterval.first);
 
-    qDebug() << "Stations interval"<< stationsInterval.first << stationsInterval.second;
+    qDebug() << "Stations interval"<< stationsInterval.first << stationsInterval.second << m_topLeftSelectionRectangle.y();
 
     QPair<QPair<char, char>, QPair<int, int>> trips;
     trips.first.first = timeInterval.first;
@@ -275,12 +267,7 @@ void MatrixGLWidget::updateSelector() const
     bottomRight.setY((m_bottomRightSelectionRectangle.y() / this->height() * 2 - 1)
                      - m_translationY);
 
-    QVector<float> data;
-    data += QVector<float>({ (float)topLeft.x(), (float)-topLeft.y(), (float)bottomRight.x() });
-    data += QVector<float>({ (float)-topLeft.y(), (float)topLeft.x(), (float)-bottomRight.y() });
-    data += QVector<float>({ (float)topLeft.x(), (float)-bottomRight.y(), (float)bottomRight.x() });
-    data += QVector<float>({ (float)-bottomRight.y(), (float)bottomRight.x(), (float)-topLeft.y() });
-
+    QRectF data = QRectF(topLeft, bottomRight);
     m_selectorRenderer->updateData(data);
 }
 

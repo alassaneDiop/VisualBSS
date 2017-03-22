@@ -274,12 +274,11 @@ void MainWindow::drawStationsOnMap(const QVector<bss::stationId>& stationsIds)
     const int stationsVerticesCount = stationsIds.size();
     stationsVertices.reserve(stationsVerticesCount * positionTupleSize * colorTupleSize);
 
-    // TODO: DAMIEN: refactoriser DRY
-    const float maxLongitude = 180.f;
-    const float maxLatitude = 90.f;
-
     for (const bss::stationId id : stationsIds)
     {
+        const float maxLongitude = 180.f;
+        const float maxLatitude = 90.f;
+
         const Station s = m_model->station(id);
         stationsVertices.append(s.longitude / maxLongitude);
         stationsVertices.append(s.latitude / maxLatitude);
@@ -314,58 +313,95 @@ void MainWindow::drawSelectedTripsOnMap(const QVector<bss::tripId>& arrivalsIds,
     int tripsVerticesCount = 0;
 
     // TODO: DAMIEN: refactoriser DRY
-    const float maxLongitude = 180.f;
-    const float maxLatitude = 90.f;
 
 
-    // TODO: DAMIEN : refactoriser DRY
-    for (const bss::tripId arrivalId : arrivalsIds)
+
+    // TODO: damien : renommer des variables
+    const auto drawTrips = [this](  const QVector<bss::tripId>& ids,
+                                QVector<float> tripsVertices,
+                                int &verticesCount,
+                                const QVector<float>& originColor,
+                                const QVector<float>& destinationColor)
     {
-        const Trip trip = m_model->trip(arrivalId);
+        for (const bss::tripId arrivalId : ids)
+        {
+            const Trip trip = m_model->trip(arrivalId);
 
-        const bss::stationId startStationId = trip.startStationId;
-        const Station startStation = m_model->station(startStationId);
+            const bss::stationId startStationId = trip.startStationId;
+            const Station startStation = m_model->station(startStationId);
 
-        tripsVertices.append((float) (startStation.longitude / maxLongitude));
-        tripsVertices.append((float) (startStation.latitude / maxLatitude));
+            const float maxLongitude = 180.f;
+            const float maxLatitude = 90.f;
 
-        tripsVertices += bss::ARRIVAL_ORIGIN_COLOR;
+            tripsVertices.append((float) (startStation.longitude / maxLongitude));
+            tripsVertices.append((float) (startStation.latitude / maxLatitude));
 
-
-        const bss::stationId endStationId = trip.endStationId;
-        const Station endStation = m_model->station(endStationId);
-
-        tripsVertices.append((float) (endStation.longitude / maxLongitude));
-        tripsVertices.append((float) (endStation.latitude / maxLatitude));
-
-        tripsVertices += bss::ARRIVAL_DESTINATION_COLOR;
-
-        tripsVertices += 2;
-    }
-
-    for (const bss::tripId departureId : departuresIds)
-    {
-        const Trip trip = m_model->trip(departureId);
-
-        const bss::stationId startStationId = trip.startStationId;
-        const Station startStation = m_model->station(startStationId);
-
-        tripsVertices.append((float) (startStation.longitude / maxLongitude));
-        tripsVertices.append((float) (startStation.latitude / maxLatitude));
-
-        tripsVertices += bss::DEPARTURE_ORIGIN_COLOR;
+            tripsVertices += originColor;
 
 
-        const bss::stationId endStationId = trip.endStationId;
-        const Station endStation = m_model->station(endStationId);
+            const bss::stationId endStationId = trip.endStationId;
+            const Station endStation = m_model->station(endStationId);
 
-        tripsVertices.append((float) (endStation.longitude / maxLongitude));
-        tripsVertices.append((float) (endStation.latitude / maxLatitude));
+            tripsVertices.append((float) (endStation.longitude / maxLongitude));
+            tripsVertices.append((float) (endStation.latitude / maxLatitude));
 
-        tripsVertices += bss::DEPARTURE_DESTINATION_COLOR;
+            tripsVertices += destinationColor;
 
-        tripsVertices += 2;
-    }
+            verticesCount += 2;
+        }
+    };
+
+//    // TODO: DAMIEN : refactoriser DRY
+//    for (const bss::tripId arrivalId : arrivalsIds)
+//    {
+//        const Trip trip = m_model->trip(arrivalId);
+
+//        const bss::stationId startStationId = trip.startStationId;
+//        const Station startStation = m_model->station(startStationId);
+
+//        tripsVertices.append((float) (startStation.longitude / maxLongitude));
+//        tripsVertices.append((float) (startStation.latitude / maxLatitude));
+
+//        tripsVertices += bss::ARRIVAL_ORIGIN_COLOR;
+
+
+//        const bss::stationId endStationId = trip.endStationId;
+//        const Station endStation = m_model->station(endStationId);
+
+//        tripsVertices.append((float) (endStation.longitude / maxLongitude));
+//        tripsVertices.append((float) (endStation.latitude / maxLatitude));
+
+//        tripsVertices += bss::ARRIVAL_DESTINATION_COLOR;
+
+//        tripsVertices += 2;
+//    }
+
+//    for (const bss::tripId departureId : departuresIds)
+//    {
+//        const Trip trip = m_model->trip(departureId);
+
+//        const bss::stationId startStationId = trip.startStationId;
+//        const Station startStation = m_model->station(startStationId);
+
+//        tripsVertices.append((float) (startStation.longitude / maxLongitude));
+//        tripsVertices.append((float) (startStation.latitude / maxLatitude));
+
+//        tripsVertices += bss::DEPARTURE_ORIGIN_COLOR;
+
+
+//        const bss::stationId endStationId = trip.endStationId;
+//        const Station endStation = m_model->station(endStationId);
+
+//        tripsVertices.append((float) (endStation.longitude / maxLongitude));
+//        tripsVertices.append((float) (endStation.latitude / maxLatitude));
+
+//        tripsVertices += bss::DEPARTURE_DESTINATION_COLOR;
+
+//        tripsVertices += 2;
+//    }
+
+    drawTrips(arrivalsIds, tripsVertices, tripsVerticesCount, bss::ARRIVAL_ORIGIN_COLOR, bss::ARRIVAL_DESTINATION_COLOR);
+    drawTrips(departuresIds, tripsVertices, tripsVerticesCount, bss::DEPARTURE_ORIGIN_COLOR, bss::DEPARTURE_DESTINATION_COLOR);
 
     m_view->mapwidget->loadTripsData(tripsVertices, tripsVerticesCount);
     m_view->mapwidget->centerView(tripsVertices);
@@ -380,6 +416,84 @@ void MainWindow::drawTripsOnMatrix(const QVector<QVector<bss::tripId>>& arrivals
     Q_UNUSED(cyclesIds);
     Q_UNUSED(showDistance);
 
+    // TODO: damien : renommer des variables
+    const auto drawTrips = [this](  const QVector<QVector<bss::tripId>>& ids,
+                                    QVector<float>& glyphsVertices,
+                                    int &verticesCount,
+                                    const QVector<float>& color)
+    {
+        const float width = m_view->timelinematrixwidget->width();
+        const float heigth = m_view->timelinematrixwidget->height();
+        const float intervalX = m_view->timelinematrixwidget->width() / (bss::NB_OF_HOURS * 1.f);
+        const int glyphIntervalY = bss::GLYPH_HEIGHT + bss::SPACE_BETWEEN_GLYPHS;
+
+        int stationIndex = 0;
+        for (const QVector<bss::tripId> arrivals : ids)
+        {
+            for (unsigned int hour = 0; hour < bss::NB_OF_HOURS; ++hour)
+            {
+                for (const bss::tripId id : arrivals)
+                {
+                    const Trip t = m_model->trip(id);
+
+                    // VERTEX #1
+                    float positionX = bss::TIMELINE_OFFSET_X + hour * intervalX;
+                    float positionY = stationIndex * glyphIntervalY;
+
+                    const float rotationCenterX = bss::TIMELINE_OFFSET_X + hour * intervalX;
+                    const float rotationCenterY = stationIndex * glyphIntervalY + bss::GLYPH_HEIGHT / 2;
+
+                    const auto rotatePointAroundTarget = [](float angle, QPointF position, QPointF target)
+                    {
+                        const float sin = qSin(angle);
+                        const float cos = qCos(angle);
+
+                        float pX = target.x() - position.x();
+                        float pY = target.y() - position.y();
+
+                        float newX = pX * cos - pY * sin;
+                        float newY = pX * sin + pY * cos;
+
+                        newX += position.x();
+                        newY += position.y();
+
+                        return QPointF(newX, newY);
+                    };
+
+                    const float tripDirection = t.direction;
+
+                    QPointF newP;
+                    newP = rotatePointAroundTarget(tripDirection,
+                                                   QPointF(positionX, positionY),
+                                                   QPointF(rotationCenterX, rotationCenterY));
+
+                    positionX = newP.x() / width * 2 - 1;
+                    positionY = newP.y() / heigth * 2 - 1;
+
+                    glyphsVertices += QVector<float>({ positionX, -positionY });
+                    glyphsVertices += color;
+
+
+                    // VERTEX #2
+                    positionX = bss::TIMELINE_OFFSET_X + hour * intervalX;
+                    positionY = stationIndex * glyphIntervalY + bss::GLYPH_HEIGHT;
+
+                    newP = rotatePointAroundTarget(tripDirection,
+                                                   QPoint(positionX, positionY),
+                                                   QPoint(rotationCenterX, rotationCenterY));
+
+                    positionX = newP.x() / width * 2 - 1;
+                    positionY = newP.y() / heigth * 2 - 1;
+
+                    glyphsVertices += QVector<float>({ positionX, -positionY });
+                    glyphsVertices += color;
+                    verticesCount+= 2;
+                }
+            }
+            stationIndex++;
+        }
+    };
+
     // x and y;
     const unsigned short positionTupleSize = 2;
     // 1 trip has 2 points (start/end)
@@ -387,155 +501,18 @@ void MainWindow::drawTripsOnMatrix(const QVector<QVector<bss::tripId>>& arrivals
     // R, G, B
     const unsigned short colorTupleSize = 3;
 
-    const float width = m_view->timelinematrixwidget->width();
-    const float heigth = m_view->timelinematrixwidget->height();
-    const float intervalX = m_view->timelinematrixwidget->width() / (bss::NB_OF_HOURS * 1.f);
-    const int glyphIntervalY = bss::GLYPH_HEIGHT + bss::SPACE_BETWEEN_GLYPHS;
-
-    QVector<float> glyphVertices;
+    QVector<float> glyphsVertices;
     int reserved = arrivalsIds.size() * bss::NB_OF_HOURS * pointPerTrip * colorTupleSize * positionTupleSize;
     reserved += departuresIds.size() * bss::NB_OF_HOURS * pointPerTrip * colorTupleSize * positionTupleSize;
-    glyphVertices.reserve(reserved);
+    //reserved += cyclesIds.size() * bss::NB_OF_HOURS * colorTupleSize * positionTupleSize;
+    glyphsVertices.reserve(reserved);
 
     int verticesCount = 0;
 
-    // TOOD: DAMIEN : Factoriser faire des fonctions
-    int stationIndex;
-    stationIndex = 0;
-    for (const QVector<bss::tripId> arrivals : arrivalsIds)
-    {
-        for (unsigned int hour = 0; hour < bss::NB_OF_HOURS; ++hour)
-        {
-            for (const bss::tripId id : arrivals)
-            {
-                const Trip t = m_model->trip(id);
+    drawTrips(arrivalsIds, glyphsVertices, verticesCount, bss::GLYPH_ARRIVAL_COLOR);
+    drawTrips(departuresIds, glyphsVertices, verticesCount, bss::GLYPH_DEPARTURE_COLOR);
 
-                // VERTEX #1
-                float positionX = bss::TIMELINE_OFFSET_X + hour * intervalX;
-                float positionY = stationIndex * glyphIntervalY;
-
-                float rotationCenterX = bss::TIMELINE_OFFSET_X + hour * intervalX;
-                float rotationCenterY = stationIndex * glyphIntervalY + bss::GLYPH_HEIGHT / 2;
-
-                const auto rotatePointAroundTarget = [](float angle, QPointF position, QPointF target)
-                {
-                    const float sin = qSin(angle);
-                    const float cos = qCos(angle);
-
-                    float pX = target.x() - position.x();
-                    float pY = target.y() - position.y();
-
-                    float newX = pX * cos - pY * sin;
-                    float newY = pX * sin + pY * cos;
-
-                    newX += position.x();
-                    newY += position.y();
-
-                    return QPointF(newX, newY);
-                };
-
-                const float tripDirection = t.direction;
-
-                QPointF newP;
-                newP = rotatePointAroundTarget(tripDirection,
-                                               QPointF(positionX, positionY),
-                                               QPointF(rotationCenterX, rotationCenterY));
-
-                positionX = newP.x() / width * 2 - 1;
-                positionY = newP.y() / heigth * 2 - 1;
-
-                glyphVertices += QVector<float>({ positionX, -positionY });
-                glyphVertices += bss::GLYPH_ARRIVAL_COLOR;
-
-
-                // VERTEX #2
-                positionX = bss::TIMELINE_OFFSET_X + hour * intervalX;
-                positionY = stationIndex * glyphIntervalY + bss::GLYPH_HEIGHT;
-
-                newP = rotatePointAroundTarget(tripDirection,
-                                               QPoint(positionX, positionY),
-                                               QPoint(rotationCenterX, rotationCenterY));
-
-                positionX = newP.x() / width * 2 - 1;
-                positionY = newP.y() / heigth * 2 - 1;
-
-                glyphVertices += QVector<float>({ positionX, -positionY });
-                glyphVertices += bss::GLYPH_ARRIVAL_COLOR;
-
-                verticesCount+= 2;
-            }
-        }
-        stationIndex++;
-    }
-
-    stationIndex = 0;
-    for (const QVector<bss::tripId> departures : departuresIds)
-    {
-        for (unsigned int hour = 0; hour < bss::NB_OF_HOURS; ++hour)
-        {
-            for (const bss::tripId id : departures)
-            {
-                const Trip t = m_model->trip(id);
-
-                // VERTEX #1
-                float positionX = bss::TIMELINE_OFFSET_X + hour * intervalX;
-                float positionY = stationIndex * glyphIntervalY;
-
-                float rotationCenterX = bss::TIMELINE_OFFSET_X + hour * intervalX;
-                float rotationCenterY = stationIndex * glyphIntervalY + bss::GLYPH_HEIGHT / 2;
-
-                const auto rotatePointAroundTarget = [](float angle, QPointF position, QPointF target)
-                {
-                    const float sin = qSin(angle);
-                    const float cos = qCos(angle);
-
-                    float pX = target.x() - position.x();
-                    float pY = target.y() - position.y();
-
-                    float newX = pX * cos - pY * sin;
-                    float newY = pX * sin + pY * cos;
-
-                    newX += position.x();
-                    newY += position.y();
-
-                    return QPointF(newX, newY);
-                };
-
-                const float tripDirection = t.direction;
-
-                QPointF newP;
-                newP = rotatePointAroundTarget(tripDirection,
-                                               QPointF(positionX, positionY),
-                                               QPointF(rotationCenterX, rotationCenterY));
-
-                positionX = newP.x() / width * 2 - 1;
-                positionY = newP.y() / heigth * 2 - 1;
-
-                glyphVertices += QVector<float>({ positionX, -positionY });
-                glyphVertices += bss::GLYPH_DEPARTURE_COLOR;
-
-
-                // VERTEX #2
-                positionX = bss::TIMELINE_OFFSET_X + hour * intervalX;
-                positionY = stationIndex * glyphIntervalY + bss::GLYPH_HEIGHT;
-
-                newP = rotatePointAroundTarget(tripDirection,
-                                               QPoint(positionX, positionY),
-                                               QPoint(rotationCenterX, rotationCenterY));
-
-                positionX = newP.x() / width * 2 - 1;
-                positionY = newP.y() / heigth * 2 - 1;
-
-                glyphVertices += QVector<float>({ positionX, -positionY });
-                glyphVertices += bss::GLYPH_DEPARTURE_COLOR;
-
-                verticesCount+= 2;
-            }
-        }
-        stationIndex++;
-    }
-
-    m_view->timelinematrixwidget->loadGlyphsData(glyphVertices, verticesCount);
+    m_view->timelinematrixwidget->loadGlyphsData(glyphsVertices, verticesCount);
 }
 
 

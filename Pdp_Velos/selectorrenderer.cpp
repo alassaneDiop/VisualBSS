@@ -4,10 +4,13 @@
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
 #include <QVector>
+#include <QRectF>
+
+#include <QDebug>
 
 SelectorRenderer::SelectorRenderer()
 {
-
+    m_verticesCount = 12;
 }
 
 SelectorRenderer::~SelectorRenderer()
@@ -30,19 +33,15 @@ void SelectorRenderer::draw()
     this->releaseVAO();
 }
 
-void SelectorRenderer::updateData(const QVector<float> &data)
+void SelectorRenderer::updateData(const QRectF& rect)
 {
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO->bufferId());
-    glBufferSubData(GL_ARRAY_BUFFER, 0, data.size() * sizeof(GLfloat), data.data());
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void SelectorRenderer::prepareData(unsigned int verticesCount, unsigned int dataCount)
-{
-    initializeOpenGLFunctions();
-    m_verticesCount = verticesCount;
+    QVector<float> data;
+    data += QVector<float>({ (float)rect.topLeft().x(), (float)-rect.topLeft().y(), (float)rect.bottomRight().x() });
+    data += QVector<float>({ (float)-rect.topLeft().y(), (float)rect.topLeft().x(), (float)-rect.bottomRight().y() });
+    data += QVector<float>({ (float)rect.topLeft().x(), (float)-rect.bottomRight().y(), (float)rect.bottomRight().x() });
+    data += QVector<float>({ (float)-rect.bottomRight().y(), (float)rect.bottomRight().x(), (float)-rect.topLeft().y() });
 
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO->bufferId());
-    glBufferData(GL_ARRAY_BUFFER, dataCount * sizeof(GLfloat), NULL, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(GLfloat), data.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

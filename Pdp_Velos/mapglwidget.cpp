@@ -5,7 +5,7 @@
 #include <QtGlobal>
 
 #include "stationrenderer.h"
-
+#include "triprenderer.h"
 
 MapGLWidget::MapGLWidget(QWidget* p) : QOpenGLWidget(p)
 {
@@ -24,26 +24,16 @@ MapGLWidget::MapGLWidget(QWidget* p) : QOpenGLWidget(p)
     m_shaderProgramStations = Q_NULLPTR;
     m_shaderProgramTrips = Q_NULLPTR;
 
-    m_stationRenderer = Q_NULLPTR;
-    m_tripRenderer = Q_NULLPTR;
-
     m_stationRenderer = new StationRenderer();
     m_tripRenderer = new TripRenderer();
 }
 
 MapGLWidget::~MapGLWidget()
 {
-    if (m_shaderProgramStations)
-        delete m_shaderProgramStations;
-
-    if (m_shaderProgramTrips)
-        delete m_shaderProgramTrips;
-
-    if (m_stationRenderer)
-        delete m_stationRenderer;
-
-    if (m_tripRenderer)
-        delete m_tripRenderer;
+    delete m_shaderProgramStations;
+    delete m_shaderProgramTrips;
+    delete m_stationRenderer;
+    delete m_tripRenderer;
 }
 
 

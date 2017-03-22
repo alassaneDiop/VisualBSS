@@ -1,14 +1,12 @@
 #ifndef MATRIXOPENGLWIDGET_H
 #define MATRIXOPENGLWIDGET_H
 
-#include "selectorrenderer.h"
-#include "glyphrenderer.h"
 
 #include <QWheelEvent>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
+
 #include <QColor>
-#include <QVector>
 #include <QPair>
 
 
@@ -16,6 +14,8 @@ namespace bss {
 class MatrixGLWidget;
 }
 
+class GlyphRenderer;
+class SelectorRenderer;
 class QMouseEvent;
 class QPointF;
 class QOpenGLShaderProgram;

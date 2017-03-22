@@ -1,17 +1,18 @@
-#ifndef OPENGLWIDGET_H
+ #ifndef OPENGLWIDGET_H
 #define OPENGLWIDGET_H
 
 #include <QWheelEvent>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 
-#include "stationrenderer.h"
-#include "triprenderer.h"
+
 
 namespace bss {
 class MapGLWidget;
 }
 
+class TripRenderer;
+class StationRenderer;
 class PointF;
 class QOpenGLShaderProgram;
 
