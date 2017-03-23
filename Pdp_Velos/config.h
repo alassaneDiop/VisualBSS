@@ -6,6 +6,8 @@ class QVector;
 
 namespace bss {
 
+static const int RANK_SIZE = 10;
+
 static const bool PARALLEL_PARSING = true;
 
 static const qreal AVG_SPEED = 2.7;

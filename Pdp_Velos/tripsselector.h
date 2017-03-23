@@ -13,8 +13,8 @@ class TripsSelector;
 
 struct TripsSelectionParams
 {
-    int startHour = -1;
-    int endHour = -1;
+    int fromHour = -1;
+    int toHour = -1;
     QVector<bss::stationId> stations;
 };
 

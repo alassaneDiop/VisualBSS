@@ -1,6 +1,7 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#include <QObject>
 #include <QVector>
 #include <QReadWriteLock>
 
@@ -14,16 +15,12 @@ class Model;
 struct DataLoadResult;
 }
 
-struct DataLoadResult
+class Model : public QObject
 {
-    DataFileReadInfo info;
-    QVector<Trip> trips;
-    QVector<Station> stations;
-};
-
-class Model
-{
+    Q_OBJECT
 public:
+    explicit Model(QObject* parent = 0);
+
     inline bool hasData() const { return m_hasData; }
 
     inline int tripsCount() const { return m_trips.count(); }
@@ -35,13 +32,19 @@ public:
     inline const QVector<Trip>& trips() const { return m_trips; }
     inline const QVector<Station>& stations() const { return m_stations; }
 
-    DataLoadResult loadData(const QString& filename, const bool& parallel);
+    bool loadData(const QString& filename, const bool& parallel);
     bool unloadData();
 
 private:   
     bool m_hasData = false;
     QVector<Trip> m_trips;
     QVector<Station> m_stations;
+
+signals:
+    void dataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations);
+    void failedToLoadData(const QString& filename, const QString& errorDesc);
+    void dataUnloaded();
+    void failedToUnloadData();
 };
 
 #endif // MODEL_H

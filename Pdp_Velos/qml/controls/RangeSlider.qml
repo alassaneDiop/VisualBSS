@@ -4,16 +4,20 @@ import QtQuick.Controls 2.1
 RangeSlider {
     signal firstValueChanged(real firstValue)
     signal secondValueChanged(real secondValue)
+    signal firstPositionChanged(real firstPosition)
+    signal secondPositionChanged(real secondPosition)
 
     id: control
-    snapMode: "SnapOnRelease"
+    snapMode: "SnapAlways"
     from: 0
-    to: 100000
+    to: 100
     stepSize: 1
     first.value: from
     second.value: to
     first.onValueChanged: firstValueChanged(first.value)
     second.onValueChanged: secondValueChanged(second.value)
+    first.onPositionChanged: firstPositionChanged(to * first.position)
+    second.onPositionChanged: secondPositionChanged(to * second.position)
 
     background: Rectangle {
         x: control.leftPadding

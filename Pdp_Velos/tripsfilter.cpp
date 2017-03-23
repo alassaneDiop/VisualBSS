@@ -13,20 +13,16 @@ TripsFilter::TripsFilter(const TripsFilterParams& params) :
 
 QVector<Trip> TripsFilter::filter(const QVector<Trip>& trips) const
 {
-    const int day = params().day.isValid() ? params().day.day() : 1;
-    const QDate date = QDate(params().period.year(),
-                             params().period.month(),
-                             day);
-
-    const auto filter = [this, &date](const Trip& t)
+    const auto filter = [this](const Trip& t)
     {
-        return (t.direction <= params().maxDirection)
+        return (t.startDateTime.date() >= params().fromPeriod)
+            && (t.endDateTime.date() <= params().toPeriod)
+            && (t.direction <= params().maxDirection)
             && (t.direction >= params().minDirection)
             && (t.distance <= params().maxDistance)
             && (t.distance >= params().minDistance)
             && (t.duration <= params().maxDuration)
-            && (t.duration >= params().minDuration)
-            && (t.startDateTime.date() >= date);
+            && (t.duration >= params().minDuration);
     };
 
     return QtConcurrent::blockingFiltered(trips, filter);

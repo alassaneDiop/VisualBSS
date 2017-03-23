@@ -17,8 +17,8 @@ QVector<Trip> TripsSelector::select(const QVector<Trip>& trips) const
 {
     const auto select = [this](const Trip& t)
     {
-        return (t.startDateTime.time().hour() >= params().startHour)
-            && (t.endDateTime.time().hour() <= params().endHour)
+        return (t.startDateTime.time().hour() >= params().fromHour)
+            && (t.endDateTime.time().hour() <= params().toHour)
             && ((params().stations.contains(t.startStationId))
             || (params().stations.contains(t.endStationId)));
     };

@@ -14,8 +14,8 @@ class TripsFilter;
 
 struct TripsFilterParams
 {
-    QDate period;
-    QDate day;
+    QDate fromPeriod;
+    QDate toPeriod;
     Qt::DayOfWeek dayOfWeek = Qt::DayOfWeek::Monday;
     quint64 maxDuration = 0;
     quint64 minDuration = 0;

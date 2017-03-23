@@ -157,7 +157,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>360</width>
+           <width>364</width>
            <height>16777215</height>
           </size>
          </property>
@@ -214,180 +214,63 @@
               <number>3</number>
              </property>
              <item>
-              <widget class="QWidget" name="widget_periodDay" native="true">
+              <widget class="QWidget" name="widget" native="true">
                <layout class="QHBoxLayout" name="horizontalLayout">
                 <property name="spacing">
                  <number>3</number>
                 </property>
                 <property name="leftMargin">
-                 <number>0</number>
+                 <number>3</number>
                 </property>
                 <property name="topMargin">
-                 <number>0</number>
+                 <number>3</number>
                 </property>
                 <property name="rightMargin">
-                 <number>0</number>
+                 <number>3</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>0</number>
+                 <number>3</number>
                 </property>
                 <item>
-                 <widget class="QWidget" name="widget_period_2" native="true">
-                  <layout class="QHBoxLayout" name="horizontalLayout_4">
-                   <property name="spacing">
-                    <number>6</number>
-                   </property>
-                   <property name="leftMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QLabel" name="label_period">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>Period</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="comboBox_period">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
+                 <widget class="QLabel" name="label_fromPeriod">
+                  <property name="text">
+                   <string>From period</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QWidget" name="widget_day" native="true">
-                  <layout class="QHBoxLayout" name="horizontalLayout_5">
-                   <property name="spacing">
-                    <number>6</number>
-                   </property>
-                   <property name="leftMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QLabel" name="label_day">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>Day</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLineEdit" name="lineEdit_day">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
+                 <widget class="QComboBox" name="comboBox_fromPeriod"/>
                 </item>
                </layout>
               </widget>
              </item>
              <item>
-              <widget class="QWidget" name="widget_dayOfWeek" native="true">
-               <layout class="QVBoxLayout" name="verticalLayout_6">
+              <widget class="QWidget" name="widget_toPeriod" native="true">
+               <layout class="QHBoxLayout" name="horizontalLayout_4">
                 <property name="spacing">
                  <number>3</number>
                 </property>
                 <property name="leftMargin">
-                 <number>0</number>
+                 <number>3</number>
                 </property>
                 <property name="topMargin">
-                 <number>0</number>
+                 <number>3</number>
                 </property>
                 <property name="rightMargin">
-                 <number>0</number>
+                 <number>3</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>0</number>
+                 <number>3</number>
                 </property>
                 <item>
-                 <widget class="QComboBox" name="comboBox_dayOfWeek">
-                  <item>
-                   <property name="text">
-                    <string>Monday</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Thursday</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Wednesday</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Tuesday</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Friday</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Saturday</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Sunday</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Weekdays</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Weekend</string>
-                   </property>
-                  </item>
+                 <widget class="QLabel" name="label_toPeriod">
+                  <property name="text">
+                   <string>To period</string>
+                  </property>
                  </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="comboBox_toPeriod"/>
                 </item>
                </layout>
               </widget>
@@ -1181,9 +1064,9 @@
                     <number>3</number>
                    </property>
                    <item>
-                    <widget class="QLabel" name="label_odFlow">
+                    <widget class="QLabel" name="label_tripsFlow">
                      <property name="text">
-                      <string>OD flow</string>
+                      <string>Trips flow</string>
                      </property>
                     </widget>
                    </item>
@@ -1410,6 +1293,18 @@
                           <verstretch>0</verstretch>
                          </sizepolicy>
                         </property>
+                        <property name="editTriggers">
+                         <set>QAbstractItemView::NoEditTriggers</set>
+                        </property>
+                        <property name="selectionMode">
+                         <enum>QAbstractItemView::NoSelection</enum>
+                        </property>
+                        <property name="spacing">
+                         <number>4</number>
+                        </property>
+                        <property name="uniformItemSizes">
+                         <bool>false</bool>
+                        </property>
                        </widget>
                       </item>
                      </layout>
@@ -1444,12 +1339,27 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QListView" name="listView__last">
+                       <widget class="QListView" name="listView_last">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                           <horstretch>0</horstretch>
                           <verstretch>0</verstretch>
                          </sizepolicy>
+                        </property>
+                        <property name="editTriggers">
+                         <set>QAbstractItemView::NoEditTriggers</set>
+                        </property>
+                        <property name="selectionMode">
+                         <enum>QAbstractItemView::NoSelection</enum>
+                        </property>
+                        <property name="layoutMode">
+                         <enum>QListView::SinglePass</enum>
+                        </property>
+                        <property name="spacing">
+                         <number>4</number>
+                        </property>
+                        <property name="uniformItemSizes">
+                         <bool>false</bool>
                         </property>
                        </widget>
                       </item>

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QVector>
 #include <QFutureWatcher>
+#include <QDate>
 
 #include "typedefs.h"
 #include "tripsfilter.h"
@@ -46,16 +47,13 @@ private:
     template<typename T>
     void runAsync(const QFuture<T>& future);
 
-    bool loadDataFromFile(const QString& filename, const bool& parallel);
     bool loadDataFromFiles(const QStringList& filenames, const bool& parallel);
-
-    bool unloadData();
 
     void filterTrips(const QVector<Trip>& trips, const TripsFilterParams& params);
     void filterStations(const QVector<Station>& stations, const StationsFilterParams& params);
     void sortStations(QVector<Station>& stations, const bss::SortParam& param);
-    void selectTrips(const char& startHour, const char& endHour,
-                     const int& startStationIndex, const int& endStationIndex);
+    void selectTrips(const int& fromHour, const int& toHour,
+                     const int& fromStationIndex, const int& toStationIndex);
 
     void prepareToDrawSelectionOnMap(const QVector<bss::tripId>& selection);
     void prepareToDrawTripsOnMatrix(const QVector<bss::stationId>& stations, const TripsDisplayParams& params);
@@ -83,11 +81,8 @@ private:
 
     static QVector<QDate> dates(const QVector<Trip>& trips);
     static quint64 maxDuration(const QVector<Trip>& trips);
-    static quint64 minDuration(const QVector<Trip>& trips);
     static int maxDistance(const QVector<Trip>& trips);
-    static int minDistance(const QVector<Trip>& trips);
     static int maxFlow(const QVector<Station>& stations);
-    static int minFlow(const QVector<Station>& stations);
 
 
     bool m_canApplicationExit = true;
@@ -103,6 +98,7 @@ private:
     Model* m_model = nullptr;
     QFutureWatcher<void>* m_asyncTaskMonitor = nullptr;    // an object used to monitor threads
 
+    QVector<QDate> m_dates;
     QVector<bss::tripId> m_tripsIds;                    // filtered trips ids
     QVector<bss::tripId> m_selection;                   // currently selected trips ids
     QVector<bss::stationId> m_stationsIds;              // filtered and sorted trips ids
@@ -140,9 +136,8 @@ private slots:
     void on_action_open_triggered();
     void on_action_closeAll_triggered();
 
-    void on_comboBox_period_currentIndexChanged(int index);
-    void on_lineEdit_day_editingFinished();
-    void on_comboBox_dayOfWeek_currentIndexChanged(int index);
+    void on_comboBox_fromPeriod_currentIndexChanged(int index);
+    void on_comboBox_toPeriod_currentIndexChanged(int index);
 
     void on_checkBox_showArrivals_stateChanged(int arg1);
     void on_checkBox_showDepartures_stateChanged(int arg1);
@@ -154,18 +149,21 @@ private slots:
 
     void on_rangeSlider_distance_firstValueChanged(qreal v);
     void on_rangeSlider_distance_secondValueChanged(qreal v);
+    void on_rangeSlider_distance_firstPositionChanged(qreal p);
+    void on_rangeSlider_distance_secondPositionChanged(qreal p);
     void on_rangeSlider_duration_firstValueChanged(qreal v);
     void on_rangeSlider_duration_secondValueChanged(qreal v);
+    void on_rangeSlider_duration_firstPositionChanged(qreal p);
+    void on_rangeSlider_duration_secondPositionChanged(qreal p);
     void on_rangeSlider_direction_firstValueChanged(qreal v);
     void on_rangeSlider_direction_secondValueChanged(qreal v);
-    void on_rangeSlider_odFlow_firstValueChanged(qreal v);
-    void on_rangeSlider_odFlow_secondValueChanged(qreal v);
-
+    void on_rangeSlider_direction_firstPositionChanged(qreal p);
+    void on_rangeSlider_direction_secondPositionChanged(qreal p);
+    void on_rangeSlider_tripsFlow_firstValueChanged(qreal v);
+    void on_rangeSlider_tripsFlow_secondValueChanged(qreal v);
+    void on_rangeSlider_tripsFlow_firstPositionChanged(qreal p);
+    void on_rangeSlider_tripsFlow_secondPositionChanged(qreal p);
 signals:
-    void dataLoaded(const QVector<Trip>& trips, const QVector<Station>& stations);
-    void failedToLoadData(const QString& filename, const QString& errorDesc);
-    void dataUnloaded();
-
     void tripsChanged(const QVector<bss::tripId>& trips);
     void stationsOrderChanged(const QVector<bss::stationId>& stationsOrder);
     void selectionChanged(const QVector<bss::tripId>& selection);

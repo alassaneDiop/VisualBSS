@@ -31,9 +31,6 @@ MainWindow::MainWindow(QWidget* parent) :
     qRegisterMetaType<QVector<QVector<bss::tripId>>>("QVector<QVector<bss::tripId>>");
 
     const Qt::ConnectionType connectionType = (Qt::ConnectionType)(Qt::QueuedConnection | Qt::UniqueConnection);
-    connect(this, &MainWindow::dataLoaded, this, &MainWindow::onDataLoaded, connectionType);
-    connect(this, &MainWindow::failedToLoadData, this, &MainWindow::onFailedToLoadData, connectionType);
-    connect(this, &MainWindow::dataUnloaded, this, &MainWindow::onDataUnloaded, connectionType);
     connect(this, &MainWindow::stationsOrderChanged, this, &MainWindow::onStationsOrderChanged, connectionType);
     connect(this, &MainWindow::selectionChanged, this, &MainWindow::onSelectionChanged, connectionType);
     connect(this, &MainWindow::tripsChanged, this, &MainWindow::onTripsChanged, connectionType);
@@ -45,12 +42,18 @@ MainWindow::MainWindow(QWidget* parent) :
     m_view->actionClose_all->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirClosedIcon));
     m_view->widget_bottom->hide();
 
+    m_view->listView_top->setStyleSheet("QListView::item:hover{background-color:#a8f21f;}");
+    m_view->listView_last->setStyleSheet("QListView::item:hover{background-color:#a8f21f;}");
+
     connect(m_view->actionOpen, &QAction::triggered, this, &MainWindow::on_action_open_triggered);
     connect(m_view->actionClose_all, &QAction::triggered, this, &MainWindow::on_action_closeAll_triggered);
 
     connect(m_view->timelinematrixwidget, &MatrixGLWidget::onSelectionChanged, this, &MainWindow::onMatrixSelectionChanged);
 
     m_model = new Model();
+    connect(m_model, &Model::dataLoaded, this, &MainWindow::onDataLoaded, connectionType);
+    connect(m_model, &Model::failedToLoadData, this, &MainWindow::onFailedToLoadData, connectionType);
+    connect(m_model, &Model::dataUnloaded, this, &MainWindow::onDataUnloaded, connectionType);
 
     m_asyncTaskMonitor = new QFutureWatcher<void>();
     connect(m_asyncTaskMonitor, &QFutureWatcher<void>::started, this, &MainWindow::onAsyncTaskStarted, connectionType);
@@ -59,19 +62,30 @@ MainWindow::MainWindow(QWidget* parent) :
     const QObject* distanceRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_distance->rootObject());
     connect(distanceRangeSlider, SIGNAL(firstValueChanged(qreal)), SLOT(on_rangeSlider_distance_firstValueChanged(qreal)));
     connect(distanceRangeSlider, SIGNAL(secondValueChanged(qreal)), SLOT(on_rangeSlider_distance_secondValueChanged(qreal)));
+    connect(distanceRangeSlider, SIGNAL(firstPositionChanged(qreal)), SLOT(on_rangeSlider_distance_firstPositionChanged(qreal)));
+    connect(distanceRangeSlider, SIGNAL(secondPositionChanged(qreal)), SLOT(on_rangeSlider_distance_secondPositionChanged(qreal)));
 
     const QObject* durationRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_duration->rootObject());
     connect(durationRangeSlider, SIGNAL(firstValueChanged(qreal)), SLOT(on_rangeSlider_duration_firstValueChanged(qreal)));
     connect(durationRangeSlider, SIGNAL(secondValueChanged(qreal)), SLOT(on_rangeSlider_duration_secondValueChanged(qreal)));
+    connect(durationRangeSlider, SIGNAL(firstPositionChanged(qreal)), SLOT(on_rangeSlider_duration_firstPositionChanged(qreal)));
+    connect(durationRangeSlider, SIGNAL(secondPositionChanged(qreal)), SLOT(on_rangeSlider_duration_secondPositionChanged(qreal)));
 
-    const QObject* odFlowRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_odFlow->rootObject());
-    connect(odFlowRangeSlider, SIGNAL(firstValueChanged(qreal)), SLOT(on_rangeSlider_odFlow_firstValueChanged(qreal)));
-    connect(odFlowRangeSlider, SIGNAL(secondValueChanged(qreal)), SLOT(on_rangeSlider_odFlow_secondValueChanged(qreal)));
+    const QObject* tripsFlowRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_tripsFlow->rootObject());
+    connect(tripsFlowRangeSlider, SIGNAL(firstValueChanged(qreal)), SLOT(on_rangeSlider_tripsFlow_firstValueChanged(qreal)));
+    connect(tripsFlowRangeSlider, SIGNAL(secondValueChanged(qreal)), SLOT(on_rangeSlider_tripsFlow_secondValueChanged(qreal)));
+    connect(tripsFlowRangeSlider, SIGNAL(firstPositionChanged(qreal)), SLOT(on_rangeSlider_tripsFlow_firstPositionChanged(qreal)));
+    connect(tripsFlowRangeSlider, SIGNAL(secondPositionChanged(qreal)), SLOT(on_rangeSlider_tripsFlow_secondPositionChanged(qreal)));
 
     QObject* const directionRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_direction->rootObject());
     connect(directionRangeSlider, SIGNAL(firstValueChanged(qreal)), SLOT(on_rangeSlider_direction_firstValueChanged(qreal)));
     connect(directionRangeSlider, SIGNAL(secondValueChanged(qreal)), SLOT(on_rangeSlider_direction_secondValueChanged(qreal)));
+    connect(directionRangeSlider, SIGNAL(firstPositionChanged(qreal)), SLOT(on_rangeSlider_direction_firstPositionChanged(qreal)));
+    connect(directionRangeSlider, SIGNAL(secondPositionChanged(qreal)), SLOT(on_rangeSlider_direction_secondPositionChanged(qreal)));
+
     directionRangeSlider->blockSignals(true);
+    directionRangeSlider->setProperty("snap", "NoSnap");
+    directionRangeSlider->setProperty("stepSize", "0.1");
     directionRangeSlider->setProperty("from", 0);
     directionRangeSlider->setProperty("to", 360);
     directionRangeSlider->blockSignals(false);
@@ -115,40 +129,15 @@ void MainWindow::runAsync(const QFuture<T>& future)
 }
 
 
-bool MainWindow::loadDataFromFile(const QString& filename, const bool& parallel)
-{
-    const DataLoadResult loadResult = m_model->loadData(filename, parallel);
-    if (!loadResult.info.ok)
-    {
-        emit failedToLoadData(filename, loadResult.info.errorString);
-        return false;
-    }
-    else
-    {
-        emit dataLoaded(loadResult.trips, loadResult.stations);
-        return true;
-    }
-}
 
 bool MainWindow::loadDataFromFiles(const QStringList& filenames, const bool& parallel)
 {
     bool hasLoadedData = false;
     for (const QString filename : filenames)
-        if (loadDataFromFile(filename, parallel))
+        if (m_model->loadData(filename, parallel))
             hasLoadedData = true;
 
     return hasLoadedData;
-}
-
-bool MainWindow::unloadData()
-{
-    if (!m_model->unloadData())
-        return false;
-    else
-    {
-        emit dataUnloaded();
-        return true;
-    }
 }
 
 
@@ -187,13 +176,13 @@ void MainWindow::sortStations(QVector<Station>& stations, const bss::SortParam& 
     }
 }
 
-void MainWindow::selectTrips(const char& startHour, const char& endHour,
-                             const int& startStationIndex, const int& endStationIndex)
+void MainWindow::selectTrips(const int& fromHour, const int& toHour,
+                             const int& fromStationIndex, const int& toStationIndex)
 {
     TripsSelectionParams selectionParams;
-    selectionParams.startHour = startHour;
-    selectionParams.endHour = endHour;
-    selectionParams.stations = m_stationsIds.mid(startStationIndex, startStationIndex + endStationIndex);
+    selectionParams.fromHour = fromHour;
+    selectionParams.toHour = toHour;
+    selectionParams.stations = m_stationsIds.mid(fromStationIndex, fromStationIndex + toStationIndex);
 
     const TripsSelector selector = TripsSelector(selectionParams);
     const QVector<bss::tripId> selection = ids(selector.select(trips(m_tripsIds)));
@@ -328,10 +317,10 @@ void MainWindow::drawSelectedTripsOnMap(const QVector<bss::tripId>& arrivalsIds,
 
     // TODO: damien : renommer des variables
     const auto drawTrips = [this](  const QVector<bss::tripId>& ids,
-                                QVector<float> tripsVertices,
-                                int &verticesCount,
-                                const QVector<float>& originColor,
-                                const QVector<float>& destinationColor)
+            QVector<float> tripsVertices,
+            int &verticesCount,
+            const QVector<float>& originColor,
+            const QVector<float>& destinationColor)
     {
         for (const bss::tripId arrivalId : ids)
         {
@@ -379,9 +368,9 @@ void MainWindow::drawTripsOnMatrix(const QVector<QVector<bss::tripId>>& arrivals
 
     // TODO: damien : renommer des variables
     const auto drawTrips = [this](  const QVector<QVector<bss::tripId>>& ids,
-                                    QVector<float>& glyphsVertices,
-                                    int &verticesCount,
-                                    const QVector<float>& color)
+            QVector<float>& glyphsVertices,
+            int &verticesCount,
+            const QVector<float>& color)
     {
         const float width = m_view->timelinematrixwidget->width();
         const float heigth = m_view->timelinematrixwidget->height();
@@ -534,15 +523,6 @@ quint64 MainWindow::maxDuration(const QVector<Trip>& trips)
     return maxDuration;
 }
 
-quint64 MainWindow::minDuration(const QVector<Trip>& trips)
-{
-    quint64 minDuration = 0;
-    for (const Trip t : trips)
-        minDuration = qMin(minDuration, t.duration);
-
-    return minDuration;
-}
-
 int MainWindow::maxDistance(const QVector<Trip>& trips)
 {
     int maxDistance = 0;
@@ -552,31 +532,13 @@ int MainWindow::maxDistance(const QVector<Trip>& trips)
     return maxDistance;
 }
 
-int MainWindow::minDistance(const QVector<Trip>& trips)
-{
-    int minDistance = 0;
-    for (const Trip t : trips)
-        minDistance = qMin(minDistance, t.distance);
-
-    return minDistance;
-}
-
 int MainWindow::maxFlow(const QVector<Station>& stations)
 {
     int maxFlow = 0;
     for (const Station s : stations)
-        maxFlow = qMax(maxFlow, s.flow);
+        maxFlow = qMax(maxFlow, s.tripsFlow);
 
     return maxFlow;
-}
-
-int MainWindow::minFlow(const QVector<Station>& stations)
-{
-    int minFlow = 0;
-    for (const Station s : stations)
-        minFlow = qMin(minFlow, s.flow);
-
-    return minFlow;
 }
 
 
@@ -594,8 +556,7 @@ void MainWindow::onAsyncTaskFinished()
     m_view->menuBar->setEnabled(m_shouldEnableMenuBar);
     m_view->frame_controls->setEnabled(m_shouldEnableControls);
 
-    // TODO : not implemented functionalities so widgets are disabled
-    m_view->frame_period->setEnabled(false);
+    // TODO : not implemented functionalities so widget is disabled
     m_view->checkBox_showDuration->setEnabled(false);
 }
 
@@ -606,40 +567,48 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     qDebug() << "onDataLoaded" << "Trip number" << trips.count() << "Station number" << stations.size();
     m_shouldEnableControls = true;
 
+    m_dates = dates(trips);
+    m_tripsFilterParams.fromPeriod = m_dates.first();
+    m_tripsFilterParams.toPeriod = m_dates.last();
     m_tripsFilterParams.maxDistance = maxDistance(trips);
-    m_tripsFilterParams.minDistance = minDistance(trips);
     m_tripsFilterParams.maxDuration = maxDuration(trips);
-    m_tripsFilterParams.minDuration = minDuration(trips);
-
     m_stationsFilterParams.maxFlow = maxFlow(stations);
-    m_stationsFilterParams.minFlow = minFlow(stations);
+
+    runAsync(QtConcurrent::run(this, &MainWindow::filterStations, stations, m_stationsFilterParams));
+
+    QString (*dateToString)(const QDate& d) = [](const QDate& d) { return d.toString("dd/MM/yyyy"); };
+    const QStringList datesStrings = QStringList::fromVector(QtConcurrent::blockingMapped(m_dates, dateToString));
+
+    m_view->comboBox_fromPeriod->blockSignals(true);
+    m_view->comboBox_fromPeriod->clear();
+    m_view->comboBox_fromPeriod->addItems(datesStrings);
+    m_view->comboBox_fromPeriod->setCurrentIndex(0);
+    m_view->comboBox_fromPeriod->blockSignals(false);
+
+    m_view->comboBox_toPeriod->blockSignals(true);
+    m_view->comboBox_toPeriod->clear();
+    m_view->comboBox_toPeriod->addItems(datesStrings);
+    m_view->comboBox_toPeriod->setCurrentIndex(datesStrings.size() - 1);
+    m_view->comboBox_toPeriod->blockSignals(false);
 
     QObject* const distanceRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_distance->rootObject());
     distanceRangeSlider->blockSignals(true);
-    distanceRangeSlider->setProperty("from", m_tripsFilterParams.minDirection);
     distanceRangeSlider->setProperty("to", m_tripsFilterParams.maxDirection);
     distanceRangeSlider->blockSignals(false);
 
     QObject* const durationRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_duration->rootObject());
     durationRangeSlider->blockSignals(true);
-    durationRangeSlider->setProperty("from", m_tripsFilterParams.minDuration);
     durationRangeSlider->setProperty("to", m_tripsFilterParams.maxDuration);
     durationRangeSlider->blockSignals(false);
 
-    QObject* const odFlowRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_odFlow->rootObject());
-    odFlowRangeSlider->blockSignals(true);
-    odFlowRangeSlider->setProperty("from", m_stationsFilterParams.minFlow);
-    odFlowRangeSlider->setProperty("to", m_stationsFilterParams.maxFlow);
-    odFlowRangeSlider->blockSignals(false);
+    QObject* const tripsFlowRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_tripsFlow->rootObject());
+    tripsFlowRangeSlider->blockSignals(true);
+    tripsFlowRangeSlider->setProperty("to", m_stationsFilterParams.maxFlow);
+    tripsFlowRangeSlider->blockSignals(false);
 
     m_view->lineEdit_maxDistance->setText(QString::number(m_tripsFilterParams.maxDirection));
-    m_view->lineEdit_minDistance->setText(QString::number(m_tripsFilterParams.minDirection));
     m_view->lineEdit_maxDuration->setText(QString::number(m_tripsFilterParams.maxDuration));
-    m_view->lineEdit_minDuration->setText(QString::number(m_tripsFilterParams.minDuration));
-    m_view->lineEdit_maxOdFlow->setText(QString::number(m_stationsFilterParams.maxFlow));
-    m_view->lineEdit_minOdFlow->setText(QString::number(m_stationsFilterParams.minFlow));
-
-    runAsync(QtConcurrent::run(this, &MainWindow::filterStations, stations, m_stationsFilterParams));
+    m_view->lineEdit_maxtripsFlow->setText(QString::number(m_stationsFilterParams.maxFlow));
 }
 
 void MainWindow::onFailedToLoadData(const QString& filename, const QString& errorDesc)
@@ -672,9 +641,25 @@ void MainWindow::onSelectionChanged(const QVector<bss::tripId>& selection)
 
 void MainWindow::onStationsOrderChanged(const QVector<bss::stationId>& stations)
 {
+    // TODO : clear selection
     runAsync(QtConcurrent::run(this, &MainWindow::prepareToDrawTripsOnMatrix, stations, m_tripsDisplayParams));
-    if (m_selection.isEmpty())
-        drawStationsOnMap(stations);
+
+    const QVector<bss::stationId> topStationsIds = stations.mid(0, bss::RANK_SIZE);
+    QStringList topStationsNames;
+    topStationsNames.reserve(topStationsIds.size());
+    for (const bss::stationId id : topStationsIds)
+        topStationsNames.append(m_model->station(id).name);
+
+    const int lastStart = stations.size() - bss::RANK_SIZE;
+    const int lastEnd = stations.size() - 1;
+    const QVector<bss::stationId> lastStationsIds = stations.mid(lastStart, lastEnd);
+    QStringList lastStationsNames;
+    lastStationsNames.reserve(lastStationsIds.size());
+    for (auto it = lastStationsIds.rbegin(); it != lastStationsIds.rend(); ++it)
+        lastStationsNames.append(m_model->station(*it).name);
+
+    m_view->listView_top->setModel(new QStringListModel(topStationsNames));
+    m_view->listView_last->setModel(new QStringListModel(lastStationsNames));
 }
 
 void MainWindow::onHighlightChanged(const bss::stationId& highlight)
@@ -703,10 +688,10 @@ void MainWindow::onStationsFilterParamsChanged(const StationsFilterParams& param
     runAsync(QtConcurrent::run(this, &MainWindow::filterStations, stations(m_stationsIds), params));
 }
 
-void MainWindow::onMatrixSelectionChanged(const int& startHour, const int& endHour,
-                                          const int& startStationIndex, const int& endStationIndex)
+void MainWindow::onMatrixSelectionChanged(const int& fromHour, const int& toHour,
+                                          const int& fromStationIndex, const int& toStationIndex)
 {
-    runAsync(QtConcurrent::run(this, &MainWindow::selectTrips, startHour, endHour, startStationIndex, endStationIndex));
+    runAsync(QtConcurrent::run(this, &MainWindow::selectTrips, fromHour, toHour, fromStationIndex, toStationIndex));
 }
 
 
@@ -739,24 +724,19 @@ void MainWindow::on_action_open_triggered()
 
 void MainWindow::on_action_closeAll_triggered()
 {
-    runAsync(QtConcurrent::run(this, &MainWindow::unloadData));
+    runAsync(QtConcurrent::run(m_model, &Model::unloadData));
 }
 
-void MainWindow::on_comboBox_period_currentIndexChanged(int index)
+void MainWindow::on_comboBox_fromPeriod_currentIndexChanged(int index)
 {
-    Q_UNUSED(index);
-    // TODO : SEB on_comboBox_period_currentIndexChanged
+    m_tripsFilterParams.fromPeriod = m_dates.at(index);
+    onTripsFilterParamsChanged(m_tripsFilterParams);
 }
 
-void MainWindow::on_lineEdit_day_editingFinished()
+void MainWindow::on_comboBox_toPeriod_currentIndexChanged(int index)
 {
-    // TODO : SEB on_lineEdit_day_editingFinished
-}
-
-void MainWindow::on_comboBox_dayOfWeek_currentIndexChanged(int index)
-{
-    Q_UNUSED(index);
-    // TODO : SEB on_comboBox_dayOfWeek_currentIndexChanged
+    m_tripsFilterParams.toPeriod = m_dates.at(index);
+    onTripsFilterParamsChanged(m_tripsFilterParams);
 }
 
 void MainWindow::on_checkBox_showArrivals_stateChanged(int arg1)
@@ -810,6 +790,16 @@ void MainWindow::on_rangeSlider_distance_secondValueChanged(qreal v)
     onTripsFilterParamsChanged(m_tripsFilterParams);
 }
 
+void MainWindow::on_rangeSlider_distance_firstPositionChanged(qreal p)
+{
+    m_view->lineEdit_minDistance->setText(QString::number(p));
+}
+
+void MainWindow::on_rangeSlider_distance_secondPositionChanged(qreal p)
+{
+    m_view->lineEdit_maxDistance->setText(QString::number(p));
+}
+
 void MainWindow::on_rangeSlider_duration_firstValueChanged(qreal v)
 {
     m_view->lineEdit_minDuration->setText(QString::number(v));
@@ -822,6 +812,16 @@ void MainWindow::on_rangeSlider_duration_secondValueChanged(qreal v)
     m_view->lineEdit_maxDuration->setText(QString::number(v));
     m_tripsFilterParams.maxDuration = v;
     onTripsFilterParamsChanged(m_tripsFilterParams);
+}
+
+void MainWindow::on_rangeSlider_duration_firstPositionChanged(qreal p)
+{
+    m_view->lineEdit_minDuration->setText(QString::number(p));
+}
+
+void MainWindow::on_rangeSlider_duration_secondPositionChanged(qreal p)
+{
+    m_view->lineEdit_maxDuration->setText(QString::number(p));
 }
 
 void MainWindow::on_rangeSlider_direction_firstValueChanged(qreal v)
@@ -838,16 +838,36 @@ void MainWindow::on_rangeSlider_direction_secondValueChanged(qreal v)
     onTripsFilterParamsChanged(m_tripsFilterParams);
 }
 
-void MainWindow::on_rangeSlider_odFlow_firstValueChanged(qreal v)
+void MainWindow::on_rangeSlider_direction_firstPositionChanged(qreal p)
 {
-    m_view->lineEdit_minOdFlow->setText(QString::number(v));
+    m_view->lineEdit_minDirection->setText(QString::number(p));
+}
+
+void MainWindow::on_rangeSlider_direction_secondPositionChanged(qreal p)
+{
+    m_view->lineEdit_maxDirection->setText(QString::number(p));
+}
+
+void MainWindow::on_rangeSlider_tripsFlow_firstValueChanged(qreal v)
+{
+    m_view->lineEdit_mintripsFlow->setText(QString::number(v));
     m_stationsFilterParams.minFlow = v;
     onStationsFilterParamsChanged(m_stationsFilterParams);
 }
 
-void MainWindow::on_rangeSlider_odFlow_secondValueChanged(qreal v)
+void MainWindow::on_rangeSlider_tripsFlow_secondValueChanged(qreal v)
 {
-    m_view->lineEdit_maxOdFlow->setText(QString::number(v));
+    m_view->lineEdit_maxtripsFlow->setText(QString::number(v));
     m_stationsFilterParams.maxFlow = v;
     onStationsFilterParamsChanged(m_stationsFilterParams);
+}
+
+void MainWindow::on_rangeSlider_tripsFlow_firstPositionChanged(qreal v)
+{
+    m_view->lineEdit_mintripsFlow->setText(QString::number(v));
+}
+
+void MainWindow::on_rangeSlider_tripsFlow_secondPositionChanged(qreal v)
+{
+    m_view->lineEdit_maxtripsFlow->setText(QString::number(v));
 }

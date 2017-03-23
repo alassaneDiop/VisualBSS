@@ -1,7 +1,14 @@
 #include "model.h"
 #include "datafilereader.h"
 
-DataLoadResult Model::loadData(const QString& filename, const bool& parallel)
+Model::Model(QObject* parent) :
+    QObject(parent)
+{
+
+}
+
+
+bool Model::loadData(const QString& filename, const bool& parallel)
 {
     QHash<QString, Station> stationsHash;
     stationsHash.reserve(m_stations.size());
@@ -10,33 +17,35 @@ DataLoadResult Model::loadData(const QString& filename, const bool& parallel)
 
     const DataFileReader dataFileReader(filename);
     DataFileReadInfo info;
-    if (parallel)
+    if (!parallel)
+        info = dataFileReader.readData(stationsHash, m_trips);
+    else
     {
         QReadWriteLock stationsLock, tripsLock;
         info = dataFileReader.parallelReadData(stationsHash, m_trips, stationsLock, tripsLock);
     }
-    else
-    {
-        info = dataFileReader.readData(stationsHash, m_trips);
-    }
 
-    DataLoadResult result;
-    result.info = info;
-    if (info.ok)
+    if (!info.ok)
+    {
+        emit failedToLoadData(filename, info.errorString);
+        return false;
+    }
+    else
     {
         m_hasData = true;
         m_stations = stationsHash.values().toVector();
-        result.trips = m_trips;
-        result.stations = m_stations;
+        emit dataLoaded(m_trips, m_stations);
+        return true;
     }
-
-    return result;
 }
 
 bool Model::unloadData()
 {
     if (!hasData())
+    {
+        emit failedToUnloadData();
         return false;
+    }
     else
     {
         m_trips.clear();
@@ -46,6 +55,7 @@ bool Model::unloadData()
         m_stations.squeeze();
 
         m_hasData = false;
+        emit dataUnloaded();
         return true;
     }
 }
