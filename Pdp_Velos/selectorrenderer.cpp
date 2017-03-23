@@ -36,10 +36,27 @@ void SelectorRenderer::draw()
 void SelectorRenderer::updateData(const QRectF& rect)
 {
     QVector<float> data;
-    data += QVector<float>({ (float)rect.topLeft().x(), (float)-rect.topLeft().y(), (float)rect.bottomRight().x() });
-    data += QVector<float>({ (float)-rect.topLeft().y(), (float)rect.topLeft().x(), (float)-rect.bottomRight().y() });
-    data += QVector<float>({ (float)rect.topLeft().x(), (float)-rect.bottomRight().y(), (float)rect.bottomRight().x() });
-    data += QVector<float>({ (float)-rect.bottomRight().y(), (float)rect.bottomRight().x(), (float)-rect.topLeft().y() });
+    const int numberOfPoint = 6;
+    const int tupleSizePoint = 2;
+    data.reserve(numberOfPoint * tupleSizePoint);
+
+    data.append((float)rect.topLeft().x());
+    data.append((float)-rect.topLeft().y());
+
+    data.append((float)rect.bottomRight().x());
+    data.append((float)-rect.topLeft().y());
+
+    data.append((float)rect.topLeft().x());
+    data.append((float)-rect.bottomRight().y());
+
+    data.append((float)rect.topLeft().x());
+    data.append((float)-rect.bottomRight().y());
+
+    data.append((float)rect.bottomRight().x());
+    data.append((float)-rect.bottomRight().y());
+
+    data.append((float)rect.bottomRight().x());
+    data.append((float)-rect.topLeft().y());
 
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO->bufferId());
     glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(GLfloat), data.data(), GL_STATIC_DRAW);
