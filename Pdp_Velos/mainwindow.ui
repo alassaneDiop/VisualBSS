@@ -157,7 +157,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>364</width>
+           <width>360</width>
            <height>16777215</height>
           </size>
          </property>
@@ -711,6 +711,18 @@
                    </item>
                    <item>
                     <widget class="QQuickWidget" name="rangeSlider_distance">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>120</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
                      <property name="resizeMode">
                       <enum>QQuickWidget::SizeRootObjectToView</enum>
                      </property>
@@ -1034,7 +1046,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QFrame" name="frame_odFlow">
+                 <widget class="QFrame" name="frame_tripsFlow">
                   <property name="frameShape">
                    <enum>QFrame::Box</enum>
                   </property>
@@ -1071,7 +1083,7 @@
                     </widget>
                    </item>
                    <item>
-                    <spacer name="horizontalSpacer_odFlow">
+                    <spacer name="horizontalSpacer_tripsFlow">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
                      </property>
@@ -1084,7 +1096,7 @@
                     </spacer>
                    </item>
                    <item>
-                    <widget class="QLineEdit" name="lineEdit_minOdFlow">
+                    <widget class="QLineEdit" name="lineEdit_minTripsFlow">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -1115,7 +1127,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QQuickWidget" name="rangeSlider_odFlow">
+                    <widget class="QQuickWidget" name="rangeSlider_tripsFlow">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                        <horstretch>0</horstretch>
@@ -1139,7 +1151,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLineEdit" name="lineEdit_maxOdFlow">
+                    <widget class="QLineEdit" name="lineEdit_maxTripsFlow">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>

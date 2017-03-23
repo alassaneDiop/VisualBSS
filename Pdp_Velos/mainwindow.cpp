@@ -608,7 +608,7 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
 
     m_view->lineEdit_maxDistance->setText(QString::number(m_tripsFilterParams.maxDirection));
     m_view->lineEdit_maxDuration->setText(QString::number(m_tripsFilterParams.maxDuration));
-    m_view->lineEdit_maxtripsFlow->setText(QString::number(m_stationsFilterParams.maxFlow));
+    m_view->lineEdit_maxTripsFlow->setText(QString::number(m_stationsFilterParams.maxFlow));
 }
 
 void MainWindow::onFailedToLoadData(const QString& filename, const QString& errorDesc)
@@ -850,24 +850,24 @@ void MainWindow::on_rangeSlider_direction_secondPositionChanged(qreal p)
 
 void MainWindow::on_rangeSlider_tripsFlow_firstValueChanged(qreal v)
 {
-    m_view->lineEdit_mintripsFlow->setText(QString::number(v));
+    m_view->lineEdit_minTripsFlow->setText(QString::number(v));
     m_stationsFilterParams.minFlow = v;
     onStationsFilterParamsChanged(m_stationsFilterParams);
 }
 
 void MainWindow::on_rangeSlider_tripsFlow_secondValueChanged(qreal v)
 {
-    m_view->lineEdit_maxtripsFlow->setText(QString::number(v));
+    m_view->lineEdit_maxTripsFlow->setText(QString::number(v));
     m_stationsFilterParams.maxFlow = v;
     onStationsFilterParamsChanged(m_stationsFilterParams);
 }
 
 void MainWindow::on_rangeSlider_tripsFlow_firstPositionChanged(qreal v)
 {
-    m_view->lineEdit_mintripsFlow->setText(QString::number(v));
+    m_view->lineEdit_minTripsFlow->setText(QString::number(v));
 }
 
 void MainWindow::on_rangeSlider_tripsFlow_secondPositionChanged(qreal v)
 {
-    m_view->lineEdit_maxtripsFlow->setText(QString::number(v));
+    m_view->lineEdit_maxTripsFlow->setText(QString::number(v));
 }
