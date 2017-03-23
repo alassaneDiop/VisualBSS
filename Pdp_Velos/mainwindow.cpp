@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget* parent) :
     connect(m_view->actionOpen, &QAction::triggered, this, &MainWindow::on_action_open_triggered);
     connect(m_view->actionClose_all, &QAction::triggered, this, &MainWindow::on_action_closeAll_triggered);
 
-    connect(m_view->timelinematrixwidget, &MatrixGLWidget::onSelectionChanged, this, &MainWindow::onMatrixSelectionChanged);
+    connect(m_view->timelinematrixwidget, &MatrixGLWidget::selectionChanged, this, &MainWindow::onMatrixSelectionChanged);
 
     m_model = new Model();
     connect(m_model, &Model::dataLoaded, this, &MainWindow::onDataLoaded, connectionType);
@@ -286,7 +286,9 @@ void MainWindow::drawStationsOnMap(const QVector<bss::stationId>& stationsIds)
         stationsVertices.append(s.longitude / maxLongitude);
         stationsVertices.append(s.latitude / maxLatitude);
 
-        stationsVertices += QVector<float>({ 1.f, 1.f, 0.3f });
+        stationsVertices.append(1.f);
+        stationsVertices.append(1.f);
+        stationsVertices.append(0.3f);
     }
 
     m_view->mapwidget->loadStationsData(stationsVertices, stationsVerticesCount);
@@ -317,7 +319,7 @@ void MainWindow::drawSelectedTripsOnMap(const QVector<bss::tripId>& arrivalsIds,
 
     // TODO: damien : renommer des variables
     const auto drawTrips = [this](  const QVector<bss::tripId>& ids,
-            QVector<float> tripsVertices,
+            QVector<float>& tripsVertices,
             int &verticesCount,
             const QVector<float>& originColor,
             const QVector<float>& destinationColor)
@@ -334,8 +336,7 @@ void MainWindow::drawSelectedTripsOnMap(const QVector<bss::tripId>& arrivalsIds,
 
             tripsVertices.append((float) (startStation.longitude / maxLongitude));
             tripsVertices.append((float) (startStation.latitude / maxLatitude));
-
-            tripsVertices += originColor;
+            tripsVertices.append(originColor);
 
 
             const bss::stationId endStationId = trip.endStationId;
@@ -343,13 +344,13 @@ void MainWindow::drawSelectedTripsOnMap(const QVector<bss::tripId>& arrivalsIds,
 
             tripsVertices.append((float) (endStation.longitude / maxLongitude));
             tripsVertices.append((float) (endStation.latitude / maxLatitude));
-
-            tripsVertices += destinationColor;
+            tripsVertices.append(destinationColor);
 
             verticesCount += 2;
         }
     };
 
+    // FIXME: couleur
     drawTrips(arrivalsIds, tripsVertices, tripsVerticesCount, bss::ARRIVAL_ORIGIN_COLOR, bss::ARRIVAL_DESTINATION_COLOR);
     drawTrips(departuresIds, tripsVertices, tripsVerticesCount, bss::DEPARTURE_ORIGIN_COLOR, bss::DEPARTURE_DESTINATION_COLOR);
 
@@ -420,8 +421,9 @@ void MainWindow::drawTripsOnMatrix(const QVector<QVector<bss::tripId>>& arrivals
                     positionX = newP.x() / width * 2 - 1;
                     positionY = newP.y() / heigth * 2 - 1;
 
-                    glyphsVertices += QVector<float>({ positionX, -positionY });
-                    glyphsVertices += color;
+                    glyphsVertices.append(positionX);
+                    glyphsVertices.append(-positionY);
+                    glyphsVertices.append(color);
 
 
                     // VERTEX #2
@@ -435,8 +437,10 @@ void MainWindow::drawTripsOnMatrix(const QVector<QVector<bss::tripId>>& arrivals
                     positionX = newP.x() / width * 2 - 1;
                     positionY = newP.y() / heigth * 2 - 1;
 
-                    glyphsVertices += QVector<float>({ positionX, -positionY });
-                    glyphsVertices += color;
+                    glyphsVertices.append(positionX);
+                    glyphsVertices.append(-positionY);
+                    glyphsVertices.append(color);
+
                     verticesCount+= 2;
                 }
             }
@@ -575,6 +579,7 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     m_stationsFilterParams.maxFlow = maxFlow(stations);
 
     runAsync(QtConcurrent::run(this, &MainWindow::filterStations, stations, m_stationsFilterParams));
+    runAsync(QtConcurrent::run(this, &MainWindow::filterTrips, trips, m_tripsFilterParams));
 
     QString (*dateToString)(const QDate& d) = [](const QDate& d) { return d.toString("dd/MM/yyyy"); };
     const QStringList datesStrings = QStringList::fromVector(QtConcurrent::blockingMapped(m_dates, dateToString));
@@ -643,6 +648,9 @@ void MainWindow::onStationsOrderChanged(const QVector<bss::stationId>& stations)
 {
     // TODO : clear selection
     runAsync(QtConcurrent::run(this, &MainWindow::prepareToDrawTripsOnMatrix, stations, m_tripsDisplayParams));
+
+    if (m_selection.isEmpty())
+        drawStationsOnMap(stations);
 
     const QVector<bss::stationId> topStationsIds = stations.mid(0, bss::RANK_SIZE);
     QStringList topStationsNames;

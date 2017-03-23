@@ -66,5 +66,5 @@ RESOURCES += \
     resources.qrc
 
 CONFIG += C++14
-QMAKE_CXXFLAGS_RELEASE +=
+QMAKE_CXXFLAGS_RELEASE += -O2
 QMAKE_CXXFLAGS_DEBUG += -pg -Wunused-parameter -Wunused-variable -Wunused-value -Wunused

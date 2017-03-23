@@ -8,6 +8,7 @@
 
 #include <QColor>
 #include <QPair>
+#include <QTime>
 
 
 
@@ -20,17 +21,18 @@ class SelectorRenderer;
 class QMouseEvent;
 class QPointF;
 class QOpenGLShaderProgram;
+class QTime;
 
-struct SelectionTimeSatations {
-    char minTime;
-    char maxTime;
-    int fromStationIndex;
-    int toStationIndex;
+struct SelectionTimeStations {
+    int fromHour = 0;
+    int toHour = 0;
+    int fromStationIndex = 0;
+    int toStationIndex = 0;
 
-    inline bool operator ==(const SelectionTimeSatations& other)
+    inline bool operator ==(const SelectionTimeStations& other)
     {
-        return (minTime == other.minTime)
-                && (maxTime == other.maxTime)
+        return (fromHour == other.fromHour)
+                && (toHour == other.toHour)
                 && (fromStationIndex == other.fromStationIndex)
                 && (toStationIndex == other.toStationIndex);
     }
@@ -63,7 +65,7 @@ private:
     bool initializeShaderSelector();
     bool initializeShaderGlyphs();
 
-    SelectionTimeSatations tripsInSelector() const;
+    SelectionTimeStations tripsInSelector() const;
 
     int m_matrixViewWidth;
 
@@ -87,10 +89,13 @@ private:
 
     bool m_isGlyphsVAOCreated;
 
-    SelectionTimeSatations m_selectionnedTrips;
+    SelectionTimeStations m_selectionnedTrips;
+
+    QTime m_time;
+    int m_frameCount;
 
 signals:
-    void onSelectionChanged(char minTime, char maxTime, int fromStationIndex, int toStationIndex);
+    void selectionChanged(int fromHour, int toHour, int fromStationIndex, int toStationIndex);
 
     void onShaderError(const QString& message);
 };

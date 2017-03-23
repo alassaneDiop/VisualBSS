@@ -20,6 +20,8 @@ static const int TIMELINE_OFFSET_X = 10;
 static const int GLYPH_HEIGHT = 10;
 static const int SPACE_BETWEEN_GLYPHS = 15;
 
+static const int MATRIX_SCROLL_COEFF = 2;
+
 
 // TRIPS COLORS
 static const QVector<float> ARRIVAL_ORIGIN_COLOR = QVector<float>({ 1.f, 0.f, 0.f });

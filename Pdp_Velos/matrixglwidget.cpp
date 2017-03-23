@@ -6,6 +6,7 @@
 #include <QElapsedTimer>
 #include <QOpenGLShaderProgram>
 
+
 #include "config.h"
 #include "selectorrenderer.h"
 #include "glyphrenderer.h"
@@ -71,8 +72,26 @@ void MatrixGLWidget::resizeGL(int width, int height)
 
 void MatrixGLWidget::paintGL()
 {
+    // Debut Pour Tests
+    if (m_frameCount == 0)
+        m_time.start();
+
+    m_frameCount++;
+    // Fin Pour Tests
+
     drawGlyphs();
     drawSelector();
+
+    // Debut Pour Tests
+    if (m_time.elapsed() >= 1000)
+    {
+        qDebug() << "FPS is %f ms" << m_time.elapsed() / float(m_frameCount);
+        m_frameCount = 0;
+    }
+
+//    if (m_isGlyphsVAOCreated)
+//        update();
+    // Fin Pour Tests
 }
 
 
@@ -128,12 +147,10 @@ void MatrixGLWidget::wheelEvent(QWheelEvent* event)
 
     const float scrollValue = ((float)bss::GLYPH_HEIGHT) / height();
 
-    m_translationY += i * scrollValue;
+    m_translationY += i * scrollValue * bss::MATRIX_SCROLL_COEFF;
 
     if (m_translationY > 0)
         m_translationY = 0;
-
-    //qDebug() << m_translationOffsetY;
 
     event->accept();
     update();
@@ -152,12 +169,11 @@ void MatrixGLWidget::mouseMoveEvent(QMouseEvent* event)
 
         updateSelector();
 
-        SelectionTimeSatations s = tripsInSelector();
+        SelectionTimeStations s = tripsInSelector();
         if (!(s == m_selectionnedTrips))
         {
             m_selectionnedTrips = s;
-            emit onSelectionChanged(s.minTime, s.maxTime, s.fromStationIndex, s.toStationIndex);
-            qDebug() << "emitted on selection changed";
+            emit selectionChanged(s.fromHour, s.toHour, s.fromStationIndex, s.toStationIndex);
         }
 
         update();
@@ -203,14 +219,14 @@ void MatrixGLWidget::mouseReleaseEvent(QMouseEvent* event)
     }
 }
 
-SelectionTimeSatations MatrixGLWidget::tripsInSelector() const
+SelectionTimeStations MatrixGLWidget::tripsInSelector() const
 {
     const int width = this->width();
     const float oneHour = width / bss::NB_OF_HOURS;
 
-    QPair<char, char> timeInterval;
-    timeInterval.first = (char)(m_topLeftSelectionRectangle.x() / oneHour);
-    timeInterval.second = (char)(m_bottomRightSelectionRectangle.x() / oneHour);
+    QPair<int, int> timeInterval;
+    timeInterval.first = m_topLeftSelectionRectangle.x() / oneHour;
+    timeInterval.second = m_bottomRightSelectionRectangle.x() / oneHour;
 
     char tmp1 = timeInterval.first;
     char tmp2 = timeInterval.second;
@@ -218,8 +234,8 @@ SelectionTimeSatations MatrixGLWidget::tripsInSelector() const
     timeInterval.first = qMin(tmp1, tmp2);
     timeInterval.second = qMax(tmp1, tmp2);
 
-    timeInterval.first = qMax((char)0, timeInterval.first);
-    timeInterval.second = qMin((int)timeInterval.second, bss::NB_OF_HOURS);
+    timeInterval.first = qMax(0, timeInterval.first);
+    timeInterval.second = qMin(timeInterval.second, bss::NB_OF_HOURS);
     //qDebug() << "Time interval"<< (int)timeInterval.first << (int)timeInterval.second;
 
     // FIND STATIONS
@@ -242,9 +258,9 @@ SelectionTimeSatations MatrixGLWidget::tripsInSelector() const
     stationsInterval.second = qMax(tmp3, tmp4);
     stationsInterval.first = qMax(0, stationsInterval.first);
 
-    SelectionTimeSatations s;
-    s.minTime = timeInterval.first;
-    s.maxTime = timeInterval.second;
+    SelectionTimeStations s;
+    s.fromHour = timeInterval.first;
+    s.toHour = timeInterval.second;
     s.fromStationIndex = stationsInterval.first;
     s.fromStationIndex = stationsInterval.second;
 

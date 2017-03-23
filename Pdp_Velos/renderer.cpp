@@ -14,10 +14,10 @@ Renderer::Renderer()
 
 Renderer::~Renderer()
 {
-    if (m_VBO && m_VAO->isCreated())
+    if (m_VAO && m_VAO->isCreated())
         m_VAO->destroy();
 
-    if (m_VAO && m_VBO->isCreated())
+    if (m_VBO && m_VBO->isCreated())
         m_VBO->destroy();
 
     delete m_VAO;
