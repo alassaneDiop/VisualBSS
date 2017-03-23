@@ -12,8 +12,8 @@ static const bool PARALLEL_PARSING = true;
 
 static const qreal AVG_SPEED = 2.7;
 
+// Informations for drawing glyphs on timeline matrix
 static const int NB_OF_HOURS = 24;
-
 static const int TIMELINE_OFFSET_X = 10;
 
 // Heigth in pixel

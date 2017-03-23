@@ -357,6 +357,97 @@ void MainWindow::drawSelectedTripsOnMap(const QVector<bss::tripId>& arrivalsIds,
     m_view->mapwidget->centerView(tripsVertices);
 }
 
+
+
+// TODO: Séb : mettre ou tu veux
+QVector<float> MainWindow::drawTrip(bss::tripId id, float posX, float posY,
+                                    const QVector<float>& color)
+{
+    const int colorTupleSize = 3;
+    const int positionTupleSize = 2;
+    const int numberOfPointPerTrip = 2;
+
+    QVector<float> tripData;
+    tripData.reserve((colorTupleSize + positionTupleSize) * numberOfPointPerTrip);
+
+    // VERTEX #1
+    const float positionXP1 = posX;
+    const float positionYP1 = posY - (bss::GLYPH_HEIGHT / 2.f);
+
+    const float rotationCenterX = posX;
+    const float rotationCenterY = posY;
+
+    const auto rotatePointAroundTarget = [](float angle, QPointF position, QPointF target)
+    {
+        const float sin = qSin(angle);
+        const float cos = qCos(angle);
+
+        // Translate positionX/Y to the origin
+        float pX = target.x() - position.x();
+        float pY = target.y() - position.y();
+
+        // Do the rotation
+        float newX = pX * cos - pY * sin;
+        float newY = pX * sin + pY * cos;
+
+        // Translate back
+        newX += position.x();
+        newY += position.y();
+
+        return QPointF(newX, newY);
+    };
+
+    const Trip t = m_model->trip(id);
+    const float tripDirection = t.direction;
+
+    QPointF positionAfterRotation;
+    positionAfterRotation = rotatePointAroundTarget(tripDirection,
+                                   QPointF(positionXP1, positionYP1),
+                                   QPointF(rotationCenterX, rotationCenterY));
+
+    const float width = m_view->timelinematrixwidget->width();
+    const float heigth = m_view->timelinematrixwidget->height();
+
+    const float newPosXP1 = positionAfterRotation.x() / width * 2 - 1;
+    const float newPosYP1 = positionAfterRotation.y() / heigth * 2 - 1;
+
+    tripData.append(newPosXP1);
+    tripData.append(-newPosYP1);
+    tripData.append(color);
+
+
+    // VERTEX #2
+    const float positionXP2 = posX;
+    const float positionYP2 = posY + (bss::GLYPH_HEIGHT / 2.f);
+
+    positionAfterRotation = rotatePointAroundTarget(tripDirection,
+                                   QPointF(positionXP2, positionYP2),
+                                   QPointF(rotationCenterX, rotationCenterY));
+
+    const float newPosXP2 = positionAfterRotation.x() / width * 2 - 1;
+    const float newPosYP2 = positionAfterRotation.y() / heigth * 2 - 1;
+
+    tripData.append(newPosXP2);
+    tripData.append(-newPosYP2);
+    tripData.append(color);
+
+    return tripData;
+}
+
+QVector<float> MainWindow::drawGlyph(const QVector<bss::tripId>& trips,
+                                     float posX, float posY, const QVector<float>& color)
+{
+    QVector<float> glyph;
+    for (bss::tripId id : trips)
+    {
+        QVector<float> trip = drawTrip(id, posX, posY, color);
+        glyph.append(trip);
+    }
+
+    return glyph;
+}
+// END
+
 // affiche sur la matrice les trajets nouvellement filtres
 void MainWindow::drawTripsOnMatrix(const QVector<QVector<bss::tripId>>& arrivalsIds,
                                    const QVector<QVector<bss::tripId>>& departuresIds,
@@ -366,109 +457,52 @@ void MainWindow::drawTripsOnMatrix(const QVector<QVector<bss::tripId>>& arrivals
     Q_UNUSED(cyclesIds);
     Q_UNUSED(showDistance);
 
-    // TODO: damien : renommer des variables
-    const auto drawTrips = [this](  const QVector<QVector<bss::tripId>>& ids,
-            QVector<float>& glyphsVertices,
-            int &verticesCount,
-            const QVector<float>& color)
+    const float glyphIntervalX = m_view->timelinematrixwidget->width() / (bss::NB_OF_HOURS * 1.f);
+    const float glyphIntervalY = bss::GLYPH_HEIGHT + bss::SPACE_BETWEEN_GLYPHS;
+
+    QVector<float> glyphsData;
+    // TODO: Damien
+    //glyphsData.reserve();
+
+    int i = 0;
+    int stationIndex = 0;
+    for (const QVector<bss::tripId> ids : arrivalsIds)
     {
-        const float width = m_view->timelinematrixwidget->width();
-        const float heigth = m_view->timelinematrixwidget->height();
-        const float intervalX = m_view->timelinematrixwidget->width() / (bss::NB_OF_HOURS * 1.f);
-        const int glyphIntervalY = bss::GLYPH_HEIGHT + bss::SPACE_BETWEEN_GLYPHS;
 
-        int stationIndex = 0;
-        for (const QVector<bss::tripId> arrivals : ids)
-        {
-            for (int hour = 0; hour < bss::NB_OF_HOURS; ++hour)
-            {
-                for (const bss::tripId id : arrivals)
-                {
-                    const Trip t = m_model->trip(id);
+        const float posX = (bss::TIMELINE_OFFSET_X + (i * glyphIntervalX));
+        const float posY = stationIndex * glyphIntervalY;
 
-                    // VERTEX #1
-                    float positionX = bss::TIMELINE_OFFSET_X + hour * intervalX;
-                    float positionY = stationIndex * glyphIntervalY;
+        glyphsData.append(drawGlyph(ids, posX, posY, bss::GLYPH_ARRIVAL_COLOR));
 
-                    const float rotationCenterX = bss::TIMELINE_OFFSET_X + hour * intervalX;
-                    const float rotationCenterY = stationIndex * glyphIntervalY + bss::GLYPH_HEIGHT / 2;
+        i++;
+        i = i % 24;
 
-                    const auto rotatePointAroundTarget = [](float angle, QPointF position, QPointF target)
-                    {
-                        const float sin = qSin(angle);
-                        const float cos = qCos(angle);
-
-                        float pX = target.x() - position.x();
-                        float pY = target.y() - position.y();
-
-                        float newX = pX * cos - pY * sin;
-                        float newY = pX * sin + pY * cos;
-
-                        newX += position.x();
-                        newY += position.y();
-
-                        return QPointF(newX, newY);
-                    };
-
-                    const float tripDirection = t.direction;
-
-                    QPointF newP;
-                    newP = rotatePointAroundTarget(tripDirection,
-                                                   QPointF(positionX, positionY),
-                                                   QPointF(rotationCenterX, rotationCenterY));
-
-                    positionX = newP.x() / width * 2 - 1;
-                    positionY = newP.y() / heigth * 2 - 1;
-
-                    glyphsVertices.append(positionX);
-                    glyphsVertices.append(-positionY);
-                    glyphsVertices.append(color);
-
-
-                    // VERTEX #2
-                    positionX = bss::TIMELINE_OFFSET_X + hour * intervalX;
-                    positionY = stationIndex * glyphIntervalY + bss::GLYPH_HEIGHT;
-
-                    newP = rotatePointAroundTarget(tripDirection,
-                                                   QPoint(positionX, positionY),
-                                                   QPoint(rotationCenterX, rotationCenterY));
-
-                    positionX = newP.x() / width * 2 - 1;
-                    positionY = newP.y() / heigth * 2 - 1;
-
-                    glyphsVertices.append(positionX);
-                    glyphsVertices.append(-positionY);
-                    glyphsVertices.append(color);
-
-                    verticesCount+= 2;
-                }
-            }
+        // if i equals 0, thats means we move to another station (and a new line to draw glyphs)
+        if (i == 0)
             stationIndex++;
-        }
-    };
+    }
 
-    // x and y;
-    const unsigned short positionTupleSize = 2;
-    // 1 trip has 2 points (start/end)
-    const unsigned short pointPerTrip = 2;
-    // R, G, B
-    const unsigned short colorTupleSize = 3;
+    i = 0;
+    stationIndex = 0;
+    for (const QVector<bss::tripId> ids : departuresIds)
+    {
 
-    QVector<float> glyphsVertices;
-    int reserved = arrivalsIds.size() * bss::NB_OF_HOURS * pointPerTrip * colorTupleSize * positionTupleSize;
-    reserved += departuresIds.size() * bss::NB_OF_HOURS * pointPerTrip * colorTupleSize * positionTupleSize;
-    //reserved += cyclesIds.size() * bss::NB_OF_HOURS * colorTupleSize * positionTupleSize;
-    glyphsVertices.reserve(reserved);
+        const float posX = (bss::TIMELINE_OFFSET_X + (i * glyphIntervalX));
+        const float posY = stationIndex * glyphIntervalY;
 
-    int verticesCount = 0;
+        glyphsData.append(drawGlyph(ids, posX, posY, bss::GLYPH_DEPARTURE_COLOR));
 
-    drawTrips(arrivalsIds, glyphsVertices, verticesCount, bss::GLYPH_ARRIVAL_COLOR);
-    drawTrips(departuresIds, glyphsVertices, verticesCount, bss::GLYPH_DEPARTURE_COLOR);
+        i++;
+        i = i % 24;
 
-    m_view->timelinematrixwidget->loadGlyphsData(glyphsVertices, verticesCount);
+        // if i equals 0, thats means we move to another station (and a new line to draw glyphs)
+        if (i == 0)
+            stationIndex++;
+    }
+
+    const int vertexSize = 5; // 2 for position x/y and 3 for color R/G/B
+    m_view->timelinematrixwidget->loadGlyphsData(glyphsData, glyphsData.size() / vertexSize);
 }
-
-
 
 QVector<bss::stationId> MainWindow::ids(const QVector<Station>& stations)
 {

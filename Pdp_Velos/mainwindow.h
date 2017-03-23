@@ -104,6 +104,11 @@ private:
     QVector<bss::stationId> m_stationsIds;              // filtered and sorted trips ids
     bss::stationId m_highlight = (bss::stationId) -1;   // currently highlighted station's id (-1 if there is none)
 
+    // TODO: Séb : mettre ou tu veux
+    QVector<float> drawTrip(bss::tripId id, float posX, float posY, const QVector<float>& color);
+    QVector<float> drawGlyph(const QVector<bss::tripId>& trips, float posX, float posY, const QVector<float>& color);
+    //
+
 private slots:
     void onAsyncTaskStarted();
     void onAsyncTaskFinished();
