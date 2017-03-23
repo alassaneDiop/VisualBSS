@@ -40,7 +40,6 @@ MainWindow::MainWindow(QWidget* parent) :
     m_view->setupUi(this);
     m_view->actionOpen->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirOpenIcon));
     m_view->actionClose_all->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirClosedIcon));
-    m_view->widget_bottom->hide();
 
     m_view->listView_top->setStyleSheet("QListView::item:hover{background-color:#a8f21f;}");
     m_view->listView_last->setStyleSheet("QListView::item:hover{background-color:#a8f21f;}");

@@ -163,6 +163,7 @@ private slots:
     void on_rangeSlider_tripsFlow_secondValueChanged(qreal v);
     void on_rangeSlider_tripsFlow_firstPositionChanged(qreal p);
     void on_rangeSlider_tripsFlow_secondPositionChanged(qreal p);
+
 signals:
     void tripsChanged(const QVector<bss::tripId>& trips);
     void stationsOrderChanged(const QVector<bss::stationId>& stationsOrder);
