@@ -3,8 +3,6 @@
 
 #include <QVector>
 
-#include "typedefs.h"
-
 
 namespace bss {
 class StationsSorter;

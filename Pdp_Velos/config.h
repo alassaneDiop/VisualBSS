@@ -6,10 +6,22 @@ class QVector;
 
 namespace bss {
 
+/**
+ * Indicates the number of stations to rank when they are sorted by a property.
+ * Top stations and last stations will be displayed in list views once sorted.
+ */
 static const int RANK_SIZE = 10;
 
+/**
+ * Indicates wheter or not the data files parsing should be parallelized.
+ */
 static const bool PARALLEL_PARSING = true;
 
+/**
+ * According to the article by Guilherme Oliveira : "Visual analysis of a bike sharing system"
+ * "For cyclic trips, we estimated the distance by multiplying the duration by
+ * the average speed of 2.7m/s."
+ */
 static const qreal AVG_SPEED = 2.7;
 
 // Informations for drawing glyphs on timeline matrix

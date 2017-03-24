@@ -181,10 +181,10 @@ void MainWindow::selectTrips(const int& fromHour, const int& toHour,
     TripsSelectionParams selectionParams;
     selectionParams.fromHour = fromHour;
     selectionParams.toHour = toHour;
-    selectionParams.stations = m_stationsIds.mid(fromStationIndex, fromStationIndex + toStationIndex);
+    selectionParams.stationsIndices = m_stationsIds.mid(fromStationIndex, fromStationIndex + toStationIndex);
 
     const TripsSelector selector = TripsSelector(selectionParams);
-    const QVector<bss::tripId> selection = ids(selector.select(trips(m_tripsIds)));
+    const QVector<bss::tripId> selection = ids(selector.select(m_model->trips(m_tripsIds)));
     if (m_selection.toList().toSet() != selection.toList().toSet())
     {
         m_selection = selection;
@@ -516,16 +516,6 @@ QVector<bss::tripId> MainWindow::ids(const QVector<Trip>& trips)
     return QtConcurrent::blockingMapped(trips, returnId);
 }
 
-QVector<Station> MainWindow::stations(const QVector<bss::stationId>& ids)
-{
-    QVector<Station> stations;
-    stations.reserve(ids.size());
-    for (const bss::stationId id : ids)
-        stations.append(m_model->station(id));
-
-    return stations;
-}
-
 QVector<QDate> MainWindow::dates(const QVector<Trip>& trips)
 {
     QVector<QDate> dates;
@@ -539,16 +529,6 @@ QVector<QDate> MainWindow::dates(const QVector<Trip>& trips)
     }
 
     return dates;
-}
-
-QVector<Trip> MainWindow::trips(const QVector<bss::tripId>& ids)
-{
-    QVector<Trip> trips;
-    trips.reserve(ids.size());
-    for (const bss::tripId id : ids)
-        trips.append(m_model->trip(id));
-
-    return trips;
 }
 
 quint64 MainWindow::maxDuration(const QVector<Trip>& trips)
@@ -592,9 +572,6 @@ void MainWindow::onAsyncTaskFinished()
     m_canApplicationExit = true;
     m_view->menuBar->setEnabled(m_shouldEnableMenuBar);
     m_view->frame_controls->setEnabled(m_shouldEnableControls);
-
-    // TODO : not implemented functionalities so widget is disabled
-    m_view->checkBox_showDuration->setEnabled(false);
 }
 
 
@@ -609,7 +586,7 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     m_tripsFilterParams.toPeriod = m_dates.last();
     m_tripsFilterParams.maxDistance = maxDistance(trips);
     m_tripsFilterParams.maxDuration = maxDuration(trips);
-    m_stationsFilterParams.maxFlow = maxFlow(stations);
+    m_stationsFilterParams.maxTripsFlow = maxFlow(stations);
 
     runAsync(QtConcurrent::run(this, &MainWindow::filterStations, stations, m_stationsFilterParams));
     runAsync(QtConcurrent::run(this, &MainWindow::filterTrips, trips, m_tripsFilterParams));
@@ -641,12 +618,12 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
 
     QObject* const tripsFlowRangeSlider = reinterpret_cast<QObject*>((QObject*)m_view->rangeSlider_tripsFlow->rootObject());
     tripsFlowRangeSlider->blockSignals(true);
-    tripsFlowRangeSlider->setProperty("to", m_stationsFilterParams.maxFlow);
+    tripsFlowRangeSlider->setProperty("to", m_stationsFilterParams.maxTripsFlow);
     tripsFlowRangeSlider->blockSignals(false);
 
     m_view->lineEdit_maxDistance->setText(QString::number(m_tripsFilterParams.maxDirection));
     m_view->lineEdit_maxDuration->setText(QString::number(m_tripsFilterParams.maxDuration));
-    m_view->lineEdit_maxTripsFlow->setText(QString::number(m_stationsFilterParams.maxFlow));
+    m_view->lineEdit_maxTripsFlow->setText(QString::number(m_stationsFilterParams.maxTripsFlow));
 }
 
 void MainWindow::onFailedToLoadData(const QString& filename, const QString& errorDesc)
@@ -721,12 +698,12 @@ void MainWindow::onTripsFilterParamsChanged(const TripsFilterParams& params)
 
 void MainWindow::onStationsSorterParamChanged(const bss::SortParam& param)
 {
-    runAsync(QtConcurrent::run(this, &MainWindow::sortStations, stations(m_stationsIds), param));
+    runAsync(QtConcurrent::run(this, &MainWindow::sortStations, m_model->stations(m_stationsIds), param));
 }
 
 void MainWindow::onStationsFilterParamsChanged(const StationsFilterParams& params)
 {
-    runAsync(QtConcurrent::run(this, &MainWindow::filterStations, stations(m_stationsIds), params));
+    runAsync(QtConcurrent::run(this, &MainWindow::filterStations, m_model->stations(m_stationsIds), params));
 }
 
 void MainWindow::onMatrixSelectionChanged(const int& fromHour, const int& toHour,
@@ -796,13 +773,6 @@ void MainWindow::on_checkBox_showCycles_stateChanged(int arg1)
 {
     m_tripsDisplayParams.shouldShowCycles = (arg1 == Qt::Checked);
     onTripsDisplayParamsChanged(m_tripsDisplayParams);
-}
-
-void MainWindow::on_checkBox_showDuration_stateChanged(int arg1)
-{
-    Q_UNUSED(arg1);
-    // TODO : SEB on_checkBox_showDuration_stateChanged
-    // (aucune idée de ce qu'il faut faire)
 }
 
 void MainWindow::on_checkBox_showDistance_stateChanged(int arg1)
@@ -892,14 +862,14 @@ void MainWindow::on_rangeSlider_direction_secondPositionChanged(qreal p)
 void MainWindow::on_rangeSlider_tripsFlow_firstValueChanged(qreal v)
 {
     m_view->lineEdit_minTripsFlow->setText(QString::number(v));
-    m_stationsFilterParams.minFlow = v;
+    m_stationsFilterParams.minTripsFlow = v;
     onStationsFilterParamsChanged(m_stationsFilterParams);
 }
 
 void MainWindow::on_rangeSlider_tripsFlow_secondValueChanged(qreal v)
 {
     m_view->lineEdit_maxTripsFlow->setText(QString::number(v));
-    m_stationsFilterParams.maxFlow = v;
+    m_stationsFilterParams.maxTripsFlow = v;
     onStationsFilterParamsChanged(m_stationsFilterParams);
 }
 

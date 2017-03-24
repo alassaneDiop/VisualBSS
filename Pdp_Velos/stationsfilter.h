@@ -3,13 +3,16 @@
 
 #include <QVector>
 
-#include "typedefs.h"
 
 
+/**
+ * @brief The StationsFilterParams contains the parameters to filter stations.
+ * Stations are filtered by their trips flow.
+ */
 struct StationsFilterParams
 {
-    qreal minFlow = 0;
-    qreal maxFlow = 1000000;
+    qreal minTripsFlow = 0;
+    qreal maxTripsFlow = 0;
 };
 
 struct Station;

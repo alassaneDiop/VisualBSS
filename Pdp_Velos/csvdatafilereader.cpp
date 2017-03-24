@@ -91,7 +91,6 @@ DataFileReadInfo CsvDataFileReader::readData(QHash<QString, Station>& stations, 
         t.startDateTime = QDateTime::fromString(startDateTimeStr, params().dateFormat);
         t.endDateTime = QDateTime::fromString(endDateTimeStr, params().dateFormat);
 
-        // "For cyclic trips, we estimated the distance by multiplying the duration by the average speed of 2.7m/s."
         if (t.isCyclic)
             t.distance = bss::AVG_SPEED * t.duration;
         else

@@ -7,6 +7,25 @@ Model::Model(QObject* parent) :
 
 }
 
+QVector<Station> Model::stations(const QVector<bss::stationId>& ids) const
+{
+    QVector<Station> stations;
+    stations.reserve(ids.size());
+    for (const bss::stationId id : ids)
+        stations.append(station(id));
+
+    return stations;
+}
+
+QVector<Trip> Model::trips(const QVector<bss::tripId>& ids) const
+{
+    QVector<Trip> trips;
+    trips.reserve(ids.size());
+    for (const bss::tripId id : ids)
+        trips.append(trip(id));
+
+    return trips;
+}
 
 bool Model::loadData(const QString& filename, const bool& parallel)
 {
