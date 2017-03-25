@@ -7,19 +7,14 @@
 
 qreal Station::distance(const Station& to) const
 {
-    // Algorithm from https://openclassrooms.com/forum/sujet/calcul-d-une-distance-95555
+    // Algorithm from http://www.movable-type.co.uk/scripts/latlong.html
 
-    const qreal earthRadius = 6378000;
-
-    const qreal fromLat = qDegreesToRadians(latitude);
-    const qreal fromLon = qDegreesToRadians(longitude);
-    const qreal toLat = qDegreesToRadians(to.latitude);
-    const qreal toLon = qDegreesToRadians(to.longitude);
-
-    const qreal a = qSin(fromLat) * qSin(toLat);
-    const qreal b = qCos(fromLat) * qCos(toLat) * qCos(toLon - fromLon);
-
-    return earthRadius * qAcos(a + b);
+    const qreal R = 6371000; // meters
+    const qreal phi1 = qDegreesToRadians(latitude);
+    const qreal phi2 = qDegreesToRadians(to.latitude);
+    const qreal x = (to.longitude - longitude) * qCos((phi1 + phi2) / 2);
+    const qreal y = (phi2 - phi1);
+    return R * qSqrt(qPow(x, 2) + qPow(y, 2));
 }
 
 qreal Station::direction(const Station& to) const
@@ -52,7 +47,9 @@ void Station::updateAppend(const Trip& trip)
 {
     tripsFlow++;
 
-    const int totalTripsCount = arrivalsIds.size() + departuresIds.size() + cyclesIds.size();
-    const int totalDuration = (tripsFlow * avgTripDuration) + trip.duration;
-    avgTripDuration = totalDuration / totalTripsCount;
+    const int totalDuration = ((tripsFlow - 1) * avgTripDuration) + trip.duration;
+    avgTripDuration = (totalDuration / tripsFlow);
+
+    const int totalDistance = ((tripsFlow - 1) * avgTripDistance) + trip.distance;
+    avgTripDistance = (totalDistance / tripsFlow);
 }

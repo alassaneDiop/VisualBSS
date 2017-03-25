@@ -3,7 +3,6 @@
 
 #include <QVector>
 
-#include "typedefs.h"
 
 namespace bss {
 class TripsSelector;
@@ -12,14 +11,14 @@ class TripsSelector;
 /**
  * @brief The TripsSelectionParams struct contains properties to select trips
  * from the timeline matrix. Trips are selecting in this matrix according to
- * a departure hour interval and stations indices (= the stations order in the matrix).
+ * a departure hour interval and stations ids.
  * <i>fromHour</i> and <i>toHour</i> are set to 0 by default.
  */
 struct TripsSelectionParams
 {
     int fromHour = 0;
     int toHour = 0;
-    QVector<bss::stationId> stationsIndices;
+    QVector<int> stationsIds;
 };
 
 
@@ -42,7 +41,7 @@ public:
      * @param trips The original trips set form which the selection will be made.
      * @return The trips that match the selection parameters.
      */
-    QVector<Trip> select(const QVector<Trip>& trips) const;
+    QVector<Trip> selectFrom(const QVector<Trip>& trips) const;
 
 private:
     /// The parameters according to which trips will be selected.

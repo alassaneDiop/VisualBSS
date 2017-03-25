@@ -1,33 +1,33 @@
-#include "model.h"
+#include "data.h"
 #include "datafilereader.h"
 
-Model::Model(QObject* parent) :
+Data::Data(QObject* parent) :
     QObject(parent)
 {
 
 }
 
-QVector<Station> Model::stations(const QVector<bss::stationId>& ids) const
+QVector<Station> Data::stations(const QVector<int>& ids) const
 {
     QVector<Station> stations;
     stations.reserve(ids.size());
-    for (const bss::stationId id : ids)
+    for (const int id : ids)
         stations.append(station(id));
 
     return stations;
 }
 
-QVector<Trip> Model::trips(const QVector<bss::tripId>& ids) const
+QVector<Trip> Data::trips(const QVector<int>& ids) const
 {
     QVector<Trip> trips;
     trips.reserve(ids.size());
-    for (const bss::tripId id : ids)
+    for (const int id : ids)
         trips.append(trip(id));
 
     return trips;
 }
 
-bool Model::loadData(const QString& filename, const bool& parallel)
+bool Data::load(const QString& filename, const bool& parallel)
 {
     QHash<QString, Station> stationsHash;
     stationsHash.reserve(m_stations.size());
@@ -58,7 +58,7 @@ bool Model::loadData(const QString& filename, const bool& parallel)
     }
 }
 
-bool Model::unloadData()
+bool Data::unload()
 {
     if (!hasData())
     {

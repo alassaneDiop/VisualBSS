@@ -1,8 +1,6 @@
 #ifndef FILTER_H
 #define FILTER_H
 
-#include "typedefs.h"
-
 #include <QDate>
 #include <QVector>
 
@@ -21,12 +19,12 @@ struct TripsFilterParams
 {
     QDate fromPeriod;
     QDate toPeriod;
-    quint64 maxDuration = 0;    /// in seconds
-    quint64 minDuration = 0;    /// in seconds
-    qreal maxDistance = 0;      /// in meters
-    qreal minDistance = 0;      /// in meters
-    qreal maxDirection = 0;     /// in degrees
-    qreal minDirection = 0;     /// in degrees
+    qint64 maxDuration = 0;    /// in seconds
+    qint64 minDuration = 0;    /// in seconds
+    qreal maxDistance = 0;     /// in meters
+    qreal minDistance = 0;     /// in meters
+    qreal maxDirection = 0;    /// in degrees
+    qreal minDirection = 0;    /// in degrees
 };
 
 

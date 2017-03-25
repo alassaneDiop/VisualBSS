@@ -14,7 +14,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    model.cpp \
     station.cpp \
     trip.cpp \
     xmldatafilereader.cpp \
@@ -32,10 +31,13 @@ SOURCES += main.cpp\
     glyphrenderer.cpp \
     selectorrenderer.cpp \
     abstractdatafilereader.cpp \
-    datafilereader.cpp
+    datafilereader.cpp \
+    stationsverticesbuilder.cpp \
+    tripsverticesbuilder.cpp \
+    glyphsverticesbuilder.cpp \
+    data.cpp
 
 HEADERS  += mainwindow.h \
-    model.h \
     station.h \
     trip.h \
     xmldatafilereader.h \
@@ -53,10 +55,13 @@ HEADERS  += mainwindow.h \
     triprenderer.h \
     glyphrenderer.h \
     selectorrenderer.h \
-    typedefs.h \
     config.h \
     abstractdatafilereader.h \
-    datafilereader.h
+    datafilereader.h \
+    stationsverticesbuilder.h \
+    tripsverticesbuilder.h \
+    glyphsverticesbuilder.h \
+    data.h
 
 FORMS    += mainwindow.ui
 

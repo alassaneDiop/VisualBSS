@@ -13,14 +13,14 @@ TripsSelector::TripsSelector(const TripsSelectionParams& params) :
 
 
 
-QVector<Trip> TripsSelector::select(const QVector<Trip>& trips) const
+QVector<Trip> TripsSelector::selectFrom(const QVector<Trip>& trips) const
 {
     const auto select = [this](const Trip& t)
     {
         return (t.startDateTime.time().hour() >= params().fromHour)
             && (t.endDateTime.time().hour() <= params().toHour)
-            && ((params().stationsIndices.contains(t.startStationId))
-            || (params().stationsIndices.contains(t.endStationId)));
+            && ((params().stationsIds.contains(t.startStationId))
+            || (params().stationsIds.contains(t.endStationId)));
     };
 
     return QtConcurrent::blockingFiltered(trips, select);

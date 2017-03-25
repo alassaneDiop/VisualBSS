@@ -6,7 +6,6 @@
 #include <QFutureWatcher>
 #include <QDate>
 
-#include "typedefs.h"
 #include "tripsfilter.h"
 #include "stationsfilter.h"
 #include "stationssorter.h"
@@ -37,7 +36,7 @@ struct TripsDisplayParams
 
 struct Trip;
 struct Station;
-class Model;
+class Data;
 
 /// The MainWindow makes the view interact with the model through the Qt's signals system.
 class MainWindow : public QMainWindow
@@ -101,7 +100,7 @@ private:
      * @param param The sorting parameter.
      * @see StationsSorter::sort
      */
-    void sortStations(QVector<Station>& stations, const bss::SortParam& param);
+    void sortStations(const QVector<Station>& stations, const bss::SortParam& param);
 
 
     /**
@@ -116,41 +115,38 @@ private:
     void selectTrips(const int& fromHour, const int& toHour,
                      const int& fromStationIndex, const int& toStationIndex);
 
-    // TODO : find an appropriate name for this function
-    void prepareToDrawSelectionOnMap(const QVector<bss::tripId>& selection);
 
-    // TODO : find an appropriate name for this function
-    void prepareToDrawTripsOnMatrix(const QVector<bss::stationId>& stations, const TripsDisplayParams& params);
+    void drawStationsOnMap(const QVector<Station>& stations);
+    void drawSelectedTripsOnMap(const QVector<Trip>& selection);
+    void drawGlyphsOnMatrix(const QVector<Station>& stations, const TripsDisplayParams& params);
 
-    // TODO : find an appropriate name for this function
-    void drawStationsOnMap(const QVector<bss::stationId>& stationsIds);
 
-    // TODO : find an appropriate name for this function
-    void drawSelectedTripsOnMap(const QVector<bss::tripId>& arrivalsIds,
-                                const QVector<bss::tripId>& departuresIds,
-                                const QVector<bss::tripId>& cyclesIds);
+    void buildStationsVertices(const QVector<Station>& stations);
 
-    // TODO : find an appropriate name for this function
-    void drawTripsOnMatrix(const QVector<QVector<bss::tripId>>& arrivalsIds,
-                           const QVector<QVector<bss::tripId>>& departuresIds,
-                           const QVector<QVector<bss::tripId>>& cyclesIds,
-                           const bool& showDistance);
+    void buildTripsVertices(const QVector<Trip>& arrivals,
+                                const QVector<Trip>& departures,
+                                const QVector<Trip>& cycles);
 
-    // TODO : find an appropriate place for these functions
-    QVector<bss::stationId> ids(const QVector<Station>& stations);
-    QVector<bss::tripId> ids(const QVector<Trip>& trips);
+    void buildGlyphsVertices(const QVector<QVector<Trip>>& arrivals,
+                            const QVector<QVector<Trip>>& departures,
+                            const QVector<QVector<Trip>>& cycles,
+                            const bool& showDistance);
+
 
     /// Returns all different departure and arrival dates from a set of trips.
     static QVector<QDate> dates(const QVector<Trip>& trips);
-    static quint64 maxDuration(const QVector<Trip>& trips);
-    static int maxDistance(const QVector<Trip>& trips);
-    static int maxFlow(const QVector<Station>& stations);
+    static qint64 maxDuration(const QVector<Trip>& trips);
+    static qint64 maxDistance(const QVector<Trip>& trips);
+    static int maxTripsFlow(const QVector<Station>& stations);
 
+    static QVector<int> ids(const QVector<Trip>& trips);
+    static QVector<int> ids(const QVector<Station>& stations);
 
-
-    /// A flag to indicate wheter or not the application can exit.
-    /// This flag is set to <i>true</i> when an asynchronous has started running,
-    /// and reset to <i>false</i> when it has finised. <i>true</i> by default.
+    /**
+     * A flag to indicate wheter or not the application can exit.
+     * This flag is set to <i>true</i> when an asynchronous has started running,
+     * and reset to <i>false</i> when it has finised. <i>true</i> by default.
+     */
     bool m_canApplicationExit = true;
 
     bool m_shouldEnableMenuBar = true;
@@ -161,35 +157,21 @@ private:
     TripsFilterParams m_tripsFilterParams;
     StationsFilterParams m_stationsFilterParams;
 
-    /// Pointer to the object that contains all the widgets.
-    Ui::MainWindow* m_view;
-
-    /// Pointer to the object that manages the data.
-    Model* m_model = nullptr;
-
-    /// This object is used to monitor asynchronous tasks.
-    /// There can only be one running async task at a time.
-    /// If a second task needs be run, the caller will have to wait.
+    /**
+     * This object is used to monitor asynchronous tasks.
+     * There can only be one running async task at a time.
+     * If a second task needs be run, the caller will have to wait.
+     */
     QFutureWatcher<void>* m_asyncTaskMonitor = nullptr;
 
-    /// Stores all the different dates retrieved from the trips.
-    QVector<QDate> m_dates;
+    Ui::MainWindow* m_view;         /// Pointer to the object that contains all the widgets.
+    Data* m_model = nullptr;       /// Pointer to the object that manages the data.
 
-    /// Ids of trips that are filtered and rendered on the timeline matrix.
-    QVector<bss::tripId> m_tripsIds;
-
-    /// Ids of trips that are filtered, selected and rendered on the map..
-    QVector<bss::tripId> m_selection;
-
-    /// Ids of the stations that are filtered and sorted.
-    QVector<bss::stationId> m_stationsIds;
-
-    /// Id of the currently highlighted station (= -1 if there is none).
-    bss::stationId m_highlight = (bss::stationId) -1;
-
-    // TODO: Séb : mettre ou tu veux
-    QVector<float> drawTrip(bss::tripId id, float posX, float posY, const QVector<float>& color);
-    QVector<float> drawGlyph(const QVector<bss::tripId>& trips, float posX, float posY, const QVector<float>& color);
+    QVector<QDate> m_dates;         /// Stores all the different dates retrieved from the trips.
+    QVector<int> m_tripsIds;        /// The ids of trips that are filtered and rendered on the timeline matrix.
+    QVector<int> m_selection;       /// The ids of trips that are filtered, selected and rendered on the map..
+    QVector<int> m_stationsIds;     /// The ids of stations that are filtered and sorted.
+    int m_highlight = -1;           /// Id of the currently highlighted station (= -1 if there is none).
 
 private slots:
     void onAsyncTaskStarted();
@@ -199,10 +181,11 @@ private slots:
     void onFailedToLoadData(const QString& filename, const QString& errorDesc);
     void onDataUnloaded();
 
-    void onTripsChanged(const QVector<bss::tripId>& filteredTrips);
-    void onStationsOrderChanged(const QVector<bss::stationId>& stationsOrder);
-    void onSelectionChanged(const QVector<bss::tripId>& selection);
-    void onHighlightChanged(const bss::stationId& highlight);
+    void onTripsChanged(const QVector<int>& filteredTrips);
+    void onStationsOrderChanged(const QVector<int>& stationsOrder);
+    void onSelectionChanged(const QVector<int>& selection);
+    void onHighlightChanged(const int& highlight);
+
     void onTripsDisplayParamsChanged(const TripsDisplayParams &params);
     void onTripsFilterParamsChanged(const TripsFilterParams& params);
     void onStationsSorterParamChanged(const bss::SortParam& param);
@@ -211,14 +194,9 @@ private slots:
     void onMatrixSelectionChanged(const int& fromHour, const int& toHour,
                                   const int& fromStationIndex, const int& toStationIndex);
 
-    void onReadyToDrawSelectionOnMap(const QVector<bss::tripId>& arrivalsIds,
-                                     const QVector<bss::tripId>& departuresIds,
-                                     const QVector<bss::tripId>& cyclesIds);
-
-    void onReadyToDrawTripsOnMatrix(const QVector<QVector<bss::tripId>>& arrivalsIds,
-                                    const QVector<QVector<bss::tripId>>& departuresIds,
-                                    const QVector<QVector<bss::tripId>>& cyclesIds,
-                                    const bool& showDistance);
+    void onStationsVerticesBuilt(const QVector<float> stationsVertices);
+    void onTripsVerticesBuilt(const QVector<float> tripsVertices);
+    void onGlyphsVerticesBuilt(const QVector<float> glyphsVertices);
 
     void on_action_open_triggered();
     void on_action_closeAll_triggered();
@@ -251,22 +229,16 @@ private slots:
     void on_rangeSlider_tripsFlow_secondPositionChanged(qreal p);
 
 signals:
-    void tripsChanged(const QVector<bss::tripId>& trips);
-    void stationsOrderChanged(const QVector<bss::stationId>& stationsOrder);
-    void selectionChanged(const QVector<bss::tripId>& selection);
-    void highlightChanged(const bss::stationId& highlight);
+    void tripsChanged(const QVector<int>& trips);
+    void stationsOrderChanged(const QVector<int>& stationsOrder);
+    void selectionChanged(const QVector<int>& selection);
+    void highlightChanged(const int& highlight);
     void tripsFilterParamsChanged(const TripsFilterParams& params);
     void stationsSorterParamChanged(const bss::SortParam& param);
 
-    void readyToDrawSelectionOnMap(const QVector<bss::tripId>& arrivalsIds,
-                                   const QVector<bss::tripId>& departuresIds,
-                                   const QVector<bss::tripId>& cyclesIds);
-
-    void readyToDrawTripsOnMatrix(const QVector<QVector<bss::tripId>>& arrivalsIds,
-                                  const QVector<QVector<bss::tripId>>& departuresIds,
-                                  const QVector<QVector<bss::tripId>>& cyclesIds,
-                                  const bool& showDistance);
-
+    void stationsVerticesBuilt(const QVector<float> stationsVertices);
+    void tripsVerticesBuilt(const QVector<float> tripsVertices);
+    void glyphsVerticesBuilt(const QVector<float> glyphsVertices);
 };
 
 #endif // MAINWINDOW_H

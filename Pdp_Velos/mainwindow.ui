@@ -221,7 +221,11 @@
               </widget>
              </item>
              <item>
-              <widget class="QComboBox" name="comboBox_fromPeriod"/>
+              <widget class="QComboBox" name="comboBox_fromPeriod">
+               <property name="toolTip">
+                <string>The start date time to filter trips by.</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -252,7 +256,11 @@
               </widget>
              </item>
              <item>
-              <widget class="QComboBox" name="comboBox_toPeriod"/>
+              <widget class="QComboBox" name="comboBox_toPeriod">
+               <property name="toolTip">
+                <string>The end date time to filter trips by.</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -679,6 +687,9 @@
                     <height>16777215</height>
                    </size>
                   </property>
+                  <property name="toolTip">
+                   <string>Distance interval (in meters)</string>
+                  </property>
                   <property name="resizeMode">
                    <enum>QQuickWidget::SizeRootObjectToView</enum>
                   </property>
@@ -817,6 +828,9 @@
                     <width>120</width>
                     <height>16777215</height>
                    </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Duration interval (in seconds)</string>
                   </property>
                   <property name="resizeMode">
                    <enum>QQuickWidget::SizeRootObjectToView</enum>
@@ -957,6 +971,9 @@
                     <height>16777215</height>
                    </size>
                   </property>
+                  <property name="toolTip">
+                   <string>Azimuth interval (in degrees)</string>
+                  </property>
                   <property name="resizeMode">
                    <enum>QQuickWidget::SizeRootObjectToView</enum>
                   </property>
@@ -1095,6 +1112,9 @@
                     <width>120</width>
                     <height>16777215</height>
                    </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Trips flow interval</string>
                   </property>
                   <property name="resizeMode">
                    <enum>QQuickWidget::SizeRootObjectToView</enum>
