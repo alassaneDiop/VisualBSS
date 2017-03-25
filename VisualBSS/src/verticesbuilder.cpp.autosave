@@ -1,0 +1,248 @@
+#include "verticesbuilder.h"
+
+TripsVerticesBuilder::TripsVerticesBuilder()
+{
+
+}
+
+
+QVector<float> StationsVerticesBuilder::drawStationsOnMap(const QVector<Station>& stations)
+{
+    // x and y;
+    const unsigned short positionTupleSize = 2;
+    // R, G, B
+    const unsigned short colorTupleSize = 3;
+
+    QVector<float> stationsVertices;
+    const int stationsVerticesCount = stationsIds.size();
+    stationsVertices.reserve(stationsVerticesCount * positionTupleSize * colorTupleSize);
+
+    for (const int id : stationsIds)
+    {
+        const float maxLongitude = 180.f;
+        const float maxLatitude = 90.f;
+
+        const Station s = m_model->station(id);
+        stationsVertices.append(s.longitude / maxLongitude);
+        stationsVertices.append(s.latitude / maxLatitude);
+
+        stationsVertices.append(1.f);
+        stationsVertices.append(1.f);
+        stationsVertices.append(0.3f);
+    }
+
+    return stationsVertices;
+
+    /*m_view->mapwidget->loadStationsData(stationsVertices, stationsVerticesCount);
+    m_view->mapwidget->centerView(stationsVertices);*/
+}
+
+void TripsVerticesBuilder::drawSelectedTripsOnMap(const QVector<Trip>& arrivals,
+                                                  const QVector<Trip>& departures,
+                                                  const QVector<Trip>& cycles)
+{
+    // x and y;
+    const unsigned short positionTupleSize = 2;
+    // 1 trip has 2 points (start/end)
+    const unsigned short pointPerTrip = 2;
+    // R, G, B
+    const unsigned short colorTupleSize = 3;
+
+    QVector<float> tripsVertices;
+    const int arrivalsVertices = arrivalsIds.size() * pointPerTrip * positionTupleSize * colorTupleSize;
+    const int departuresVertices = departuresIds.size() * pointPerTrip * positionTupleSize * colorTupleSize;
+    const int cyclesVertices = cyclesIds.size() * positionTupleSize * colorTupleSize;
+
+    tripsVertices.reserve(arrivalsVertices + departuresVertices + cyclesVertices);
+
+    int tripsVerticesCount = 0;
+
+    // TODO: damien : renommer des variables
+    const auto drawTrips = [this](  const QVector<int>& ids,
+            QVector<float>& tripsVertices,
+            int &verticesCount,
+            const QVector<float>& originColor,
+            const QVector<float>& destinationColor)
+    {
+        for (const int arrivalId : ids)
+        {
+            const Trip trip = m_model->trip(arrivalId);
+
+            const int startStationId = trip.startStationId;
+            const Station startStation = m_model->station(startStationId);
+
+            const float maxLongitude = 180.f;
+            const float maxLatitude = 90.f;
+
+            tripsVertices.append((float) (startStation.longitude / maxLongitude));
+            tripsVertices.append((float) (startStation.latitude / maxLatitude));
+            tripsVertices.append(originColor);
+
+
+            const int endStationId = trip.endStationId;
+            const Station endStation = m_model->station(endStationId);
+
+            tripsVertices.append((float) (endStation.longitude / maxLongitude));
+            tripsVertices.append((float) (endStation.latitude / maxLatitude));
+            tripsVertices.append(destinationColor);
+
+            verticesCount += 2;
+        }
+    };
+
+    // FIXME: couleur
+    drawTrips(arrivalsIds, tripsVertices, tripsVerticesCount, bss::ARRIVAL_ORIGIN_COLOR, bss::ARRIVAL_DESTINATION_COLOR);
+    drawTrips(departuresIds, tripsVertices, tripsVerticesCount, bss::DEPARTURE_ORIGIN_COLOR, bss::DEPARTURE_DESTINATION_COLOR);
+
+    return tripsVertices;
+    /*m_view->mapwidget->loadTripsData(tripsVertices, tripsVerticesCount);
+    m_view->mapwidget->centerView(tripsVertices);*/
+}
+
+
+
+QVector<float> TripsVerticesBuilder::drawTrip(int id, float posX, float posY,
+                                    const QVector<float>& color)
+{
+    const int colorTupleSize = 3;
+    const int positionTupleSize = 2;
+    const int numberOfPointPerTrip = 2;
+
+    QVector<float> tripData;
+    tripData.reserve((colorTupleSize + positionTupleSize) * numberOfPointPerTrip);
+
+    // VERTEX #1
+    const float positionXP1 = posX;
+    const float positionYP1 = posY - (bss::GLYPH_HEIGHT / 2.f);
+
+    const float rotationCenterX = posX;
+    const float rotationCenterY = posY;
+
+    const auto rotatePointAroundTarget = [](float angle, QPointF position, QPointF target)
+    {
+        const float sin = qSin(angle);
+        const float cos = qCos(angle);
+
+        // Translate positionX/Y to the origin
+        float pX = target.x() - position.x();
+        float pY = target.y() - position.y();
+
+        // Do the rotation
+        float newX = pX * cos - pY * sin;
+        float newY = pX * sin + pY * cos;
+
+        // Translate back
+        newX += position.x();
+        newY += position.y();
+
+        return QPointF(newX, newY);
+    };
+
+    const Trip t = m_model->trip(id);
+    const float tripDirection = t.direction;
+
+    QPointF positionAfterRotation;
+    positionAfterRotation = rotatePointAroundTarget(tripDirection,
+                                   QPointF(positionXP1, positionYP1),
+                                   QPointF(rotationCenterX, rotationCenterY));
+
+    const float width = m_view->timelinematrixwidget->width();
+    const float heigth = m_view->timelinematrixwidget->height();
+
+    const float newPosXP1 = positionAfterRotation.x() / width * 2 - 1;
+    const float newPosYP1 = positionAfterRotation.y() / heigth * 2 - 1;
+
+    tripData.append(newPosXP1);
+    tripData.append(-newPosYP1);
+    tripData.append(color);
+
+
+    // VERTEX #2
+    const float positionXP2 = posX;
+    const float positionYP2 = posY + (bss::GLYPH_HEIGHT / 2.f);
+
+    positionAfterRotation = rotatePointAroundTarget(tripDirection,
+                                   QPointF(positionXP2, positionYP2),
+                                   QPointF(rotationCenterX, rotationCenterY));
+
+    const float newPosXP2 = positionAfterRotation.x() / width * 2 - 1;
+    const float newPosYP2 = positionAfterRotation.y() / heigth * 2 - 1;
+
+    tripData.append(newPosXP2);
+    tripData.append(-newPosYP2);
+    tripData.append(color);
+
+    return tripData;
+}
+
+QVector<float> TripsVerticesBuilder::drawGlyph(const QVector<int>& trips,
+                                     float posX, float posY, const QVector<float>& color)
+{
+    QVector<float> glyph;
+    for (int id : trips)
+    {
+        const QVector<float> trip = drawTrip(id, posX, posY, color);
+        glyph.append(trip);
+    }
+    return glyph;
+}
+
+
+
+void TripsVerticesBuilder::drawTripsOnMatrix(const QVector<QVector<Trip>>& arrivals,
+                                             const QVector<QVector<Trip>>& departures,
+                                             const QVector<QVector<Trip>>& cycles,
+                                             const bool& showDistance)
+{
+    Q_UNUSED(cyclesIds);
+    Q_UNUSED(showDistance);
+
+    const float glyphIntervalX = m_view->timelinematrixwidget->width() / (bss::NB_OF_HOURS * 1.f);
+    const float glyphIntervalY = bss::GLYPH_HEIGHT + bss::SPACE_BETWEEN_GLYPHS;
+
+    QVector<float> glyphsVertices;
+    // TODO: Damien
+    //glyphsData.reserve();
+
+    int i = 0;
+    int stationIndex = 0;
+    for (const QVector<Trip> t : arrivals)
+    {
+
+        const float posX = (bss::TIMELINE_OFFSET_X + (i * glyphIntervalX));
+        const float posY = stationIndex * glyphIntervalY;
+
+        glyphsVertices.append(drawGlyph(t, posX, posY, bss::GLYPH_ARRIVAL_COLOR));
+
+        i++;
+        i = i % 24;
+
+        // if i equals 0, thats means we move to another station (and a new line to draw glyphs)
+        if (i == 0)
+            stationIndex++;
+    }
+
+    i = 0;
+    stationIndex = 0;
+    for (const QVector<int> ids : departuresIds)
+    {
+
+        const float posX = (bss::TIMELINE_OFFSET_X + (i * glyphIntervalX));
+        const float posY = stationIndex * glyphIntervalY;
+
+        glyphsVertices.append(drawGlyph(ids, posX, posY, bss::GLYPH_DEPARTURE_COLOR));
+
+        i++;
+        i = i % 24;
+
+        // if i equals 0, thats means we move to another station (and a new line to draw glyphs)
+        if (i == 0)
+            stationIndex++;
+    }
+
+    /*const int vertexSize = 5; // 2 for position x/y and 3 for color R/G/B
+    m_view->timelinematrixwidget->loadGlyphsData(glyphsData, glyphsData.size() / vertexSize);*/
+
+    return glyphsVertices;
+}
+

@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/Shaders">
+        <file>shaders/curves.geom</file>
+        <file>shaders/glyph.frag</file>
+        <file>shaders/glyph.vert</file>
+        <file>shaders/selector.frag</file>
+        <file>shaders/selector.vert</file>
+        <file>shaders/stations.frag</file>
+        <file>shaders/stations.vert</file>
+        <file>shaders/trips.frag</file>
+        <file>shaders/trips.vert</file>
+    </qresource>
+    <qresource prefix="/QML">
+        <file>qml/controls/RangeSlider.qml</file>
+    </qresource>
+</RCC>

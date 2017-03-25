@@ -1,0 +1,27 @@
+#ifndef TRIPSVERTICESBUILDER_H
+#define TRIPSVERTICESBUILDER_H
+
+#include <QVector>
+
+struct Trip;
+class TripsVerticesBuilder
+{
+public:
+    TripsVerticesBuilder();
+
+    QVector<float> drawStationsOnMap(const QVector<Station>& stations);
+
+    QVector<float> drawSelectedTripsOnMap(const QVector<Trip>& arrivals,
+                                const QVector<Trip>& departures,
+                                const QVector<Trip>& cycles);
+
+    QVector<float> drawTripsOnMatrix(const QVector<QVector<Trip>>& arrivals,
+                           const QVector<QVector<Trip>>& departures,
+                           const QVector<QVector<Trip>>& cycles,
+                           const bool& showDistance);
+
+    QVector<float> drawTrip(int id, float posX, float posY, const QVector<float>& color);
+    QVector<float> drawGlyph(const QVector<Trip>& trips, float posX, float posY, const QVector<float>& color);
+};
+
+#endif // TRIPSVERTICESBUILDER_H
