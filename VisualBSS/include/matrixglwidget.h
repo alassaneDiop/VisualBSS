@@ -11,7 +11,6 @@
 #include <QTime>
 
 
-
 namespace bss {
 class MatrixGLWidget;
 }
@@ -21,7 +20,7 @@ class SelectorRenderer;
 class QMouseEvent;
 class QPointF;
 class QOpenGLShaderProgram;
-class QTime;
+
 
 struct SelectionTimeStations {
     int fromHour = 0;
@@ -47,6 +46,7 @@ public:
     ~MatrixGLWidget();
 
     void loadGlyphsData(const QVector<float>& data, unsigned int verticesCount);
+    void clear();
 
 protected:
     virtual void initializeGL() override;
@@ -65,6 +65,8 @@ private:
     bool initializeShaderSelector();
     bool initializeShaderGlyphs();
 
+    QPair<int, int> timeIntervalSelected() const;
+    QPair<int, int> stationIntervalSelected() const;
     SelectionTimeStations tripsInSelector() const;
 
     int m_matrixViewWidth;
@@ -80,7 +82,7 @@ private:
 
     const QColor m_backgroundColor = QColor(Qt::white);
 
-    bool m_glyphsLoaded;
+    bool m_drawGlyphs;
 
     SelectorRenderer* m_selectorRenderer;
     GlyphRenderer* m_glyphRenderer;
@@ -92,7 +94,6 @@ private:
     SelectionTimeStations m_selectionnedTrips;
 
     QTime m_time;
-    int m_frameCount;
 
 signals:
     void selectionChanged(int fromHour, int toHour, int fromStationIndex, int toStationIndex);

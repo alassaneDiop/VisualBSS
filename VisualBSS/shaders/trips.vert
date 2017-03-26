@@ -6,7 +6,7 @@ layout(location = 1) in vec3 vtx_color;
 uniform vec2 translation;
 uniform float zoom;
 
-out vec3 color;
+out vec3 vColor;
 
 void main()
 {
@@ -14,5 +14,5 @@ void main()
                        zoom * (vtx_position.y - translation.y),
                        0.f, 1.f);
 
-    color = vtx_color;
+    vColor = vtx_color;
 }

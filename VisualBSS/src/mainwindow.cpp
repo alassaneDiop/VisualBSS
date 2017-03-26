@@ -452,8 +452,8 @@ void MainWindow::onDataCleared()
     m_view->listView_last->setModel(nullptr);
 
     // TODO : Damien
-    //m_view->mapwidget->clear();
-    //m_view->timelinematrixwidget->clear();
+    m_view->mapwidget->clear();
+    m_view->timelinematrixwidget->clear();
 }
 
 

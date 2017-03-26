@@ -15,8 +15,8 @@ MapGLWidget::MapGLWidget(QWidget* p) : QOpenGLWidget(p)
     m_translationX = 0.f;
     m_translationY = 0.f;
 
-    m_stationsLoaded = false;
-    m_tripsLoaded = false;
+    m_drawStations = false;
+    m_drawTrips = false;
 
     m_isStationsVAOCreated = false;
     m_isTripsVAOCreated = false;
@@ -74,7 +74,7 @@ void MapGLWidget::paintGL()
 
 void MapGLWidget::drawStations()
 {
-    if (m_stationsLoaded)
+    if (m_drawStations)
     {
         m_shaderProgramStations->bind();
 
@@ -92,7 +92,7 @@ void MapGLWidget::drawStations()
 
 void MapGLWidget::drawTrips()
 {
-    if (m_tripsLoaded)
+    if (m_drawTrips)
     {
         m_shaderProgramTrips->bind();
 
@@ -108,6 +108,13 @@ void MapGLWidget::drawTrips()
     }
 }
 
+void MapGLWidget::clear()
+{
+    m_drawStations = false;
+    m_drawTrips = false;
+    update();
+}
+
 void MapGLWidget::loadStationsData(const QVector<float>& data, unsigned int verticesCount)
 {
     if (!m_isStationsVAOCreated)
@@ -117,7 +124,7 @@ void MapGLWidget::loadStationsData(const QVector<float>& data, unsigned int vert
         m_stationRenderer->createVAO();
     }
 
-    m_stationsLoaded = true;
+    m_drawStations = true;
     m_stationRenderer->sendData(data, verticesCount);
 
     update();
@@ -132,7 +139,7 @@ void MapGLWidget::loadTripsData(const QVector<float>& data, unsigned int vertice
         m_tripRenderer->createVAO();
     }
 
-    m_tripsLoaded = true;
+    m_drawTrips = true;
     m_tripRenderer->sendData(data, verticesCount);
 
     update();
@@ -260,6 +267,7 @@ bool MapGLWidget::initializeShaderTrips()
 
     m_shaderProgramTrips = new QOpenGLShaderProgram();
     initializationIsOk &= m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/shaders/trips.vert");
+    initializationIsOk &= m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Geometry, ":/Shaders/shaders/trips.geom");
     initializationIsOk &= m_shaderProgramTrips->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/shaders/trips.frag");
     initializationIsOk &= m_shaderProgramTrips->link();
     initializationIsOk &= m_shaderProgramTrips->bind();

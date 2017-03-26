@@ -6,7 +6,6 @@
 #include <QElapsedTimer>
 #include <QOpenGLShaderProgram>
 
-
 #include "config.h"
 #include "selectorrenderer.h"
 #include "glyphrenderer.h"
@@ -22,7 +21,7 @@ MatrixGLWidget::MatrixGLWidget(QWidget* p) : QOpenGLWidget(p)
     m_translationY = 0.f;
 
     m_isGlyphsVAOCreated = false;
-    m_glyphsLoaded = false;
+    m_drawGlyphs = false;
 
     m_selectorRenderer = new SelectorRenderer();
     m_glyphRenderer = new GlyphRenderer();
@@ -72,26 +71,12 @@ void MatrixGLWidget::resizeGL(int width, int height)
 
 void MatrixGLWidget::paintGL()
 {
-    // Debut Pour Tests
-    if (m_frameCount == 0)
-        m_time.start();
-
-    m_frameCount++;
-    // Fin Pour Tests
+    m_time.start();
 
     drawGlyphs();
     drawSelector();
 
-    // Debut Pour Tests
-    if (m_time.elapsed() >= 1000)
-    {
-        qDebug() << "FPS is %f ms" << m_time.elapsed() / float(m_frameCount);
-        m_frameCount = 0;
-    }
-
-//    if (m_isGlyphsVAOCreated)
-//        update();
-    // Fin Pour Tests
+    qDebug() << "glyphs drawn in" << m_time.elapsed() << "ms";
 }
 
 
@@ -111,7 +96,7 @@ void MatrixGLWidget::drawSelector()
 
 void MatrixGLWidget::drawGlyphs()
 {
-    if (m_glyphsLoaded)
+    if (m_drawGlyphs)
     {
         m_shaderProgramGlyph->bind();
 
@@ -133,9 +118,16 @@ void MatrixGLWidget::loadGlyphsData(const QVector<float> &data, unsigned int ver
         m_glyphRenderer->createVAO();
     }
 
-    m_glyphsLoaded = true;
+    m_drawGlyphs = true;
     m_glyphRenderer->sendData(data, verticesCount);
 
+    update();
+}
+
+void MatrixGLWidget::clear()
+{
+    m_drawGlyphs = false;
+    m_drawSelector = false;
     update();
 }
 
@@ -168,13 +160,6 @@ void MatrixGLWidget::mouseMoveEvent(QMouseEvent* event)
                     m_bottomRightSelectionRectangle.y() - m_translationY);
 
         updateSelector();
-
-        SelectionTimeStations s = tripsInSelector();
-        if (!(s == m_selectionnedTrips))
-        {
-            m_selectionnedTrips = s;
-            emit selectionChanged(s.fromHour, s.toHour, s.fromStationIndex, s.toStationIndex);
-        }
 
         update();
         event->accept();
@@ -214,12 +199,20 @@ void MatrixGLWidget::mouseReleaseEvent(QMouseEvent* event)
     {
         QGuiApplication::restoreOverrideCursor();
         m_leftMouseButtonPressed = false;
+
+        SelectionTimeStations s = tripsInSelector();
+        if (!(s == m_selectionnedTrips))
+        {
+            m_selectionnedTrips = s;
+            emit selectionChanged(s.fromHour, s.toHour, s.fromStationIndex, s.toStationIndex);
+        }
+
         event->accept();
         //qDebug() <<  "left mouse button released";
     }
 }
 
-SelectionTimeStations MatrixGLWidget::tripsInSelector() const
+QPair<int, int> MatrixGLWidget::timeIntervalSelected() const
 {
     const int width = this->width();
     const float oneHour = width / bss::NB_OF_HOURS;
@@ -236,9 +229,13 @@ SelectionTimeStations MatrixGLWidget::tripsInSelector() const
 
     timeInterval.first = qMax(0, timeInterval.first);
     timeInterval.second = qMin(timeInterval.second, bss::NB_OF_HOURS);
-    //qDebug() << "Time interval"<< (int)timeInterval.first << (int)timeInterval.second;
+//    qDebug() << "Time interval"<< (int)timeInterval.first << (int)timeInterval.second;
 
-    // FIND STATIONS
+    return timeInterval;
+}
+
+QPair<int, int> MatrixGLWidget::stationIntervalSelected() const
+{
     const int glyphIntervalY = bss::GLYPH_HEIGHT + bss::SPACE_BETWEEN_GLYPHS;
 
     // m_translation from OpenGL coordinates to raster coordinates
@@ -251,20 +248,28 @@ SelectionTimeStations MatrixGLWidget::tripsInSelector() const
     stationsInterval.second = (m_bottomRightSelectionRectangle.y() - normalizedTranslationY)
             / glyphIntervalY;
 
-    int tmp3 = stationsInterval.first;
-    int tmp4 = stationsInterval.second;
+    int tmp1 = stationsInterval.first;
+    int tmp2 = stationsInterval.second;
 
-    stationsInterval.first = qMin(tmp3, tmp4);
-    stationsInterval.second = qMax(tmp3, tmp4);
+    stationsInterval.first = qMin(tmp1, tmp2);
+    stationsInterval.second = qMax(tmp1, tmp2);
     stationsInterval.first = qMax(0, stationsInterval.first);
+
+    qDebug() << "Stations interval"<< stationsInterval.first << stationsInterval.second;
+
+    return stationsInterval;
+}
+
+SelectionTimeStations MatrixGLWidget::tripsInSelector() const
+{
+    QPair<int, int> timeInterval = timeIntervalSelected();
+    QPair<int, int> stationsInterval = stationIntervalSelected();
 
     SelectionTimeStations s;
     s.fromHour = timeInterval.first;
     s.toHour = timeInterval.second;
     s.fromStationIndex = stationsInterval.first;
     s.fromStationIndex = stationsInterval.second;
-
-    qDebug() << "Stations interval"<< stationsInterval.first << stationsInterval.second;
 
     return s;
 }

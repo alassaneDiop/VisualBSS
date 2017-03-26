@@ -25,7 +25,7 @@ QVector<float> GlyphsVerticesBuilder::build(const int& timelineMatrixHeight,
     const float glyphIntervalY = bss::GLYPH_HEIGHT + bss::SPACE_BETWEEN_GLYPHS;
 
     QVector<float> glyphsVertices;
-    // TODO: Damien
+    // TODO: Damien : calculer
     //glyphsData.reserve();
 
     int i = 0;

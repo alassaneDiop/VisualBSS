@@ -23,6 +23,7 @@ public:
     MapGLWidget(QWidget* p = 0);
     ~MapGLWidget();
 
+    void clear();
     void loadTripsData(const QVector<float>& data, unsigned int verticesCount);
     void loadStationsData(const QVector<float>& data, unsigned int verticesCount);
     void centerView(const QVector<float>& data);
@@ -65,8 +66,9 @@ private:
     StationRenderer* m_stationRenderer;
     TripRenderer* m_tripRenderer;
 
-    bool m_stationsLoaded;
-    bool m_tripsLoaded;
+    bool m_drawStations;
+    bool m_drawTrips;
+
     bool m_isStationsVAOCreated;
     bool m_isTripsVAOCreated;
 
