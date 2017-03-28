@@ -71,6 +71,8 @@ void MatrixGLWidget::resizeGL(int width, int height)
 
 void MatrixGLWidget::paintGL()
 {
+    glClear(GL_COLOR_BUFFER_BIT);
+
     m_time.start();
 
     drawGlyphs();

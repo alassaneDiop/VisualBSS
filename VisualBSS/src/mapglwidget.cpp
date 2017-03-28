@@ -44,8 +44,6 @@ void MapGLWidget::initializeGL()
     this->makeCurrent();
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);
-    glEnable(GL_MULTISAMPLE);
-    //glEnable(GL_LINE_SMOOTH);
 
     if (!initializeShaderStations())
         onShaderError(m_shaderProgramStations->log());
@@ -216,8 +214,6 @@ void MapGLWidget::wheelEvent(QWheelEvent* event)
     if (m_zoom < minZoom)
         m_zoom = minZoom;
 
-    //    qDebug() << "zoom" << m_zoom;
-    //    qDebug() <<  "Wheel event";
     update();
     event->accept();
 }

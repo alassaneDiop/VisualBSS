@@ -13,6 +13,9 @@ public:
     GlyphRenderer();
     ~GlyphRenderer();
 
+    /**
+     * @brief draw Draw all glyphs.
+     */
     virtual void draw() override;
 };
 
