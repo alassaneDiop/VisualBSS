@@ -11,6 +11,7 @@ Trips data are loaded from text files.
 
 ===============================================================================
 Requirements:
+	-QtQuick 2.1 or sup
 	-Qt 5.7 or sup
 	-OpenGL 3.3 ou sup
 	-C++14 compiler

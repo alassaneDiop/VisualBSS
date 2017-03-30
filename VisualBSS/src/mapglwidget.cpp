@@ -110,6 +110,7 @@ void MapGLWidget::clear()
 {
     m_drawStations = false;
     m_drawTrips = false;
+
     update();
 }
 

@@ -86,6 +86,7 @@ static const QVector<float> DEPARTURE_DESTINATION_COLOR = QVector<float>({ 0.f, 
  * by a blue line if trips are arrival of the converned station.
  */
 static const QVector<float> GLYPH_ARRIVAL_COLOR = QVector<float>({ 0.f, 0.f, 1.f });
+
 /**
  * @brief GLYPH_DEPARTURE_COLOR Each glyphs in the timeline matrix will be dysplayed
  * by a red line if trips are arrival of the converned station.

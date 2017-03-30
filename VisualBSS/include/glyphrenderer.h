@@ -7,6 +7,11 @@ namespace bss {
 class GlyphRenderer;
 }
 
+
+/**
+ * @brief The GlyphRenderer class This render glyps, they are small colored
+ * lines.
+ */
 class GlyphRenderer : public Renderer
 {
 public:

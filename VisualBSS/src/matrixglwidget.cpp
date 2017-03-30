@@ -5,6 +5,7 @@
 #include <QWheelEvent>
 #include <QElapsedTimer>
 #include <QOpenGLShaderProgram>
+#include <QPair>
 
 #include "config.h"
 #include "selectorrenderer.h"

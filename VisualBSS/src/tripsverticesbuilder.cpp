@@ -33,7 +33,6 @@ QVector<float> TripsVerticesBuilder::build(const QVector<Station>& stations,
 
     int tripsVerticesCount = 0;
 
-    // TODO: damien : renommer des variables
     const auto drawTrips = [this, &stations](  const QVector<Trip>& trips,
             QVector<float>& tripsVertices,
             int &verticesCount,
@@ -64,7 +63,6 @@ QVector<float> TripsVerticesBuilder::build(const QVector<Station>& stations,
         }
     };
 
-    // FIXME: couleur
     drawTrips(arrivals, tripsVertices, tripsVerticesCount, bss::ARRIVAL_ORIGIN_COLOR, bss::ARRIVAL_DESTINATION_COLOR);
     drawTrips(departures, tripsVertices, tripsVerticesCount, bss::DEPARTURE_ORIGIN_COLOR, bss::DEPARTURE_DESTINATION_COLOR);
 
