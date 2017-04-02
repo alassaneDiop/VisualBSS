@@ -16,15 +16,15 @@ go_bandit([](){
         t1.distance = 19;
         t1.duration = 400;
         t1.startDateTime = QDateTime(QDate(2016, 7, 7));
-        t1.endDateTime =  QDateTime(QDate(2016, 7, 10));
+        t1.endDateTime =  QDateTime(QDate(2016, 7, 7));
         trips1.append(t1);
 
         Trip t2;
         t2.id = 2;
         t2.distance = 20;
         t2.duration = 400;
-        t2.startDateTime = QDateTime(QDate(2016, 5, 5));
-        t2.endDateTime =  QDateTime(QDate(2016, 5, 5));
+        t2.startDateTime = QDateTime(QDate(2016, 7, 7));
+        t2.endDateTime =  QDateTime(QDate(2016, 7, 7));
         trips1.append(t2);
 
         it("Distance min", [&](){
@@ -50,15 +50,15 @@ go_bandit([](){
         t3.distance = 180;
         t3.duration = 400;
         t3.startDateTime = QDateTime(QDate(2016, 7, 7));
-        t3.endDateTime =  QDateTime(QDate(2016, 7, 10));
+        t3.endDateTime =  QDateTime(QDate(2016, 7, 7));
         trips2.append(t3);
 
         Trip t4;
         t4.id = 4;
         t4.distance = 181;
         t4.duration = 400;
-        t4.startDateTime = QDateTime(QDate(2016, 5, 5));
-        t4.endDateTime =  QDateTime(QDate(2016, 5, 5));
+        t4.startDateTime = QDateTime(QDate(2016, 7, 7));
+        t4.endDateTime =  QDateTime(QDate(2016, 7, 7));
         trips2.append(t4);
 
         it("Distance max", [&](){
@@ -79,7 +79,7 @@ go_bandit([](){
 
         it("invert distance min and max", [&](){
             TripsFilterParams params;
-            params.minDistance = 180;
+            params.minDistance = 200;
             params.maxDistance = 0;
             params.minDuration = 0;
             params.maxDuration = 20000;
@@ -164,8 +164,8 @@ go_bandit([](){
             TripsFilterParams params;
             params.minDistance = 0;
             params.maxDistance = 200;
-            params.minDuration = 100;
-            params.maxDuration = 20;
+            params.minDuration = 1000;
+            params.maxDuration = 0;
             params.fromPeriod = QDate(2016, 1, 1);
             params.toPeriod = QDate(2016, 12, 30);
 
@@ -215,7 +215,7 @@ go_bandit([](){
         t11.id = 11;
         t11.distance = 100;
         t11.duration = 500;
-        t11.startDateTime = QDateTime(QDate(2016, 7, 5));
+        t11.startDateTime = QDateTime(QDate(2016, 5, 5));
         t11.endDateTime =  QDateTime(QDate(2016, 7, 7));
         trips6.append(t11);
 
@@ -223,8 +223,8 @@ go_bandit([](){
         t12.id = 12;
         t12.distance = 100;
         t12.duration = 500;
-        t12.startDateTime = QDateTime(QDate(2016, 5, 7));
-        t12.endDateTime =  QDateTime(QDate(2016, 10, 7));
+        t12.startDateTime = QDateTime(QDate(2016, 5, 5));
+        t12.endDateTime =  QDateTime(QDate(2016, 7, 8));
         trips6.append(t12);
 
         it("Date time max", [&](){
@@ -249,8 +249,8 @@ go_bandit([](){
             params.maxDistance = 200;
             params.minDuration = 100;
             params.maxDuration = 600;
-            params.fromPeriod = QDate(2016, 7, 7);
-            params.toPeriod = QDate(2016, 5, 6);
+            params.fromPeriod = QDate(2016, 12, 1);
+            params.toPeriod = QDate(2016, 12, 1);
 
             const TripsFilter tripfilter = TripsFilter(params);
             QVector<Trip> outTrips = tripfilter.filter(trips6);

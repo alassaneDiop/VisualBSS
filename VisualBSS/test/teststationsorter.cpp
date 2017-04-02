@@ -30,7 +30,7 @@ go_bandit([](){
             trip.id = i;
             s1.appendDeparture(trip);
         }
-        s1.avgTripDuration = 40; //DURATION
+        s1.avgTripDuration = 10; //DURATION
         s1.avgTripDistance = 10; //DISTANCE
         stations.append(s1);
 
@@ -51,7 +51,7 @@ go_bandit([](){
             trip.id = i;
             s2.appendDeparture(trip);
         }
-        s2.avgTripDuration = 20; //DURATION
+        s2.avgTripDuration = 30; //DURATION
         s2.avgTripDistance = 30; //DISTANCE
         stations.append(s2);
 
@@ -116,9 +116,9 @@ go_bandit([](){
             QVector<Station> outStations = stationsorter.sort(stationsIn);
             AssertThat(outStations.size(), Equals(3));
             if(outStations.size() == 3){
-                AssertThat(outStations[0].id, Equals(s2.id));
-                AssertThat(outStations[1].id, Equals(s1.id));
-                AssertThat(outStations[2].id, Equals(s3.id));
+                AssertThat(outStations[0].id, Equals(s3.id));
+                AssertThat(outStations[1].id, Equals(s2.id));
+                AssertThat(outStations[2].id, Equals(s1.id));
             }
         });
 
@@ -127,9 +127,9 @@ go_bandit([](){
             QVector<Station> outStations = stationsorter.sort(stationsIn);
             AssertThat(outStations.size(), Equals(3));
             if(outStations.size() == 3){
-                AssertThat(outStations[0].id, Equals(s1.id));
-                AssertThat(outStations[1].id, Equals(s2.id));
-                AssertThat(outStations[2].id, Equals(s3.id));
+                AssertThat(outStations[0].id, Equals(s2.id));
+                AssertThat(outStations[1].id, Equals(s3.id));
+                AssertThat(outStations[2].id, Equals(s1.id));
             }
         });
     });

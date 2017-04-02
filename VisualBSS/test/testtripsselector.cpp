@@ -66,21 +66,21 @@ go_bandit([](){
         QVector<Trip> trips3(0);
 
         Trip t5;
-        t5.startDateTime = QDateTime(QDate(2016, 4, 20), QTime(12, 00));
+        t5.startDateTime = QDateTime(QDate(2016, 4, 21), QTime(12, 00));
         t5.endDateTime = QDateTime(QDate(2016, 4, 21), QTime(13, 00));
         t5.startStationId = 0; 
         t5.endStationId = 1; // this station is correct so the trip must be accept
         trips3.append(t5);
 
         Trip t6;
-        t6.startDateTime = QDateTime(QDate(2016, 4, 20), QTime(12, 00));
+        t6.startDateTime = QDateTime(QDate(2016, 4, 21), QTime(12, 00));
         t6.endDateTime = QDateTime(QDate(2016, 4, 21), QTime(13, 00));
         t6.startStationId = 1; // this one too
         t6.endStationId = 0;
         trips3.append(t6);
 
         Trip t7;
-        t7.startDateTime = QDateTime(QDate(2016, 4, 20), QTime(12, 00));
+        t7.startDateTime = QDateTime(QDate(2016, 4, 21), QTime(12, 00));
         t7.endDateTime = QDateTime(QDate(2016, 4, 21), QTime(13, 00));
         t7.startStationId = 2; // the two stations are false so the trip is false
         t7.endStationId = 3;
