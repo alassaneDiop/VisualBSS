@@ -88,6 +88,10 @@ MainWindow::MainWindow(QWidget* parent) :
     m_tripsFilterParams.maxDirection = 360;
     m_tripsFilterParams.minDirection = 0;
 
+    m_view->doubleSpinBox_maxDirection->blockSignals(true);
+    m_view->doubleSpinBox_maxDirection->setValue(360);
+    m_view->doubleSpinBox_maxDirection->blockSignals(false);
+
     m_stationsSortParam = SORT_PARAMS.at(m_view->comboBox_order->currentIndex());
 }
 
@@ -318,6 +322,11 @@ QVector<QDate> MainWindow::dates(const QVector<Trip>& trips)
             dates.append(t.endDateTime.date());
     }
 
+    bool (*greatherThan)(const QDate&, const QDate&) = [](const QDate& d1, const QDate& d2)
+    { return d1 < d2; };
+
+    std::sort(dates.begin(), dates.end(), greatherThan);
+
     return dates;
 }
 
@@ -373,6 +382,7 @@ void MainWindow::onAsyncTaskStarted()
     m_canApplicationExit = false;
     m_view->menuBar->setEnabled(false);
     m_view->frame_controls->setEnabled(false);
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 }
 
 void MainWindow::onAsyncTaskFinished()
@@ -380,6 +390,7 @@ void MainWindow::onAsyncTaskFinished()
     m_canApplicationExit = true;
     m_view->menuBar->setEnabled(m_shouldEnableMenuBar);
     m_view->frame_controls->setEnabled(m_shouldEnableControls);
+    QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
 }
 
 
@@ -396,9 +407,6 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     m_tripsFilterParams.maxDuration = maxDuration(trips);
     m_stationsFilterParams.maxTripsFlow = maxTripsFlow(stations);
 
-    runAsync(QtConcurrent::run(this, &MainWindow::filterStations, stations, m_stationsFilterParams));
-    drawStationsOnMap(stations);
-
     QString (*dateToString)(const QDate& d) = [](const QDate& d) { return d.toString("dd/MM/yyyy"); };
     const QStringList datesStrings = QStringList::fromVector(QtConcurrent::blockingMapped(m_dates, dateToString));
 
@@ -414,17 +422,37 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     m_view->comboBox_toPeriod->setCurrentIndex(datesStrings.size() - 1);
     m_view->comboBox_toPeriod->blockSignals(false);
 
+    m_view->spinBox_minDistance->blockSignals(true);
+    m_view->spinBox_minDistance->setRange(0, m_tripsFilterParams.maxDistance);
+    m_view->spinBox_minDistance->setValue(0);
+    m_view->spinBox_minDistance->blockSignals(false);
+
     m_view->spinBox_maxDistance->blockSignals(true);
     m_view->spinBox_maxDistance->setRange(0, m_tripsFilterParams.maxDistance);
+    m_view->spinBox_maxDistance->setValue(m_tripsFilterParams.maxDistance);
     m_view->spinBox_maxDistance->blockSignals(false);
+
+    m_view->spinBox_minDuration->blockSignals(true);
+    m_view->spinBox_minDuration->setRange(0, m_tripsFilterParams.maxDuration);
+    m_view->spinBox_minDuration->setValue(0);
+    m_view->spinBox_minDuration->blockSignals(false);
 
     m_view->spinBox_maxDuration->blockSignals(true);
     m_view->spinBox_maxDuration->setRange(0, m_tripsFilterParams.maxDuration);
+    m_view->spinBox_maxDuration->setValue(m_tripsFilterParams.maxDuration);
     m_view->spinBox_maxDuration->blockSignals(false);
+
+    m_view->spinBox_minTripsFlow->blockSignals(true);
+    m_view->spinBox_minTripsFlow->setRange(0, m_stationsFilterParams.maxTripsFlow);
+    m_view->spinBox_minTripsFlow->setValue(0);
+    m_view->spinBox_minTripsFlow->blockSignals(false);
 
     m_view->spinBox_maxTripsFlow->blockSignals(true);
     m_view->spinBox_maxTripsFlow->setRange(0, m_stationsFilterParams.maxTripsFlow);
+    m_view->spinBox_maxTripsFlow->setValue(m_stationsFilterParams.maxTripsFlow);
     m_view->spinBox_maxTripsFlow->blockSignals(false);
+
+    runAsync(QtConcurrent::run(this, &MainWindow::filterStations, stations, m_stationsFilterParams));
 }
 
 void MainWindow::onFailedToLoadData(const QString& filename, const QString& errorDesc)

@@ -38,30 +38,30 @@ SOURCES += src/main.cpp\
     src/glyphsverticesbuilder.cpp \
     src/data.cpp
 
-HEADERS += abstractdatafilereader.h \
-    config.h \
-    csvdatafilereader.h \
-    data.h \
-    datafilereader.h \
-    glyphrenderer.h \
-    glyphsverticesbuilder.h \
-    mainwindow.h \
-    mapglwidget.h \
-    matrixglwidget.h \
-    renderer.h \
-    selectorrenderer.h \
-    station.h \
-    stationrenderer.h \
-    stationsfilter.h \
-    stationssorter.h \
-    stationsverticesbuilder.h \
-    timelinewidget.h \
-    trip.h \
-    triprenderer.h \
-    tripsfilter.h \
-    tripsselector.h \
-    tripsverticesbuilder.h \
-    xmldatafilereader.h \
+HEADERS += include/abstractdatafilereader.h \
+    include/config.h \
+    include/csvdatafilereader.h \
+    include/data.h \
+    include/datafilereader.h \
+    include/glyphrenderer.h \
+    include/glyphsverticesbuilder.h \
+    include/mainwindow.h \
+    include/mapglwidget.h \
+    include/matrixglwidget.h \
+    include/renderer.h \
+    include/selectorrenderer.h \
+    include/station.h \
+    include/stationrenderer.h \
+    include/stationsfilter.h \
+    include/stationssorter.h \
+    include/stationsverticesbuilder.h \
+    include/timelinewidget.h \
+    include/trip.h \
+    include/triprenderer.h \
+    include/tripsfilter.h \
+    include/tripsselector.h \
+    include/tripsverticesbuilder.h \
+    include/xmldatafilereader.h \
 
 FORMS    += mainwindow.ui
 

@@ -649,13 +649,13 @@
                  <widget class="QSpinBox" name="spinBox_minDistance">
                   <property name="minimumSize">
                    <size>
-                    <width>80</width>
+                    <width>120</width>
                     <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>80</width>
+                    <width>120</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -680,13 +680,13 @@
                  <widget class="QSpinBox" name="spinBox_maxDistance">
                   <property name="minimumSize">
                    <size>
-                    <width>80</width>
+                    <width>120</width>
                     <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>80</width>
+                    <width>120</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -764,13 +764,13 @@
                  <widget class="QSpinBox" name="spinBox_minDuration">
                   <property name="minimumSize">
                    <size>
-                    <width>80</width>
+                    <width>120</width>
                     <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>80</width>
+                    <width>120</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -792,13 +792,13 @@
                  <widget class="QSpinBox" name="spinBox_maxDuration">
                   <property name="minimumSize">
                    <size>
-                    <width>80</width>
+                    <width>120</width>
                     <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>80</width>
+                    <width>120</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -876,13 +876,13 @@
                  <widget class="QDoubleSpinBox" name="doubleSpinBox_minDirection">
                   <property name="minimumSize">
                    <size>
-                    <width>80</width>
+                    <width>120</width>
                     <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>80</width>
+                    <width>120</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -910,13 +910,13 @@
                  <widget class="QDoubleSpinBox" name="doubleSpinBox_maxDirection">
                   <property name="minimumSize">
                    <size>
-                    <width>80</width>
+                    <width>120</width>
                     <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>80</width>
+                    <width>120</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -946,7 +946,7 @@
              <item>
               <widget class="QFrame" name="frame_tripsFlow">
                <property name="toolTip">
-                <string>Filter stations by a trips flow range (the number of trips associated to a stations).</string>
+                <string>Filter stations by a trips flow range (the number of trips associated to a station).</string>
                </property>
                <property name="frameShape">
                 <enum>QFrame::Box</enum>
@@ -1000,13 +1000,13 @@
                  <widget class="QSpinBox" name="spinBox_minTripsFlow">
                   <property name="minimumSize">
                    <size>
-                    <width>80</width>
+                    <width>120</width>
                     <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>80</width>
+                    <width>120</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -1025,13 +1025,13 @@
                  <widget class="QSpinBox" name="spinBox_maxTripsFlow">
                   <property name="minimumSize">
                    <size>
-                    <width>80</width>
+                    <width>120</width>
                     <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>80</width>
+                    <width>120</width>
                     <height>16777215</height>
                    </size>
                   </property>
