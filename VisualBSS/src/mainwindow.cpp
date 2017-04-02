@@ -186,8 +186,6 @@ void MainWindow::selectTrips(const int& fromHour, const int& toHour,
     }
 }
 
-{
-
 void MainWindow::drawStationsOnMap(const QVector<Station>& stations)
 {
     buildStationsVertices(stations);
