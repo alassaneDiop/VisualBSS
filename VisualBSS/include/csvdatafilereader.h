@@ -19,6 +19,7 @@ class CsvDataFileReader : public AbstractDataFileReader
 {
 public:
     CsvDataFileReader(const DataFileParams& params);
+    CsvDataFileReader(const QString& filename, const Qt::DateFormat& dateFormat = Qt::ISODate);
     virtual ~CsvDataFileReader();
 
     /**

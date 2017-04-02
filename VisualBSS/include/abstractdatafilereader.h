@@ -6,7 +6,7 @@
 #include <QReadWriteLock>
 
 namespace bss {
-class DataFileReader;
+class AbstractDataFileReader;
 struct DataFileParams;
 struct DataFileReadInfo;
 }

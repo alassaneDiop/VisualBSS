@@ -34,7 +34,7 @@ public:
      * @param stations The stations to filter.
      * @return The filtered stations.
      */
-    QVector<Station> filter(const QVector<Station>& stations) const;
+    QVector<Station> filter(QVector<Station> stations) const;
 
 private:
     StationsFilterParams m_params;

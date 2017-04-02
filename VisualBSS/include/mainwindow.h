@@ -165,7 +165,7 @@ private:
     QFutureWatcher<void>* m_asyncTaskMonitor = nullptr;
 
     Ui::MainWindow* m_view;         /// Pointer to the object that contains all the widgets.
-    Data* m_model = nullptr;       /// Pointer to the object that manages the data.
+    Data* m_data = nullptr;       /// Pointer to the object that manages the data.
 
     QVector<QDate> m_dates;         /// Stores all the different dates retrieved from the trips.
     QVector<int> m_tripsIds;        /// The ids of trips that are filtered and rendered on the timeline matrix.
@@ -194,9 +194,9 @@ private slots:
     void onMatrixSelectionChanged(const int& fromHour, const int& toHour,
                                   const int& fromStationIndex, const int& toStationIndex);
 
-    void onStationsVerticesBuilt(const QVector<float> stationsVertices);
-    void onTripsVerticesBuilt(const QVector<float> tripsVertices);
-    void onGlyphsVerticesBuilt(const QVector<float> glyphsVertices);
+    void onStationsVerticesBuilt(const QVector<float>& stationsVertices);
+    void onTripsVerticesBuilt(const QVector<float>& tripsVertices);
+    void onGlyphsVerticesBuilt(const QVector<float>& glyphsVertices);
 
     void on_action_open_triggered();
     void on_action_closeAll_triggered();
@@ -211,22 +211,14 @@ private slots:
 
     void on_comboBox_order_currentIndexChanged(int index);
 
-    void on_rangeSlider_distance_firstValueChanged(qreal v);
-    void on_rangeSlider_distance_secondValueChanged(qreal v);
-    void on_rangeSlider_distance_firstPositionChanged(qreal p);
-    void on_rangeSlider_distance_secondPositionChanged(qreal p);
-    void on_rangeSlider_duration_firstValueChanged(qreal v);
-    void on_rangeSlider_duration_secondValueChanged(qreal v);
-    void on_rangeSlider_duration_firstPositionChanged(qreal p);
-    void on_rangeSlider_duration_secondPositionChanged(qreal p);
-    void on_rangeSlider_direction_firstValueChanged(qreal v);
-    void on_rangeSlider_direction_secondValueChanged(qreal v);
-    void on_rangeSlider_direction_firstPositionChanged(qreal p);
-    void on_rangeSlider_direction_secondPositionChanged(qreal p);
-    void on_rangeSlider_tripsFlow_firstValueChanged(qreal v);
-    void on_rangeSlider_tripsFlow_secondValueChanged(qreal v);
-    void on_rangeSlider_tripsFlow_firstPositionChanged(qreal p);
-    void on_rangeSlider_tripsFlow_secondPositionChanged(qreal p);
+    void on_spinBox_minDistance_valueChanged(int arg1);
+    void on_spinBox_maxDistance_valueChanged(int arg1);
+    void on_spinBox_minDuration_valueChanged(int arg1);
+    void on_spinBox_maxDuration_valueChanged(int arg1);
+    void on_doubleSpinBox_minDirection_valueChanged(double arg1);
+    void on_doubleSpinBox_maxDirection_valueChanged(double arg1);
+    void on_spinBox_minTripsFlow_valueChanged(int arg1);
+    void on_spinBox_maxTripsFlow_valueChanged(int arg1);
 
 signals:
     void tripsChanged(const QVector<int>& trips);
@@ -236,9 +228,9 @@ signals:
     void tripsFilterParamsChanged(const TripsFilterParams& params);
     void stationsSorterParamChanged(const bss::SortParam& param);
 
-    void stationsVerticesBuilt(const QVector<float> stationsVertices);
-    void tripsVerticesBuilt(const QVector<float> tripsVertices);
-    void glyphsVerticesBuilt(const QVector<float> glyphsVertices);
+    void stationsVerticesBuilt(const QVector<float>& stationsVertices);
+    void tripsVerticesBuilt(const QVector<float>& tripsVertices);
+    void glyphsVerticesBuilt(const QVector<float>& glyphsVertices);
 };
 
 #endif // MAINWINDOW_H

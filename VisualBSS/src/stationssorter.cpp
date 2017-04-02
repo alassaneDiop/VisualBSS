@@ -43,19 +43,16 @@ void StationsSorter::setSortParam(const bss::SortParam& param)
             m_greaterThan = [](const Station& s1, const Station& s2)
             { return (s1.avgTripDuration > s2.avgTripDuration); };
             break;
+        default:
+            m_greaterThan = nullptr;
+            break;
         }
     }
 }
 
-QVector<Station> StationsSorter::sort(const QVector<Station>& stations) const
-{
-    QVector<Station> sortedStations = QVector<Station>(stations);
-    sort(sortedStations);
-    return sortedStations;
-}
-
-void StationsSorter::sort(QVector<Station>& stations) const
+QVector<Station> StationsSorter::sort(QVector<Station> stations) const
 {
     // Qt recommends to use the std function instead of its own, and include QtAlgorithms
     std::stable_sort(stations.begin(), stations.end(), m_greaterThan);
+    return stations;
 }

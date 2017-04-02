@@ -10,6 +10,12 @@ XmlDataFileReader::XmlDataFileReader(const DataFileParams& params) :
 
 }
 
+XmlDataFileReader::XmlDataFileReader(const QString& filename, const Qt::DateFormat& dateFormat) :
+    AbstractDataFileReader(filename, dateFormat)
+{
+
+}
+
 XmlDataFileReader::~XmlDataFileReader()
 {
 

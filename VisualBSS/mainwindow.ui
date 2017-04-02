@@ -591,6 +591,9 @@
              </property>
              <item>
               <widget class="QFrame" name="frame_distance">
+               <property name="toolTip">
+                <string>Filter trips by a distance range (in meters).</string>
+               </property>
                <property name="autoFillBackground">
                 <bool>false</bool>
                </property>
@@ -643,91 +646,61 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="lineEdit_minDistance">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                 <widget class="QSpinBox" name="spinBox_minDistance">
+                  <property name="minimumSize">
+                   <size>
+                    <width>80</width>
+                    <height>0</height>
+                   </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>60</width>
+                    <width>80</width>
                     <height>16777215</height>
                    </size>
                   </property>
-                  <property name="text">
-                   <string>0</string>
+                  <property name="wrapping">
+                   <bool>false</bool>
                   </property>
-                  <property name="maxLength">
-                   <number>6</number>
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::PlusMinus</enum>
                   </property>
-                  <property name="frame">
-                   <bool>true</bool>
+                  <property name="correctionMode">
+                   <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
                   </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  <property name="keyboardTracking">
+                   <bool>false</bool>
                   </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
+                  <property name="suffix">
+                   <string>m</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QQuickWidget" name="rangeSlider_distance">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                 <widget class="QSpinBox" name="spinBox_maxDistance">
+                  <property name="minimumSize">
+                   <size>
+                    <width>80</width>
+                    <height>0</height>
+                   </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>120</width>
+                    <width>80</width>
                     <height>16777215</height>
                    </size>
                   </property>
-                  <property name="toolTip">
-                   <string>Distance interval (in meters)</string>
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::PlusMinus</enum>
                   </property>
-                  <property name="resizeMode">
-                   <enum>QQuickWidget::SizeRootObjectToView</enum>
+                  <property name="correctionMode">
+                   <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
                   </property>
-                  <property name="source">
-                   <url>
-                    <string>qrc:/QML/qml/controls/RangeSlider.qml</string>
-                   </url>
+                  <property name="keyboardTracking">
+                   <bool>false</bool>
                   </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="lineEdit_maxDistance">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>60</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>100000</string>
-                  </property>
-                  <property name="maxLength">
-                   <number>6</number>
-                  </property>
-                  <property name="frame">
-                   <bool>true</bool>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
+                  <property name="suffix">
+                   <string>m</string>
                   </property>
                  </widget>
                 </item>
@@ -736,6 +709,9 @@
              </item>
              <item>
               <widget class="QFrame" name="frame_duration">
+               <property name="toolTip">
+                <string>Filter trips by a duration range (in seconds).</string>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::Box</enum>
                </property>
@@ -785,91 +761,58 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="lineEdit_minDuration">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                 <widget class="QSpinBox" name="spinBox_minDuration">
+                  <property name="minimumSize">
+                   <size>
+                    <width>80</width>
+                    <height>0</height>
+                   </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>60</width>
+                    <width>80</width>
                     <height>16777215</height>
                    </size>
                   </property>
-                  <property name="text">
-                   <string>0</string>
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::PlusMinus</enum>
                   </property>
-                  <property name="maxLength">
-                   <number>6</number>
+                  <property name="correctionMode">
+                   <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
                   </property>
-                  <property name="frame">
-                   <bool>true</bool>
+                  <property name="keyboardTracking">
+                   <bool>false</bool>
                   </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
+                  <property name="suffix">
+                   <string>s</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QQuickWidget" name="rangeSlider_duration">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                 <widget class="QSpinBox" name="spinBox_maxDuration">
+                  <property name="minimumSize">
+                   <size>
+                    <width>80</width>
+                    <height>0</height>
+                   </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>120</width>
+                    <width>80</width>
                     <height>16777215</height>
                    </size>
                   </property>
-                  <property name="toolTip">
-                   <string>Duration interval (in seconds)</string>
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::PlusMinus</enum>
                   </property>
-                  <property name="resizeMode">
-                   <enum>QQuickWidget::SizeRootObjectToView</enum>
+                  <property name="correctionMode">
+                   <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
                   </property>
-                  <property name="source">
-                   <url>
-                    <string>qrc:/QML/qml/controls/RangeSlider.qml</string>
-                   </url>
+                  <property name="keyboardTracking">
+                   <bool>false</bool>
                   </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="lineEdit_maxDuration">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>60</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>100000</string>
-                  </property>
-                  <property name="maxLength">
-                   <number>6</number>
-                  </property>
-                  <property name="frame">
-                   <bool>true</bool>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
+                  <property name="suffix">
+                   <string>s</string>
                   </property>
                  </widget>
                 </item>
@@ -878,6 +821,9 @@
              </item>
              <item>
               <widget class="QFrame" name="frame_direction">
+               <property name="toolTip">
+                <string>Filter trips by a direction range (in degrees).</string>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::Box</enum>
                </property>
@@ -927,91 +873,70 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="lineEdit_minDirection">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_minDirection">
+                  <property name="minimumSize">
+                   <size>
+                    <width>80</width>
+                    <height>0</height>
+                   </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>60</width>
+                    <width>80</width>
                     <height>16777215</height>
                    </size>
                   </property>
-                  <property name="text">
-                   <string>0</string>
-                  </property>
-                  <property name="maxLength">
-                   <number>6</number>
-                  </property>
-                  <property name="frame">
+                  <property name="wrapping">
                    <bool>true</bool>
                   </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::PlusMinus</enum>
                   </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
+                  <property name="correctionMode">
+                   <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                  </property>
+                  <property name="keyboardTracking">
+                   <bool>false</bool>
+                  </property>
+                  <property name="suffix">
+                   <string>°</string>
+                  </property>
+                  <property name="maximum">
+                   <double>360.000000000000000</double>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QQuickWidget" name="rangeSlider_direction">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_maxDirection">
+                  <property name="minimumSize">
+                   <size>
+                    <width>80</width>
+                    <height>0</height>
+                   </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>120</width>
+                    <width>80</width>
                     <height>16777215</height>
                    </size>
                   </property>
-                  <property name="toolTip">
-                   <string>Azimuth interval (in degrees)</string>
-                  </property>
-                  <property name="resizeMode">
-                   <enum>QQuickWidget::SizeRootObjectToView</enum>
-                  </property>
-                  <property name="source">
-                   <url>
-                    <string>qrc:/QML/qml/controls/RangeSlider.qml</string>
-                   </url>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="lineEdit_maxDirection">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>60</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>360</string>
-                  </property>
-                  <property name="maxLength">
-                   <number>6</number>
-                  </property>
-                  <property name="frame">
+                  <property name="wrapping">
                    <bool>true</bool>
                   </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::PlusMinus</enum>
                   </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
+                  <property name="correctionMode">
+                   <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                  </property>
+                  <property name="keyboardTracking">
+                   <bool>false</bool>
+                  </property>
+                  <property name="suffix">
+                   <string>°</string>
+                  </property>
+                  <property name="maximum">
+                   <double>360.000000000000000</double>
                   </property>
                  </widget>
                 </item>
@@ -1020,6 +945,9 @@
              </item>
              <item>
               <widget class="QFrame" name="frame_tripsFlow">
+               <property name="toolTip">
+                <string>Filter stations by a trips flow range (the number of trips associated to a stations).</string>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::Box</enum>
                </property>
@@ -1069,91 +997,52 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="lineEdit_minTripsFlow">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                 <widget class="QSpinBox" name="spinBox_minTripsFlow">
+                  <property name="minimumSize">
+                   <size>
+                    <width>80</width>
+                    <height>0</height>
+                   </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>60</width>
+                    <width>80</width>
                     <height>16777215</height>
                    </size>
                   </property>
-                  <property name="text">
-                   <string>0</string>
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::PlusMinus</enum>
                   </property>
-                  <property name="maxLength">
-                   <number>6</number>
+                  <property name="correctionMode">
+                   <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
                   </property>
-                  <property name="frame">
-                   <bool>true</bool>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
+                  <property name="keyboardTracking">
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QQuickWidget" name="rangeSlider_tripsFlow">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                 <widget class="QSpinBox" name="spinBox_maxTripsFlow">
+                  <property name="minimumSize">
+                   <size>
+                    <width>80</width>
+                    <height>0</height>
+                   </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>120</width>
+                    <width>80</width>
                     <height>16777215</height>
                    </size>
                   </property>
-                  <property name="toolTip">
-                   <string>Trips flow interval</string>
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::PlusMinus</enum>
                   </property>
-                  <property name="resizeMode">
-                   <enum>QQuickWidget::SizeRootObjectToView</enum>
+                  <property name="correctionMode">
+                   <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
                   </property>
-                  <property name="source">
-                   <url>
-                    <string>qrc:/QML/qml/controls/RangeSlider.qml</string>
-                   </url>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="lineEdit_maxTripsFlow">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>60</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>100000</string>
-                  </property>
-                  <property name="maxLength">
-                   <number>6</number>
-                  </property>
-                  <property name="frame">
-                   <bool>true</bool>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
+                  <property name="keyboardTracking">
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -1422,11 +1311,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>QQuickWidget</class>
-   <extends>QWidget</extends>
-   <header>QtQuickWidgets/QQuickWidget</header>
-  </customwidget>
   <customwidget>
    <class>MapGLWidget</class>
    <extends>QOpenGLWidget</extends>

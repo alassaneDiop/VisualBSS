@@ -15,6 +15,12 @@ CsvDataFileReader::CsvDataFileReader(const DataFileParams& params) :
 
 }
 
+CsvDataFileReader::CsvDataFileReader(const QString& filename, const Qt::DateFormat& dateFormat) :
+    AbstractDataFileReader(filename, dateFormat)
+{
+
+}
+
 CsvDataFileReader::~CsvDataFileReader()
 {
 
@@ -259,7 +265,7 @@ DataFileReadInfo CsvDataFileReader::parallelReadData(QHash<QString, Station>& st
 
 
 /*
- * Pour CitiBike:
+ * For CitiBike:
  * "tripduration",
  * "starttime",
  * "stoptime",

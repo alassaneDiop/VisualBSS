@@ -10,7 +10,7 @@ class TripsSelector;
 
 /**
  * @brief The TripsSelectionParams struct contains properties to select trips
- * from the timeline matrix. Trips are selecting in this matrix according to
+ * from the timeline matrix. Trips are selected in this matrix according to
  * a departure hour interval and stations ids.
  * <i>fromHour</i> and <i>toHour</i> are set to 0 by default.
  */

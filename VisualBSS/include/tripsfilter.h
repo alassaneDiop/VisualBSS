@@ -21,8 +21,8 @@ struct TripsFilterParams
     QDate toPeriod;
     qint64 maxDuration = 0;    /// in seconds
     qint64 minDuration = 0;    /// in seconds
-    qreal maxDistance = 0;     /// in meters
-    qreal minDistance = 0;     /// in meters
+    qint64 maxDistance = 0;     /// in meters
+    qint64 minDistance = 0;     /// in meters
     qreal maxDirection = 0;    /// in degrees
     qreal minDirection = 0;    /// in degrees
 };

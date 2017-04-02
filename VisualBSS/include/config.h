@@ -18,7 +18,8 @@ static const int RANK_SIZE = 10;
 static const bool PARALLEL_PARSING = true;
 
 /**
- * According to the article by Guilherme Oliveira : "Visual analysis of a bike sharing system"
+ * According to the article by "Visual analysis of bike-sharing systems Guilherme" by
+ * N. Oliveira, Jose L. Sotomayor, Rafael P. Torchelsen, Cláudio T. Silva, João L.D. Comba :
  * "For cyclic trips, we estimated the distance by multiplying the duration by
  * the average speed of 2.7m/s."
  */

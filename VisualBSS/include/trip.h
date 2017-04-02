@@ -2,6 +2,7 @@
 #define TRIP_H
 
 #include <QDateTime>
+#include <QtConcurrent>
 
 namespace bss {
 struct Trip;

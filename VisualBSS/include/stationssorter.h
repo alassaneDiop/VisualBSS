@@ -36,13 +36,7 @@ public:
      * @param stations The stations to sort.
      * @return The sorted stations.
      */
-    QVector<Station> sort(const QVector<Station>& stations) const;
-
-    /**
-     * @brief sort Sorts the specified stations by a parameter.
-     * @param stations The stations to sort.
-     */
-    void sort(QVector<Station>& stations) const;
+    QVector<Station> sort(QVector<Station> stations) const;
 
 private:
     bss::SortParam m_sortParam;

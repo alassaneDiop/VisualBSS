@@ -5,6 +5,10 @@
 
 #include <QReadWriteLock>
 
+namespace bss {
+class DataFileReader;
+}
+
 /**
  * @brief The DataFileReader class parses trips and stations from a specified filename.
  */

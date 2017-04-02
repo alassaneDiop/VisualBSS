@@ -18,6 +18,8 @@ class XmlDataFileReader : public AbstractDataFileReader
 {
 public:
     XmlDataFileReader(const DataFileParams& params);
+    XmlDataFileReader(const QString& filename, const Qt::DateFormat& dateFormat = Qt::ISODate);
+
     virtual ~XmlDataFileReader();
 
     /**

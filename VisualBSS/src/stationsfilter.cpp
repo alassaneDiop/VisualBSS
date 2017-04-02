@@ -11,7 +11,7 @@ StationsFilter::StationsFilter(const StationsFilterParams& params) :
 
 }
 
-QVector<Station> StationsFilter::filter(const QVector<Station>& stations) const
+QVector<Station> StationsFilter::filter(QVector<Station> stations) const
 {
     const auto filter = [this](const Station& s)
     {
