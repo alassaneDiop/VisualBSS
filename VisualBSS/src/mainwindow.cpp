@@ -452,7 +452,8 @@ void MainWindow::onDataLoaded(const QVector<Trip>& trips, const QVector<Station>
     m_view->spinBox_maxTripsFlow->setValue(m_stationsFilterParams.maxTripsFlow);
     m_view->spinBox_maxTripsFlow->blockSignals(false);
 
-    runAsync(QtConcurrent::run(this, &MainWindow::filterStations, stations, m_stationsFilterParams));
+    onTripsFilterParamsChanged(m_tripsFilterParams);
+    onStationsFilterParamsChanged(m_stationsFilterParams);
 }
 
 void MainWindow::onFailedToLoadData(const QString& filename, const QString& errorDesc)
@@ -495,17 +496,6 @@ void MainWindow::onSelectionChanged(const QVector<int>& selection)
 
 void MainWindow::onStationsOrderChanged(const QVector<int>& stationsIds)
 {
-    const QVector<Station> stations = m_data->stations(stationsIds);
-    runAsync(QtConcurrent::run(this, &MainWindow::drawGlyphsOnMatrix, stations, m_tripsDisplayParams));
-
-    if (m_selection.isEmpty())
-        drawStationsOnMap(stations);
-    else
-    {
-        m_selection.clear();
-        onSelectionChanged(m_selection);
-    }
-
     const QVector<int> topStationsIds = stationsIds.mid(0, bss::RANK_SIZE);
     QStringList topStationsNames;
     topStationsNames.reserve(topStationsIds.size());
@@ -521,6 +511,19 @@ void MainWindow::onStationsOrderChanged(const QVector<int>& stationsIds)
 
     m_view->listView_top->setModel(new QStringListModel(topStationsNames));
     m_view->listView_last->setModel(new QStringListModel(lastStationsNames));
+
+
+
+    const QVector<Station> stations = m_data->stations(stationsIds);
+    runAsync(QtConcurrent::run(this, &MainWindow::drawGlyphsOnMatrix, stations, m_tripsDisplayParams));
+
+    if (m_selection.isEmpty())
+        drawStationsOnMap(stations);
+    else
+    {
+        m_selection.clear();
+        onSelectionChanged(m_selection);
+    }
 }
 
 void MainWindow::onHighlightChanged(const int& highlight)
