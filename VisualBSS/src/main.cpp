@@ -18,7 +18,7 @@
 
 #include "mainwindow.h"
 #include <QApplication>
-
+#include <bandit/bandit.h>
 #include <QSurfaceFormat>
 
 static void setDefaultOpenGLSurfaceFormat()
@@ -37,5 +37,6 @@ int main(int argc, char* argv[])
     setDefaultOpenGLSurfaceFormat();
     MainWindow w;
     w.showMaximized();
-    return a.exec();
+    return a.exec(); //& bandit::run(argc, argv);
 }
+
