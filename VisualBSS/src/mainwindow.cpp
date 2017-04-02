@@ -186,6 +186,7 @@ void MainWindow::selectTrips(const int& fromHour, const int& toHour,
     }
 }
 
+
 void MainWindow::drawStationsOnMap(const QVector<Station>& stations)
 {
     buildStationsVertices(stations);
@@ -561,7 +562,6 @@ void MainWindow::onMatrixSelectionChanged(const int& fromHour, const int& toHour
 void MainWindow::onStationsVerticesBuilt(const QVector<float>& stationsVertices)
 {
     const int vertexSize = 5; // 2 for position x/y and 3 for color R/G/B
-    m_view->mapwidget->clear();
     m_view->mapwidget->loadStationsData(stationsVertices, stationsVertices.size() / vertexSize);
     m_view->mapwidget->centerView(stationsVertices);
 }

@@ -268,7 +268,7 @@ QPair<int, int> MatrixGLWidget::timeIntervalSelected() const
 
     timeInterval.first = qMax(0, timeInterval.first);
     timeInterval.second = qMin(timeInterval.second, bss::NB_OF_HOURS);
-//    qDebug() << "Time interval"<< (int)timeInterval.first << (int)timeInterval.second;
+    //qDebug() << "Time interval"<< (int)timeInterval.first << (int)timeInterval.second;
 
     return timeInterval;
 }
