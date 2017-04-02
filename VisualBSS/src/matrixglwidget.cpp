@@ -59,6 +59,9 @@ void MatrixGLWidget::initializeGL()
     if (!initializeShaderSelector())
         emit onShaderError(m_shaderProgramSelector->log());
 
+    m_frameCount = 0;
+    m_lastTime = 0;
+
     qDebug() << "MatrixGLWidget::initializeGL() OpenGL version:" << this->format().version();
 }
 
@@ -74,12 +77,27 @@ void MatrixGLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    m_time.start();
+    /// BEGIN Used for performance tests
+    //    if (m_frameCount == 0)
+    //        m_time.start();
+    /// END Used for performance tests
 
     drawGlyphs();
     drawSelector();
 
-    qDebug() << "glyphs drawn in" << m_time.elapsed() << "ms";
+    /// BEGIN Used for performance tests
+    //    m_frameCount++;
+
+    //    if (m_time.elapsed() - m_lastTime >= 1000)
+    //    {
+    //        qDebug() << "MatrixGLWidget drawn in:" << double(1000) / m_frameCount << "ms";
+    //        m_frameCount = 0;
+    //        m_lastTime++;
+    //    }
+
+    //    if (m_drawGlyphs)
+    //        update();
+    /// END Used for performance tests
 }
 
 
@@ -237,11 +255,13 @@ QPair<int, int> MatrixGLWidget::timeIntervalSelected() const
     return timeInterval;
 }
 
+
+// FIXME : doesn't return correct values
 QPair<int, int> MatrixGLWidget::stationIntervalSelected() const
 {
     const int glyphIntervalY = bss::GLYPH_HEIGHT + bss::SPACE_BETWEEN_GLYPHS;
 
-    // m_translation from OpenGL coordinates to raster coordinates
+    // m_translationY from OpenGL coordinates to raster coordinates
     const float normalizedTranslationY = m_translationY * height() / 2.f;
 
     QPair<int, int> stationsInterval;
@@ -258,7 +278,7 @@ QPair<int, int> MatrixGLWidget::stationIntervalSelected() const
     stationsInterval.second = qMax(tmp1, tmp2);
     stationsInterval.first = qMax(0, stationsInterval.first);
 
-    qDebug() << "Stations interval"<< stationsInterval.first << stationsInterval.second;
+    //qDebug() << "Stations interval"<< stationsInterval.first << stationsInterval.second;
 
     return stationsInterval;
 }
@@ -272,7 +292,7 @@ SelectionTimeStations MatrixGLWidget::tripsInSelector() const
     s.fromHour = timeInterval.first;
     s.toHour = timeInterval.second;
     s.fromStationIndex = stationsInterval.first;
-    s.fromStationIndex = stationsInterval.second;
+    s.toStationIndex = stationsInterval.second;
 
     return s;
 }

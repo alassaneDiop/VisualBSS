@@ -51,6 +51,8 @@ void MapGLWidget::initializeGL()
     if (!initializeShaderTrips())
         onShaderError(m_shaderProgramTrips->log());
 
+    m_frameCount = 0;
+
     qDebug() << "MapGLWidget::initializeGL() OpenGL version:" << this->format().version();
 }
 
@@ -64,8 +66,27 @@ void MapGLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
+    /// BEGIN Used for performance tests
+    //    if (m_frameCount == 0)
+    //        m_time.start();
+    /// END Used for performance tests
+
     drawStations();
     drawTrips();
+
+    /// BEGIN Used for performance tests
+    //    m_frameCount++;
+
+    //    if (m_time.elapsed() - m_lastTime >= 1000)
+    //    {
+    //        qDebug() << "MapGLWidget drawn in:" << double(1000) / m_frameCount << "ms";
+    //        m_frameCount = 0;
+    //        m_lastTime++;
+    //    }
+
+    //    if (m_drawTrips || m_drawStations)
+    //        update();
+    /// END Used for performance tests
 }
 
 
@@ -198,8 +219,7 @@ void MapGLWidget::calculateZoom()
         // OpenGL coordinates system from -1 to 1
         const int coordinateSystemLength = 2;
 
-        // FIXME: DAMIEN: comprendre pourquoi le zoom n'est pas centré sur le centre
-        // de la bounding box
+        // FIXME: Centering doesn't work very well
         // Cette valeur permet de reduire le zoom et affiche toute la bounding box
         const float debugValue = 2.f;
         m_zoom = coordinateSystemLength / x / debugValue;
@@ -225,7 +245,6 @@ void MapGLWidget::mouseMoveEvent(QMouseEvent* event)
     {
         QPointF currentPos = event->pos();
 
-        // FIXME: DAMIEN : refactoriser plus court
         m_translationX += 1.f / m_zoom * (currentPos.x() - m_previousMousePos.x()) / m_translationSensibility;
         m_translationY += 1.f / m_zoom * (currentPos.y() - m_previousMousePos.y()) / m_translationSensibility;
 

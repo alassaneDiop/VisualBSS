@@ -25,8 +25,14 @@ QVector<float> GlyphsVerticesBuilder::build(const int& timelineMatrixHeight,
     const float glyphIntervalY = bss::GLYPH_HEIGHT + bss::SPACE_BETWEEN_GLYPHS;
 
     QVector<float> glyphsVertices;
-    // TODO: Damien : calculer
-    //glyphsData.reserve();
+    const int pointPerTrips = 2;
+    const int positionTupleSize = 2;
+    const int colorTupleSize = 3;
+
+    const int arrivalsVerticesCount = arrivals.size() * pointPerTrips * positionTupleSize * colorTupleSize;
+    const int departuresVerticesCount = departures.size() * pointPerTrips * positionTupleSize * colorTupleSize;
+    const int cyclesVerticesCount = cycles.size() * pointPerTrips * positionTupleSize * colorTupleSize;
+    glyphsVertices.reserve(arrivalsVerticesCount + departuresVerticesCount + cyclesVerticesCount);
 
     int i = 0;
     int stationIndex = 0;
@@ -35,7 +41,10 @@ QVector<float> GlyphsVerticesBuilder::build(const int& timelineMatrixHeight,
         const float posX = (bss::TIMELINE_OFFSET_X + (i * glyphIntervalX));
         const float posY = stationIndex * glyphIntervalY;
 
-        glyphsVertices.append(buildGlyphsVertices(timelineMatrixHeight, timelineMatrixWidth, t, posX, posY, bss::GLYPH_ARRIVAL_COLOR));
+        glyphsVertices.append(buildGlyphsVertices(timelineMatrixHeight,
+                                                  timelineMatrixWidth,
+                                                  t, posX, posY,
+                                                  bss::GLYPH_ARRIVAL_COLOR));
 
         i++;
         i = i % 24;
@@ -52,7 +61,10 @@ QVector<float> GlyphsVerticesBuilder::build(const int& timelineMatrixHeight,
         const float posX = (bss::TIMELINE_OFFSET_X + (i * glyphIntervalX));
         const float posY = stationIndex * glyphIntervalY;
 
-        glyphsVertices.append(buildGlyphsVertices(timelineMatrixHeight, timelineMatrixWidth, t, posX, posY, bss::GLYPH_DEPARTURE_COLOR));
+        glyphsVertices.append(buildGlyphsVertices(timelineMatrixHeight,
+                                                  timelineMatrixWidth,
+                                                  t, posX, posY,
+                                                  bss::GLYPH_DEPARTURE_COLOR));
 
         i++;
         i = i % 24;
@@ -65,7 +77,9 @@ QVector<float> GlyphsVerticesBuilder::build(const int& timelineMatrixHeight,
     return glyphsVertices;
 }
 
-QPointF GlyphsVerticesBuilder::rotateAround(const float& angle, const QPointF& position, const QPointF& target)
+QPointF GlyphsVerticesBuilder::rotateAround(const float& angle,
+                                            const QPointF& position,
+                                            const QPointF& target)
 {
     const float sin = qSin(angle);
     const float cos = qCos(angle);

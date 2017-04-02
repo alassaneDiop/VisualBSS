@@ -4,7 +4,7 @@
 #include <QWheelEvent>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
-
+#include <QTime>
 
 namespace bss {
 class MapGLWidget;
@@ -259,11 +259,16 @@ private:
      */
     QVector<float> m_stationsPosition;
 
+    QTime m_time;
+
+    int m_frameCount;
+    int m_lastTime;
+
 signals:
     /**
      * @brief onShaderError If an error occured during loading, compilation or
      * linking, this signal will be emitted.
-     * @param message Message informations of errors.
+     * @param message Message informations on errors.
      */
     void onShaderError(const QString& message);
 };

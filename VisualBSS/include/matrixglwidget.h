@@ -1,4 +1,4 @@
-#ifndef MATRIXOPENGLWIDGET_H
+ #ifndef MATRIXOPENGLWIDGET_H
 #define MATRIXOPENGLWIDGET_H
 
 
@@ -278,10 +278,13 @@ private:
      */
     QTime m_time;
 
+    int m_frameCount;
+    int m_lastTime;
+
 signals:
     /**
-     * @brief selectionChanged As soon as the <i>m_selectionnedTrips</i> changed
-     * a signal is emitted to update glyphs and draw them.
+     * @brief selectionChanged As soon as the <i>m_selectionnedTrips</i> value
+     * changed, a signal is emitted to update glyphs and to draw them.
      * @param fromHour The beginning hour.
      * @param toHour The end hour.
      * @param fromStationIndex The first index station where
@@ -295,7 +298,7 @@ signals:
     /**
      * @brief onShaderError If an error occured during loading, compilation or
      * linking, this signal will be emitted.
-     * @param message Message informations of errors.
+     * @param message Message informations on errors.
      */
     void onShaderError(const QString& message);
 };
