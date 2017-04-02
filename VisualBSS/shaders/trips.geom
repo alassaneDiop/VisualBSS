@@ -23,12 +23,25 @@ vec3 evalQuadraticBezier(vec3 v[3], float t)
 void main()
 {
     // The position of the point on the middle of the segment
-    vec3 midLinePos = (gl_in[0].gl_Position.xyz + gl_in[1].gl_Position.xyz) / 2;
+    vec3 midLinePos = (gl_in[0].gl_Position.xyz + gl_in[1].gl_Position.xyz) / 2.f;
 
-    // Calculated control point
+    // Calculate control point
     vec3 posCP;
     posCP.x = midLinePos.x - (gl_in[1].gl_Position.y - gl_in[0].gl_Position.y);
     posCP.y = midLinePos.y;
+
+/// A
+/// |
+/// |-C   distance from segment is dist(A, B) / 3
+/// |
+/// B
+
+//    float dist = distance(gl_in[0].gl_Position.xyz,  gl_in[1].gl_Position.xyz);
+//    float z = dist * sqrt(13.f) / 6.f;
+//    float angle = atan(2.f / 3.f);
+
+//    posCP.x = gl_in[0].gl_Position.x + z * cos(angle);
+//    posCP.y = gl_in[0].gl_Position.y + z * sin(angle);
 
     vec3 pos[3];
     pos[0] = gl_in[0].gl_Position.xyz;
@@ -44,7 +57,7 @@ void main()
 
         gl_Position = vec4(p.xyz, 1.0);
 
-        // Interpolated color
+        // color interpolation
         gColor = mix(vColor[0], vColor[1], t);
 
         EmitVertex();
