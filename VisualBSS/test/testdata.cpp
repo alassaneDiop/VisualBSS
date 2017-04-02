@@ -22,8 +22,7 @@ go_bandit([](){
 
 
             it("No trip", [&](){
-                AssertThat(test2, Equals(true));
-                AssertThat(data2.hasData(), Equals(false));
+                AssertThat(test2, Equals(false));
             });
 
             it("One trip", [&](){
