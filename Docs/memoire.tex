@@ -64,30 +64,30 @@
 	Le projet consiste à développer une application qui doit permettre de visualiser
 	un système de vélo en libre service. Cela peut ainsi permettre de mieux comprendre les habitudes
 	des utilisateurs, de faire des analyses statistiques ou d'optimiser la disposition du nombre de
-	vélos à certains endroit d'une ville et à certains heures par exemple.\\
+	vélos à certains endroits d'une ville et à certaines heures par exemple.\\
 
-	L’application doit charger en ensemble de données via un ou plusieurs fichier de différents formats. Ce sont ces données que l'application traitera afin de les visualiser dans les différentes fenêtres prévues à cet effet.\\
+	L’application doit charger un ensemble de données via un ou plusieurs fichiers de différents formats. Ce sont ces données que l'application traitera afin de les visualiser dans les différentes fenêtres prévues à cet effet.\\
 	
-	Une fois ces données chargées, l'utilisateur dispose d'une multitudes d'interactions
-	possible afin définir quels trajets il veut afficher sur la carte de la ville sélectionnée.
+	Une fois ces données chargées, l'utilisateur dispose d'une multitude d'interactions
+	possibles afin de définir quels trajets il veut afficher sur la carte de la ville sélectionnée.
 	L'affichage des trajets et de la carte d'une ville se fait dans une fenêtre dédiée à cet effet.\\		
 	L'élément important est le système de filtre que le logiciel offre, il permet d'afficher
 	les trajets et stations que l’on souhaite. Il peut également filtrer sur les heures ou
-	les types de trajets (entrant ou sortant par rapport à une station précise) par exemple. L'ensemble des interactions et des visualisations sont décrite plus précisément plus bas
+	les types de trajets (entrant ou sortant par rapport à une station précise) par exemple. L'ensemble des interactions et des visualisations sont décrites plus précisément plus bas
 	dans la section	\ref{interactions_et_affichages}. \\
 
 	Notre logiciel doit se baser sur un travail réalisé par une équipe de chercheurs composée
 	de Guilherme N. Oliveira a , Jose L. Sotomayor a , Rafael P. Torchelsen b , Cláudio T. Silva c
 	et 
-	João L.D. Comba, qui ont rédigés un article \cite{Oli16} détaillé sur les systèmes de vélos en
-	libre service. Cet article défini clairement le fonctionnement de leur programme ainsi que leurs
+	João L.D. Comba, qui ont rédigé un article \cite{Oli16} détaillé sur les systèmes de vélos en
+	libre service. Cet article définit clairement le fonctionnement de leur programme ainsi que leurs
 	fonctionnalités. \\
 	
 	Ils ont mis à disposition une courte vidéo montrant l'application web qui permet 
 	de visualiser des trajets, il n'est en revanche pas possible de la tester. Le fait
 	que cette application
 	soit faite pour le web, nous laisse	supposer qu’elle soit limitée d'un
-	point de vue performances, qu’elle soit relativement lente lorsqu’il s’agit
+	point de vue performance, qu’elle soit relativement lente lorsqu’il s’agit
 	de traiter des millions de trajets. C’est la raison pour laquelle 
 	le projet consiste à développer une application de bureau.
 	
@@ -99,9 +99,9 @@
 		
 		\subsection{Visualisation des stations}
 		Les stations sont représentées par des cercles sur la même fenêtre que celle de la carte.
-		Les cercles sont de couleurs différentes et peuvent variées selon l'affluence des stations.
-		Aussi, pour chaque stations, l'utilisateur pourra cliquer sur l'une d'elle afin de mettre
-		en surbrillance dans une autre vue (celle des filtres) le nom de la station sélectionnée.
+		Les cercles sont de couleurs différentes qui peuvent variées selon l'affluence des stations.
+		Aussi, pour chaque station, l'utilisateur pourra cliquer sur l'une d'elle afin de mettre
+		en surbrillance, dans une autre vue (celle des filtres), le nom de la station sélectionnée.
 		
 		\subsection{Visualisation des trajets}
 		Tout comme les stations, les trajets seront affichés dans la même fenêtre que la carte et
@@ -112,8 +112,8 @@
 		station donnée, la courbe sera interpolée du rouge (station de départ) vers le jaune
 		(station d'arrivée).\\
 		Pour le cas des trajets où la station d'arrivée est la même que la station de départ, nous
-		appellerons ce type de trajet, des trajets cycliques. Ces trajets cyclique sont représentés
-		par des cercles de couleur grise autours des stations.
+		appellerons ce type de trajet, des trajets cycliques. Ces trajets cycliques sont représentés
+		par des cercles de couleur grise autour des stations.
 	
 		\subsection{Sélection des trajets souhaités}
 		Pour que l'utilisateur puisse choisir les trajets qu'il souhaite, il peut à l'aide de la
@@ -121,41 +121,41 @@
 		heure prés). Pour cela, il sélectionne avec sa souris par un clique, puis en la 
 		déplaçant pour que cela forme un rectangle transparent. Ce rectangle délimite la zone
 		que l'utilisateur a créé et qui permettra d'afficher les trajets des stations
-		sélectionnés. La sélection décrite ici est fait dans la fenêtre du milieu que l'on
+		sélectionnées. La sélection décrite ici est faite dans la fenêtre du milieu que l'on
 		appellera \textbf{\textit{timelinematrix}} pour la suite. Aussi, nous appellerons
-		un glyph, un élément de cette vue. Il représente tout les trajets d'une seule station
+		un glyph, un élément de cette vue. Il représente tous les trajets d'une seule station
 		comprise dans une intervalle de temps d'une heure. Cela peut vulgairement être interprété
 		comme une étoile.
 		
 		\subsection{Les filtres}
 		Il est possible de pousser la sélection des trajets encore plus loin, puisque l'utilisateur
-		peut trier les trajets en fonction de plusieurs critère. Il peut choisir les intervalles
+		peut trier les trajets en fonction de plusieurs critères. Il peut choisir les intervalles
 		des distances, des durées, des directions des trajets ou encore du nombre des
-		départs/arrivées des stations. Ce panneau des filtres placé au niveau de la partie gauche
+		départs/arrivées des stations. Ce panneau des filtres est placé au niveau de la partie gauche
 		de l'application.\\
-		De plus, en bas de ce panneau, il y a une liste ordonnées de stations en fonction
-		de l'affluence de chaque celles-ci.
+		De plus, en bas de ce panneau, il y a une liste ordonnée de stations en fonction
+		de l'affluence de chacune d'entre elles.
 	
 \newpage
 	\section{Étude de l’existant}	
 	\begin{figure}[!h]
 	\begin{center}
 	\includegraphics[scale=.3]{screenshot_article.png}
-	\caption{Les différentes visualisations extraite de l'article \cite{Oli16}}
+	\caption{Les différentes visualisations extraites de l'article \cite{Oli16}}
 	\end{center}
 	\end{figure}
 	
 	L’application proposée par les chercheurs est divisée en trois fenêtres principales.
 	La première permet de naviguer sur une carte d’une ville. Elle permet de voir les
 	stations et les trajets sélectionnés par l’utilisateur à partir de la fenêtre centrale.
-	Cette dernière, est une matrice qui contient les trajets pour chaque station, sur une
+	Cette dernière est une matrice qui contient les trajets pour chaque station, sur une
 	intervalle de temps, 24 heures ici. Elle permet de sélectionner avec la souris un
 	ensemble de trajets pour une station donnée et une heure donnée, que nous appellerons glyphs.
 	ce qui permet de sélectionner une plage horaire ou tous les trajets d'une station par exemple.
-	La troisième fenêtre, située à droite, met a disposition un ensemble de filtre modifiable
+	La troisième fenêtre, située à droite, met à disposition un ensemble de filtres modifiables
 	par des tirettes ou des cases à cocher. \\
 	
-	Les fonctionnalités et la manière de les utiliser ont été introduite dans la section
+	Les fonctionnalités et la manière de les utiliser ont été introduites dans la section
 	d'introduction \ref{introduction}.\\
 
 	Ce lien montre de quelle manière ils utilisent leur application pour afficher des trajets et
@@ -172,8 +172,7 @@
 	\end{center}
 	\end{figure}
 	
-	Ce lien montre l'utilisation de
-	Ces fonctionnalités ne feront développées dans notre application.\\
+	Ce lien montre l'utilisation de ces fonctionnalités ne feront développées dans notre application.\\
 	\url{https://drive.google.com/file/d/0B3aeg8yMfRj0R3VKQjdtX1htUUU/view}\\
 	Une impression écran a été faite à la figure \ref{fig:station_screen}\\
 	
@@ -186,8 +185,8 @@
 	\end{center}
 	\end{figure}
 	
-	Quand on visionne la vidéo proposé par les chercheurs, on peut s'apercevoir dans un premier
-	temps, qu'elle l’application est lancée depuis Google Chrome. Son URL* (localhost :8080)
+	Quand on visionne la vidéo proposée par les chercheurs, on peut s'apercevoir dans un premier
+	temps, que l’application est lancée depuis Google Chrome. Son URL* (localhost :8080)
 	nous indique qu’il s’agit d’une démonstration en local. Ne pouvant pas tester l’application,
 	nous avons peu d’informations sur sa rapidité en fonction du nombre de données et la manière
 	précise de son fonctionnement. Aussi, nous ne savons pas à quoi correspondent les jours de la
@@ -215,7 +214,7 @@
 			l'efficacité de ces systèmes.
 
 			\item \cite{BSM17} est une application en ligne, qui permet de visualiser en
-			temps réel des statistiques sur des bornes disponible dans une ville
+			temps réel des statistiques sur des bornes disponibles dans une ville
 			sélectionnée.  Elle indique également le nombre de vélos disponibles dans le
 			monde en temps réel.
 
@@ -245,7 +244,7 @@
 			il représente une mine d'informations sur diffèrent sujet tel que les techniques
 			d'éclairage ou d'ombrages ou la simulation de la physique par exemple.\\
 			Le chapitre 25 explique notamment comment utiliser les représentations vectorielles
-			pour dessiner des courbes lisses. Ce chapitre a donc servie à implémenter 
+			pour dessiner des courbes lisses. Ce chapitre a donc servi à implémenter 
 			l'évaluation de la courbe de Bézier, pour afficher des courbes pour les trajets.
 		\end{itemize}
 
@@ -257,7 +256,7 @@
 		Le texte de l’interface graphique sera en anglais.
 
 		\subsection{Affichage des trajets}
-		Les trajets seront affichés sur la carte par des courbes depuis le points de départ du
+		Les trajets seront affichés sur la carte par des courbes depuis le point de départ du
 		trajet jusqu’au point d’arrivée.
 
 		\subsection{Performances}
@@ -279,8 +278,8 @@
 		beaucoup de données à charger, on peut estimer ce délai à quelques secondes voire
 		quelques minutes. \\
 		
-		Lors de l’application des divers filtres, le délai dois être assez court car 
-		de ces filtres est assez récurrente.
+		Lors de l’application des divers filtres, le délai doit être assez court car 
+		l'application de ces filtres est assez récurrente.
 		Lors du déplacement sur la carte et donc du rafraîchissement des données de celle-ci,
 		le programme doit tourner en temps réel et on ne doit pas sentir de latence lors du
 		déplacement sur la carte. Le délai doit donc être très court (dans l’ordre des
@@ -293,7 +292,7 @@
 		référence hors ligne à partir d’un ensemble de fichiers sources documentés. Il est
 		également possible de générer des résultats en format RTF (MS-Word), PostScript,
 		PDF hypertexte, HTML compressé et pages de manuel Unix. La documentation est 
-		extraite directement des sources, ce qui rend beaucoup plus facile de conserver
+		extraite directement des sources, ce qui permet de conserver plus facilement
 		la documentation conforme au code source. \\
 		Doxygen est développé sous Mac OS X et Linux, mais est configuré pour être très
 		portable."\\
@@ -309,11 +308,11 @@
 
 	\section{Besoins fonctionnels}
 		\subsection{Visualisation de la carte de la ville}
-		Une fenêtre sur la partie gauche sera dédiée pour visualiser les trajets de
+		Une fenêtre sur la partie gauche sera dédiée à la visualisation des trajets de
 		manière géographique avec une carte.\\
 		La carte d’une ville pourra être chargée avec OpenStreetMap\\
-		La carte affiche uniquement les stations de la ville lorsqu’il y a des stations
-		sélectionnées dans la matrice de chronologie, elle n’affiche que celles-ci (ainsi
+		La carte affiche uniquement les stations de la ville ; lorsqu’il y a des stations
+		sélectionnées dans la matrice de chronologie, la carte n’affiche que celles-ci (ainsi
 		que les trajets qui y sont associés).\\
 		Les trajets sont dessinés par des courbes avec un dégradé de deux couleurs.\\
 		Les départs sont dessinés du cyan (station d’origine) vers le bleu (station de
@@ -334,7 +333,7 @@
 		Axe horizontal : temps en heure (une colonne pour chaque heure)\\
 		Axe vertical : stations (une ligne pour chaque station) les stations sont représentées dans
 		des cellules par des petites étoiles (les lignes étant les trajets, représentés
-		avec leurs directions et leur longueur)\\
+		avec leur direction et leur longueur)\\
 		Arrivées en rouge\\
 		Départs en bleu\\
 		Trajets cycliques par des cercles transparents dont le rayon est proportionnel à
@@ -346,8 +345,8 @@
 		en lançant l’animation (en appuyant sur le bouton play)\\
 		
 		\subsection{Interface de sélection des filtres}
-		Possibilité de pouvoir filtrer dans le temps\\
-		Un mois et son année : menu déroulant avec choix chargés à partir de fichiers
+		Possibilité de filtrer dans le temps\\
+		Un mois et son année : menu déroulant avec choix chargés à partir du fichier
 		données\\
 		Un jour précis : entrée du jour du mois (un entier compris 1 et 31) dans un champ
 		de texte\\
@@ -355,13 +354,13 @@
 		Possibilité de filtrer selon les propriétés des trajets\\
 		Arrivées : si cochée, affiche (en rouge) les trajets arrivants, sur la carte ainsi
 		que dans la chronologie des trajets\\
-		départs : si cochée, affiche (bleu) les trajets partant, sur la carte ainsi que
+		départs : si cochée, affiche (bleu) les trajets partants, sur la carte ainsi que
 		dans la chronologie des trajets\\
-		trajets cycliques : si cochée, affichés (par un cercle gris transparent dont le
+		trajets cycliques : si cochée, affiche (par un cercle gris transparent dont le
 		rayon est proportionnel à la longueur du trajet) les trajets cycliques, dans la
 		chronologie des trajets\\
-		durées des trajets : si cochée, prend en compte la durée des trajets\\
-		longueurs des trajets : si cochée, prend en compte la longueur des trajets
+		durée des trajets : si cochée, prend en compte la durée des trajets\\
+		longueur des trajets : si cochée, prend en compte la longueur des trajets
 		(les longueurs des traits des trajets dans chaque cellule de la chronologie des
 		trajets sont relatives au trajet le plus long), sinon, tous les traits sont
 		de même longueur\\
@@ -378,11 +377,11 @@
 	\section{Scénarios}
 	
 	\section{Prototype}
-	Pour la remise de la 1er version, nous avons voulu de rendre un programme qui permettait
+	Pour la remise de la premiére version, nous avons voulu rendre un programme qui permettait
 	d'afficher des stations et des trajets ainsi qu'un aperçu de ce que cela pourrait rendre
-	dans la timelinematrix. Ayant un temps très court pour réaliser cela, nous avons testé
-	d'afficher ces éléments avec les objets que \href{https://www.qt.io/}{Qt5}
-	nous met à disposition.\\
+	dans la timelinematrix. Ayant un temps très court pour réaliser cela, nous avons essayé
+	d'afficher ces éléments avec les objets mis à disposition par \href{https://www.qt.io/}{Qt5}
+	.\\
 	
 
 	\begin{figure}[!h]
@@ -430,11 +429,11 @@
 		\item Le contrôleur de l’interface manipule les données du modèle. C’est dans cette
 		couche que les opérations demandées par l’utilisateur au 1) sont exécutées.\\
 		
-		\item (dans notre cas, le modèle n’écris pas sur les données, l’accès des données se
+		\item (dans notre cas, le modèle n’écrit pas sur les données, l’accès aux données se
 		fait en lecture seule)\\
 		
 		\item Le modèle accède aux données. Ici, le modèle ne fait que parser des fichiers,
-		sans les modifier. Le fichiers sont refermés une fois l’opération de parsing
+		sans les modifier. Les fichiers sont fermés une fois l’opération de parsing
 		terminée. Le modèle charge les données en initialisant une liste pour les trajets,
 		une autre pour les stations. Cela se fait à chaque fois que l’utilisateur
 		souhaite charger un fichier.\\
@@ -443,7 +442,7 @@
 		depuis 1). Tous les composants graphiques concernés sont mis à jour, notamment la
 		map affichant les trajets, ainsi que la matrice de chronologie des trajets.\\
 		
-		\item L’interface graphique affiche à l'utilisateur les résultats de ses requêtes.\\
+		\item L’interface graphique affiche les résultats des requêtes de l'utilisateur.\\
 		\end{enumerate}
 
 		\subsection{Le design pattern MVC}		
@@ -490,7 +489,7 @@
 	
 		\begin{itemize}
 		\item[•] l’espace de nom “Ui” (pour “User interface”), qui est généré par Qt.
-		Il est utilisé pour y regrouper les composants graphiques qui sont auto-générés avec
+		Il est utilisé pour regrouper les composants graphiques qui sont auto-générés avec
 		le designer d’interfaces graphiques. Le Contrôleur est également contenu dans “Ui”.
 		La Vue et le Contrôleur sont donc gérés au niveau de “Ui”. “Ui” dépend de “bss” et des
 		classes de Qt.\\
@@ -522,7 +521,7 @@
 		\end{center}
 		\end{figure}
 		
-		La figure ci-dessus illustre un premier prototype d’interface graphique. Il décompose l’interface en 3 parties distinctes, celle du milieu étant la plus large, celles des extrémités étant de largeur à peu près égales.
+		La figure ci-dessus illustre un premier prototype d’interface graphique. Il décompose l’interface en 3 parties distinctes, celle du milieu étant la plus large, celles des extrémités étant de largeur à peu près égale.
 		
 		\subsection{Second prototype}
 		\begin{figure}[!h]
@@ -535,7 +534,7 @@
 		
 		La figure \ref{fig:proto_int_2} montre une évolution de l’interface, notamment :\\
 		\begin{itemize}
-		\item[•] la fenêtre de gauche contient une map (en l'occurrence celle de Bordeaux), avec représentées en bleu les stations (celles-ci sont fictives).
+		\item[•] la fenêtre de gauche contient une map (en l'occurrence celle de Bordeaux), avec des stations représentées en bleu (celles-ci sont fictives).
 		\item[•] la fenêtre au centre représente une matrice (tableau bi-dimensionnel) de disques. L’axe horizontal représente le temps en heure, l’axe vertical celui des stations. Ces disques sont composés de trajets (chaque trajet formant une ligne de couleur bleue ou rouge, dessiné dans la direction du trajet). Il y a de nombreux trajets à représenter ce qui explique pourquoi ils sont représentés ainsi. Un disque montre donc tous les trajets pour une stations donnée, pour une heure de départ donnée. Enfin, il faut noter la présence d’une barre de défilement sur la droite, afin de parcourir les stations sur l’axe vertical.
 		\item[•] la fenêtre de droite est découpée en trois parties.
 		\end{itemize}
@@ -555,11 +554,11 @@
 		
 		\begin{itemize}
 		\item[•] sur la fenêtre de gauche, les trajets sélectionnés sont affichés par des courbes dont la couleur est interpolée du bleu vers le cyan, pour les départs. Il est possible de défiler la map avec la souris, et de modifier le zoom avec la molette.
-		\item[•] sur la fenêtre au centre, la matrice de chronologie des trajets dessine les “glyphes” (terme utilisé par l’article pour désigner un ensemble de petits traits, dirigés selon l’azimut du trajet). Un glyphe représente l’ensemble des trajets filtrés pour une stations donnée (la ligne) pour une heure donnée (la colonne). Au dessus de la matrice, il y a un label pour indiquer l’axe du temps, par intervalle de trois heure, allant de 0 à 24h. Il est possible de défiler sur les deux axes, ainsi que de sélectionner des trajets avec la souris (avec un mouse-drag classique). Le rectangle de sélection est dessiné en bleu
+		\item[•] sur la fenêtre au centre, la matrice de chronologie des trajets dessine les “glyphes” (terme utilisé par l’article pour désigner un ensemble de petits traits, dirigés selon l’azimut du trajet). Un glyphe représente l’ensemble des trajets filtrés pour une station donnée (la ligne) pour une heure donnée (la colonne). Au dessus de la matrice, il y a un label pour indiquer l’axe du temps, par intervalle de trois heures, allant de 0 à 24h. Il est possible de défiler sur les deux axes, ainsi que de sélectionner des trajets avec la souris (avec un mouse-drag classique). Le rectangle de sélection est dessiné en bleu
 		\item[•] sur la fenêtre à droite, les contrôles pour traiter les données. Il est possible de filtrer les trajets sur leur date de départ avec des menus déroulants (tout en haut). Les cases à cocher juste en dessous permettent de spécifier des paramètres d’affichage des trajets selon leur type (arrivées, départs, cycles). Le menu déroulant, plus bas, permet de trier les stations. Puis, les quatre tirettes (ou sliders) à deux poignées définissent des intervalles pour filtrer les trajets (pour les trois premiers sliders) et filtrer les stations (pour celui tout en bas). Enfin, la section “Ranking” affiche les premières (à gauche) et dernières (à droite) stations après les avoir trié selon une propriété
 		\end{itemize}
 		
-		Il faut également noter la présence d’un barre de menu, juste au dessus de la carte, avec la section “File” qui permet d’ouvrir et fermer des fichier données.\\
+		Il faut également noter la présence d’un barre de menu, juste au dessus de la carte, avec la section “File” qui permet d’ouvrir et fermer des fichier de données.\\
 
 		Il faut aussi noter que les contrôles sont désactivés lorsqu’une opération estimée coûteuse est en cours d'exécution. Il sont rétablis lorsqu’elle prend fin.\\
 
@@ -574,7 +573,7 @@
 		\end{center}
 		\end{figure}
 		
-		L’interface est sensiblement similaire à celle de la version finale, excepté que les sliders à deux poignées ont été remplacées par des spinboxes. La raison est que les sliders à deux poignées sont implémentés avec QtQuick (une librairie de widgets) et QML (Qt Modeling Language, proche du CSS). Leur utilisation nécessite donc des dépendances de librairies supplémentaires. Cela a été problématique pour le client qui n’avait pas installé ce module. De plus, le comportement de ces sliders était instable et buggé. Une autre solution aurait d'implémenter le slider à deux poignées avec C++ et OpenGL, mais nous n’avions pas le temps ni les compétences nécessaires.
+		L’interface est sensiblement similaire à celle de la version finale, excepté que les sliders à deux poignées ont été remplacées par des spinboxes. La raison est que les sliders à deux poignées sont implémentés avec QtQuick (une librairie de widgets) et QML (Qt Modeling Language, proche du CSS). Leur utilisation nécessite donc des dépendances de librairies supplémentaires. Cela a été problématique pour le client qui n’avait pas installé ce module. De plus, le comportement de ces sliders était instable et généré des bugs. Une autre solution serait d'implémenter le slider à deux poignées avec C++ et OpenGL, mais nous n’avions pas le temps ni les compétences nécessaires.
 		
 
 	\section{Implémentation}
@@ -587,7 +586,7 @@
 		\end{center}
 		\end{figure}
 					
-		C’est la classe principale. C’est un \textit{QObject} en héritant de la classe \textit{QMainWindow}.Elle implémente donc les fonctionnalités de réception et d’émission de signaux. C’est elle qui commande le modèle et la vue, en étant composée d’un objet de type \textit{Data}, et de l’ensemble des widgets de l’interface graphique. Elle dispose de nombreuses fonctions, notamment celle qui réagissent aux signaux émis par la vue et le modèle. Elle fait également usage des objets permettant le traitement des données, à savoir un \textit{StationsSorter} pour trier les stations et un \textit{StationsFilter} pour les filtrer, selon les propriétés de station, un \textit{TripsFilter} pour trier les trajets et un \textit{TripsSelector} pour les sélectionner, selon les propriétés des trajets (cf. Figure \ref{fig:dia_controleur}).\\
+		C’est la classe principale. C’est un \textit{QObject} en héritant de la classe \textit{QMainWindow}.Elle implémente donc les fonctionnalités de réception et d’émission de signaux. C’est elle qui commande le modèle et la vue, en étant composée d’un objet de type \textit{Data}, et de l’ensemble des widgets de l’interface graphique. Elle dispose de nombreuses fonctions, notamment celles qui réagissent aux signaux émis par la vue et le modèle. Elle fait également usage des objets permettant le traitement des données, à savoir un \textit{StationsSorter} pour trier les stations et un \textit{StationsFilter} pour les filtrer, selon les propriétés de station, un \textit{TripsFilter} pour trier les trajets et un \textit{TripsSelector} pour les sélectionner, selon les propriétés des trajets (cf. Figure \ref{fig:dia_controleur}).\\
 	
 	Enfin, il n’est pas indiqué sur le schéma que \textit{MainWindow} entretient les listes des identifiants des données traitées (dans des \textit{QVector}) : un conteneur des identifiants des trajets filtrés, un autre pour ceux qui sont sélectionnés, et enfin un dernier pour les identifiants des stations filtrées et triées. Il est important de noter que l’ensemble des trajets sélectionnés doit appartenir à l’ensemble des trajets filtrés : la sélection se fait parmi les trajets filtrés.
 		
@@ -595,13 +594,13 @@
 		\begin{figure}[!h]
 		\begin{center}
 		\includegraphics[scale=1]{dia_sequence_openFiles.png}
-		\caption{Diagramme de séquence illustrant l’ouverture de fichiers données}
+		\caption{Diagramme de séquence illustrant l’ouverture de fichiers de données}
 		\label{fig:seq_openFiles}
 		\end{center}
 		\end{figure}
 			
 		Lorsque le programme est lancé, aucune donnée n’est chargée, c’est à l’utilisateur de le faire en spécifiant les chemins des fichiers à ouvrir avec un explorateur de fichier classique. Il est possible de charger plusieurs fichiers à la fois, dans différents formats possibles (uniquement ceux supportés) (cf. Figure \ref{fig:seq_openFiles}).\\
-	Une action de l’utilisateur (1) au niveau de l’interface graphique notifie le contrôleur de la requête (2). En conséquence, le contrôleur demandera auprès de l’utilisateur de spécifier les noms des fichiers et de les récupérer (3 à 8). Le contrôleur va ensuite itérer sur chacun des fichiers spécifiés pour les passer en paramètre de la méthode \textit{load} de classe \textit{Data} (9 à 10).
+	Une action de l’utilisateur (1) au niveau de l’interface graphique notifie le contrôleur de la requête (2). En conséquence, le contrôleur demandera à l’utilisateur de spécifier les noms des fichiers et de les récupérer (3 à 8). Le contrôleur va ensuite itérer sur chacun des fichiers spécifiés pour les passer en paramètre de la méthode \textit{load} de classe \textit{Data} (9 à 10).
 	
 		\newpage
 		\subsection{Fermeture de fichiers}
@@ -624,7 +623,7 @@
 		\end{center}
 		\end{figure}		
 			
-		Les données à manipuler sont représentés par des structures aux attributs publics,
+		Les données à manipuler sont représentées par des structures aux attributs publics,
 		initialisés lors du parsing des fichiers. Ces entités sont passives, elles ne possèdent
 		pas de méthodes qui produisent ou modifient d’autres objets. Ce sont
 		donc des “classes-enregistrement” qui ne font que structurer la représentation des
@@ -644,7 +643,7 @@
 			\item[•]un flag pour indiquer s’il est cyclique ou non (faux par défaut)\\
 		\end{itemize}
 			
-		La distance et la direction sont codées sur des entiers 64 bits plutôt que 32 bits car on ne fait pas de supposition sur la durée ou distance maximale d’un trajet. Ils doivent être signés car on peut effectuer des opérations arithmétiques sur ces données. Malgré tout, il est important de fixer des limites (qui correspondent à celle du matériel).\\
+		La distance et la direction sont codées sur des entiers 64 bits plutôt que 32 bits car on ne fait pas de supposition sur la durée ou distance maximale d’un trajet. Elles doivent être signées car on peut effectuer des opérations arithmétiques sur ces données. Malgré tout, il est important de fixer des limites (qui correspondent à celle du matériel).\\
 			
 		\textbf{Station}\\
 		Cette structure contient les données nécessaires au filtrage et tri des stations :\\
@@ -653,19 +652,19 @@
 			\item[•]ses coordonnées géographiques (latitude et longitude) (en degrés,
 			des réels initialisés à 0)
 			\item[•]la distance moyenne (en mètres) d’un trajet (un entier, qui vaut 0 par défaut)
-			l\item[•]a durée moyenne (en secondes) d’un trajet (un entier, qui vaut 0 par défaut)
+			\item[•]la durée moyenne (en secondes) d’un trajet (un entier, qui vaut 0 par défaut)
 		\end{itemize}
 			
 		\subsection{Association entre les stations et les trajets}
 		Un trajet est obligatoirement associé à deux stations : celle d’arrivée et celle de départ.
-	L’association ne se fait pas de manière classique avec des pointeurs mais avec des identifiants. Ces identifiants sont codés par des entiers. Ils sont initialisés par défaut à -1 pour indiquer qu’ils sont invalides. Les données valides sont initialisées lors du parsing des fichiers. L’identifiant d’une donnée est alors égale à sa position (son indice) dans le container qui le contient. Par exemple, le premier trajet parsé aura un identifiant égal à 0, puisque c’est le premier élément. C’est aussi pour cette raison que les identifiants sont codés sur des entiers 32 bits : ils correspondent à la taille du conteneur, qui est un entier 32 bits. On fixe ici, par la même occasion, les nombres maximaux de trajets et stations pouvant être chargés (qui est environ 2 milliards). Il faut savoir que pour environ 8000 trajets, on compte environ 360 stations différentes. Le nombre de stations est donc négligeable par rapport au nombre de trajets. Il faut également savoir qu’un fichier type pour une ville atteint environ 1 million de trajets. Là encore, il faudrait charger environ mille fichiers pour atteindre la limite d’un conteneur (avant que le programme ne crash).\\
+	L’association ne se fait pas de manière classique avec des pointeurs mais avec des identifiants. Ces identifiants sont codés par des entiers. Ils sont initialisés par défaut à -1 pour indiquer qu’ils sont invalides. Les données valides sont initialisées lors du parsing des fichiers. L’identifiant d’une donnée est alors égal à sa position (son indice) dans le conteneur qui le contient. Par exemple, le premier trajet parsé aura un identifiant égal à 0, puisque c’est le premier élément. C’est aussi pour cette raison que les identifiants sont codés sur des entiers 32 bits : ils correspondent à la taille du conteneur, qui est un entier 32 bits. On fixe ici, par la même occasion, les nombres maximaux de trajets et stations pouvant être chargés (qui est environ 2 milliards). Il faut savoir que pour environ 8000 trajets, on compte environ 360 stations différentes. Le nombre de stations est donc négligeable par rapport au nombre de trajets. Il faut également savoir qu’un fichier type pour une ville atteint environ 1 million de trajets. Là encore, il faudrait charger environ mille fichiers pour atteindre la limite d’un conteneur (avant que le programme ne s'arrête de maniére anormale).\\
 	
 	Cette manière d’associer les données a des avantages et des inconvénients.\\
 			
 		\textbf{Avantages}:
 		\begin{itemize}
-			\item[•] représentation simple, similaire à celle utilisée en base données.
-			\item[•] évite d’utiliser les pointeurs, l’allocation avec l’opérateur \textit{new}, et donc les memory leaks (fuites de mémoire)
+			\item[•] cette représentation est simple et similaire à celle utilisée en base de données.
+			\item[•] elle permet d'éviter d’utiliser les pointeurs, l’allocation avec l’opérateur \textit{new}, et donc les memory leaks (fuites de mémoire)
 			\item[•] pour déboguer il est plus facile de lire un entier qu’une adresse
 			en hexadécimal.
 			\item[•] certains sujets sur Internet, qui traitent de la comparaison entre
@@ -677,11 +676,11 @@
 			
 		\textbf{Inconvénients}:
 		\begin{itemize}
-			\item[•] les opérations de filtrages, tris et sélection requièrent non pas les
+			\item[•] les opérations de filtrage, tri et sélection requièrent non pas les
 			indices de ces données mais les données elles-mêmes. Il faut donc, à chacune de
 			ces opérations, récupérer les données correspondantes, les traiter, et enfin
 			les reconvertir en indices qui correspondent à ces données. Ces opérations
-			de conversions indices vers données et vice-versa sont coûteuses en temps
+			de conversions d'indices en données et vice-versa sont coûteuses en temps
 			de calcul. C’est un point qui peut être résolu et qui est expliqué dans
 			la section \ref{ameliorations} des améliorations possibles.
 		\end{itemize}
@@ -722,9 +721,9 @@
 		\end{center}
 		\end{figure}
 		
-		\textit{Data} utilise un \textit{DataFileReader} pour parser les données, qui est créé lors d’un appel de la méthode \textit{load} de la classe \textit{Data} (cf. Figure \ref{fig:dia_seq_chargement_donnees}). C’est le contrôleur qui fait l’appel, en spécifiant un nom de fichier, récupéré au préalable auprès de l’utilisateur. \textit{Data} appelle ensuite la méthode \textit{readData} du \textit{DataFileReader}.\\
+		\textit{Data} utilise un \textit{DataFileReader} créé lors d’un appel de la méthode \textit{load} de la classe \textit{Data} (cf. Figure \ref{fig:dia_seq_chargement_donnees}) pour parser les données. C’est le contrôleur qui fait l’appel, en spécifiant un nom de fichier, récupéré au préalable auprès de l’utilisateur. \textit{Data} appelle ensuite la méthode \textit{readData} du \textit{DataFileReader}.\\
 	
-		Il est important de noter qu’il n’est pas indiqué sur la Figure \ref{fig:dia_classe_modele} le fait que cette méthode prend en paramètre et par référence un \textit{QHash} (table de hash) dont les clés sont des chaînes de caractères et les valeurs des stations, ainsi qu’un \textit{QVector} de trajet. Ce sont ces paramètres qui vont contenir les données. Les stations sont uniques par leurs noms, ce qui justifie le choix du type. Par la suite, la classe Data récupérera les stations en stockant dans un \textit{QVector} les valeurs de la table de hash. Il est également important de noter que les paramètres sont modifiés en ajout, c’est-à-dire que les données existantes ne sont pas effacées des paramètres. Enfin, il existe une variante de la méthode \textit{readData} nommée parallelReadData qui en plus des paramètres évoqués ci-dessus, prend en paramètres deux verrous (un pour le conteneur des stations, l’autre pour les trajets) et implémente un parsing en parallèle des données, avec des sections critiques. C’est l’association entre les trajets et les stations qui rend le parsing difficilement parallélisable, et qui force à passer en paramètre les données existantes (parser un nouveau fichier requiert de connaître les stations préalablement parsée, afin d’éviter les doublons et aussi de connaître le nombre de stations existantes car les identifiants des nouvelles en dépendent).\\
+		Il est important de noter qu’il n’est pas indiqué sur la Figure \ref{fig:dia_classe_modele} le fait que cette méthode prend en paramètre et par référence un \textit{QHash} (table de hash) dont les clés sont des chaînes de caractères et les valeurs des stations, ainsi qu’un \textit{QVector} de trajet. Ce sont ces paramètres qui vont contenir les données. Les stations sont uniques par leurs noms, ce qui justifie le choix du type. Par la suite, la classe Data récupérera les stations en stockant dans un \textit{QVector} les valeurs de la table de hash. Il est également important de noter que les paramètres sont modifiés en ajout, c’est-à-dire que les données existantes ne sont pas effacées des paramètres. Enfin, il existe une variante de la méthode \textit{readData} nommée parallelReadData qui en plus des paramètres évoqués ci-dessus, prend en paramètres deux verrous (un pour le conteneur des stations, l’autre pour les trajets) et implémente un parsing en parallèle des données, avec des sections critiques. C’est l’association entre les trajets et les stations qui rend le parsing difficilement parallélisable, et qui force à passer en paramètre les données existantes (parser un nouveau fichier requiert de connaître les stations préalablement parsées, afin d’éviter les doublons et aussi de connaître le nombre de stations existantes car les identifiants des nouvelles en dépendent).\\
 		
 		\begin{figure}[!h]
 		\begin{center}
@@ -734,13 +733,13 @@
 		\end{center}
 		\end{figure}
 	
-		L’appel à \textit{readData} retourne une structure \textit{DataReadInfo}. Si le parsing s’est déroulé sans erreur, son flag \textit{ok} vaut “vrai” et auquel cas l’appel de \textit{load} de la classe \textit{Data} renvoie “vrai”, après avoir émis le signal \textit{dataLoaded}. Le flag \textit{hasData} est mis à “vrai” pour indiquer que la classe \textit{Data} contient des données. Il est possible que le parsing se soit mal déroulé, par exemple si l’extension du fichier spécifié en paramètre n’est pas supporté pour le parsing, ou si le fichier est introuvable, invalide, ou autre. Dans ce cas, le flag \textit{ok} de la structure résultante vaut “faux”, et sa chaine de caractère \textit{errorString}contient le message d’erreur. Auquel cas, l’appel de \textit{load} de la classe \textit{Data} renvoie “faux”, après avoir émis le signal \textit{failedToLoadData}.
+		L’appel à \textit{readData} retourne une structure \textit{DataReadInfo}. Si le parsing s’est déroulé sans erreur, son flag \textit{ok} vaut “vrai” et auquel cas l’appel de \textit{load} de la classe \textit{Data} renvoie “vrai”, après avoir émis le signal \textit{dataLoaded}. Le flag \textit{hasData} est mis à “vrai” pour indiquer que la classe \textit{Data} contient des données. Il est possible que le parsing se soit mal déroulé, par exemple si l’extension du fichier spécifié en paramètre n’est pas supportée pour le parsing, ou si le fichier est introuvable, invalide, ou autre. Dans ce cas, le flag \textit{ok} de la structure résultante vaut “faux”, et sa chaine de caractère \textit{errorString}contient le message d’erreur. Auquel cas, l’appel de \textit{load} de la classe \textit{Data} renvoie “faux”, après avoir émis le signal \textit{failedToLoadData}.
 	
 	\section{Stockage des données}
 	Une fois les données chargées, elles sont stockées au sein de la classe \textit{Data}, dans des \textit{QVector}, classe générique qui joue le rôle de conteneur extensible similaire au vector de la librairie standard. C’est le conteneur de premier choix, selon la documentation de Qt.
 Les données y sont contenues de manière contiguë. L’ajout se fait en passant en paramètre l’item à insérer à la méthode append. Cette méthode est équivalente au \textit{pushback} du vecteur de la librairie standard (ajout en fin de liste, en incrémentant la taille). La méthode reserve spécifie une taille (passée en paramètre) préférentielle, qui est utile lorsque l’on connaît à l’avance la taille du conteneur.\\
 
-	Ces données sont accessibles au contrôleur (pour permettre les opération de filtrages, tris et sélection) en lecture seule, afin d’éviter qu’il ne les errone par erreur.\\
+	Ces données sont accessibles au contrôleur (pour permettre les opération de filtrage, tri et sélection) en lecture seule, afin d’éviter qu’il ne les errone par erreur.\\
 
 	\section{Nettoyage des données}
 	\begin{figure}[!h]
@@ -754,7 +753,7 @@ Les données y sont contenues de manière contiguë. L’ajout se fait en passan
 	Le nettoyage des données suit un schéma analogue à celui du chargement (cf. figure \ref{fig:nettoyage}). L’appel à la méthode \textit{clear} de la classe \textit{Data} teste le flag \textit{hasData} de cette même classe : s’il est négatif, la fonction retourne “faux”, après avoir émis le signal \textit{failedToClearData}. Si le test est positif, la fonction vide les conteneurs des données (non indiqué sur le schéma), positionne son flag \textit{hasData} à “faux” et retourne “vrai”, après avoir émis le signal \textit{dataCleared}.
 
 	\section{Traitement des données}
-	On entend par traitement des données filtrage et sélection des trajets, ainsi que filtrage et tri des stations. Chaque traitement est effectué par un petit objet, paramétré par une structure de donnée.
+	On entend par traitement des données filtrage et sélection des trajets, ainsi que filtrage et tri des stations. Chaque traitement est effectué par un petit objet, paramétré par une structure de données.
 	
 	\begin{figure}[!h]
 	\begin{center}
@@ -779,7 +778,7 @@ Les données y sont contenues de manière contiguë. L’ajout se fait en passan
 	\end{center}
 	\end{figure}
 
-	Le diagramme de la figure \ref{fig:filterTrips} illustre la séquence d’appel depuis le contrôleur lors d’un filtrage de trajets. L’appel à \textit{filterTrips} survient lorsque l’utilisateur souhaite filtrer les trajets. Il prend en paramètre les trajets à filtrer (le contrôleur entretient non pas les données mais les identifiants de ces données, il aura donc fallu au préalable avoir récupéré les trajets correspondant à ces identifiants) ainsi que les paramètres de filtrage. Il s’ensuit l’utilisation du \textit{TripsFilter}. Après filtrage, si les trajets filtrés sont différents de ceux dont le contrôleur entretient, il met à jour ses trajets, et émet un signal.\\
+	Le diagramme de la figure \ref{fig:filterTrips} illustre la séquence d’appel depuis le contrôleur lors d’un filtrage de trajets. L’appel à \textit{filterTrips} survient lorsque l’utilisateur souhaite filtrer les trajets. Il prend en paramètre les trajets à filtrer (le contrôleur entretient non pas les données mais les identifiants de ces données, il aura donc fallu au préalable avoir récupéré les trajets correspondant à ces identifiants) ainsi que les paramètres de filtrage. Il s’en suit l’utilisation du \textit{TripsFilter}. Après filtrage, si les trajets filtrés sont différents de ceux dont le contrôleur entretient, il met à jour ses trajets, et émet un signal.\\
 	
 	\begin{figure}[!h]
 	\begin{center}
@@ -789,7 +788,7 @@ Les données y sont contenues de manière contiguë. L’ajout se fait en passan
 	\end{center}
 	\end{figure}
 	
-	Le diagramme de la figure \ref{fig:sortStations} illustre la séquence d’appel depuis le contrôleur lors d’un tri des stations. Le schéma d’appel est sensiblement analogue à celui du filtrage des trajets expliqué plus haut. L’appel à \textit{sortStations} survient lorsque l’utilisateur souhaite trier les trajets. Il prend en paramètre les stations à trier ainsi que les paramètres de filtrage. Il s’ensuit l’utilisation du \textit{StationsSorter}. Après le tri, si les stations triées sont différentes de ceux dont le contrôleur entretient, il met à jour ses stations, et émet un signal.\\
+	Le diagramme de la figure \ref{fig:sortStations} illustre la séquence d’appel depuis le contrôleur lors d’un tri des stations. Le schéma d’appel est sensiblement analogue à celui du filtrage des trajets expliqué plus haut. L’appel à \textit{sortStations} survient lorsque l’utilisateur souhaite trier les trajets. Il prend en paramètre les stations à trier ainsi que les paramètres de filtrage. Il s’en suit l’utilisation du \textit{StationsSorter}. Après le tri, si les stations triées sont différentes de ceux dont le contrôleur entretient, il met à jour ses stations, et émet un signal.\\
 	
 	Il est important de noter que ces opérations sont lourdes, particulièrement celles concernant les trajets, puisque leur quantité pour une utilisation standard est importante (plusieurs centaines de milliers de trajets). C’est pourquoi ces opérations sont effectuées dans un autre thread que celui de l’interface graphique, ce qui explique le fait que le contrôleur émet des signaux à lui-même. Les signaux émis proviennent du thread en tâche de fond et sont reçus par le thread de l’interface graphique dès lors que la tâche lourde est terminée. Une seule tâche lourde peut-être exécutée à la fois. Une tâche devra attendre son tour avant d’être exécutée, si le thread en background est occupé. Si cela survient, le thread de l’interface graphique est bloqué (jusqu’à ce que la tâche qui attend son tour soit exécutée par le thread en background).\\
 		
