@@ -69,8 +69,8 @@ bool Data::load(const QString& filename, const bool& parallel)
     }
     else
     {
-        m_hasData = true;
         m_stations = stationsHash.values().toVector();
+        m_hasData = !(m_stations.isEmpty() && m_trips.isEmpty());
         emit dataLoaded(m_trips, m_stations);
         return true;
     }
