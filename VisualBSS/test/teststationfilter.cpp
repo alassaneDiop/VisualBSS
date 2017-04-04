@@ -38,7 +38,7 @@ go_bandit([](){
         s4.tripsFlow = 91;
         stations.append(s4);
 
-        it("Trips flow max", [&](){ // test the maximum (here 90)
+        it("Trips flow max", [&](){ // test the maximum Trips Flow (here 90)
             StationsFilterParams params;
             params.minTripsFlow = 60;
             params.maxTripsFlow = 90;
