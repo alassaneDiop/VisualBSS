@@ -506,6 +506,7 @@
 		par C++ 14.
 		\end{itemize}
 
+\clearpage
 \newpage
 \part{Code}
 	\section{Interface graphique}
@@ -649,7 +650,7 @@
 			\item[•]un flag pour indiquer s’il est cyclique ou non (faux par défaut)\\
 		\end{itemize}
 			
-		La distance et la direction sont codées sur des entiers 64 bits plutôt que 32 bits car on ne fait pas de supposition sur la durée ou distance maximale d’un trajet. Ils doivent être signés car on peut effectuer des opérations arithmétiques sur ces données. Malgré tout, il est important de fixer des limites (qui correspondent à celle du matériel).\\
+		La distance et la direction sont codées sur des entiers 64 bits plutôt que 32 bits car on ne fait pas de supposition sur la durée ou distance maximale d’un trajet. Ils doivent être signés car on peut effectuer des opérations arithmétiques sur ces données. Malgré tout, il est important de fixer des limites (qui correspondent à celles du matériel).\\
 			
 		\textbf{Station}\\
 		Cette structure contient les données nécessaires au filtrage et tri des stations :\\
@@ -670,7 +671,7 @@
 		\textbf{Avantages}:
 		\begin{itemize}
 			\item[•] représentation simple, similaire à celle utilisée en base données.
-			\item[•] évite d’utiliser les pointeurs, l’allocation avec l’opérateur \textit{new}, et donc les memory leaks (fuites de mémoire)
+			\item[•] évite l'utilisation des pointeurs, l’allocation avec l’opérateur \textit{new}, et donc les memory leaks (fuites de mémoire)
 			\item[•] pour déboguer il est plus facile de lire un entier qu’une adresse
 			en hexadécimal.
 			\item[•] certains sujets sur Internet, qui traitent de la comparaison entre
@@ -849,10 +850,35 @@ dessus de la \textit{MatrixGLWidget}.
 	
 		\subsection{Classe TimelineWidget}
 		Pour réaliser l’affichage d’une ligne de temps à intervalle d’une heure, nous avons utilisé un \textit{QWidget} dont la fonction \textit{paintEvent} a été réimplémenté. La manière de réaliser cela est assez simple, nous avons utilisé un \textit{QPainter} pour tracer les lignes. Une longue ligne horizontale représente la ligne temps sur laquelle les heures sont définies, et les petits traits verticaux à chaque fois que l’on veut y faire afficher une heure.\\
-Dans notre cas, nous avons utilisé vingt-quatre heure, mais ce nombre est paramétrable dans un fichier. De plus, la largeur des intervalles est re-calculée à  chaque fois que le widget est redimensionné.				
+Dans notre cas, nous avons utilisé vingt-quatre heure, mais ce nombre est paramétrable dans un fichier. De plus, la largeur des intervalles est re-calculée à  chaque fois que le widget est redimensionné
+(cf Figure : \ref{fig:timeline_widget_1} et \ref{fig:timeline_widget_2}).
+
+
+\clearpage
+		\begin{figure}[!h]
+		\begin{center}
+		\includegraphics[scale=.4]{timeline_widget_1.png}
+		\caption{Impression écran de la timelinewidget en plein écran (1920x1080)}
+		\label{fig:timeline_widget_1}
+		\end{center}
+		\end{figure}
+		
+		\begin{figure}[!h]
+		\begin{center}
+		\includegraphics[scale=.4]{timeline_widget_2.png}
+		\caption{Impression écran de la timelinewidget avec la fenêtre réduite}
+		\label{fig:timeline_widget_2}
+		\end{center}
+		\end{figure}
+		
+		Les deux images ci-dessus (Figure : \ref{fig:timeline_widget_1} et \ref{fig:timeline_widget_2})
+		sont affichées à la même échelle.
+	
 		
 		\subsection{Classe MapGLWidget}
-		Elle permet d’afficher les trajets ainsi que les stations en utilisant les fonctions d’OpenGL. Lorsque les données sont chargées dans la mémoire, le contrôleur (\textit{MainWindow}) fait appel à la fonction \textit{loadTripsData} et \textit{loadStationsData} afin d’envoyer les positions des stations et des trajets à la carte graphique via les objets \textit{StationRenderer} et \textit{TripsRenderer}. (cf : Figure ? plus bas)\\
+		Elle permet d’afficher les trajets ainsi que les stations en utilisant les fonctions d’OpenGL. Lorsque les données sont chargées dans la mémoire, le contrôleur (\textit{MainWindow}) fait appel à la fonction \textit{loadTripsData} et \textit{loadStationsData} afin d’envoyer les positions des stations et des trajets à la carte graphique via les objets \textit{StationRenderer} et \textit{TripsRenderer}. (cf : Figure ? plus bas) Ces objets possèdent une fonction \textit{sendData} qui prend en paramètre
+		un tableau contenant les positions des trajets et stations. Cette fait appel à la fonction
+		\textit{glBufferData}, une fonction OpenGL qui envoie les données à la carte graphique.\\
 
 		Une fois les données chargées, le contrôleur va aussi appelé une fonction de centrage afin que l’utilisateur ai une vue sur l’intégralité des éléments dessinés avec un zoom adapté.
 Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant une boîte englobante de ces points. L’étape suivante consiste à trouver le centre de cette boîte, de sorte que, cx et cy, la position du centre de la boîte.\\
@@ -876,7 +902,7 @@ Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant 
 
 		Au moment de la sélection des glyphs, il faut récupérer l'événement de la souris pour connaître la position au moment du clique et une autre position lorsqu’il relâche. Ainsi, cela peut former un rectangle que l’on se contente d’afficher, cela est fait grâce à l’objet \textit{SelectorRenderer} (cf Figure ? plus bas). Avec les coordonnées du rectangle on peut aussi savoir quels glyphs sont à l'intérieur du rectangle. Il suffira ensuite de récupérer les indices des stations et l’intervalle des heures pour émettre un signal est dessiner sur la carte les trajets et stations.\\
 
-		Le rendu des glyphs en eux même s’est avéré assez complexe et long à implémenter puisque pour chaque glyphs, il faut dessiner une multitude de lignes avec un certain angle de rotation pour chacune de ces lignes.
+		Le rendu des glyphs en eux même s’est avéré assez complexe et long à implémenter, puisque pour chaque glyphs, il faut dessiner une multitude de lignes avec un certain angle de rotation pour chacune de ces lignes. Pour chaque trajets, sa direction (de 0 à 360 degrés) est calculée. Cette direction permet de définir l'orientation	de chaque segments dessinés dans la \textit{timelinematrix}.
 		
 		\subsection{Classes Renderer}
 		Classe abstraite dont chaque objet qui se chargent de dessiner hérite. Elle possède un VAO et VBO, ainsi que le nombre vertices à afficher. La méthode draw est virtuelle pure, c’est à dire que la classe qui hérite de \textit{Renderer} doit obligatoirement réimplementer celle-ci.\\
@@ -889,7 +915,7 @@ Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant 
 
 		\url{http://www.openglsuperbible.com/2013/12/09/vertex-array-performance/}\\ \\
 		
-		Les classes filles sont relativement simple:\\
+		Les classes filles sont relativement simples:\\
 		
 		\textbf{StationRenderer}\\
 		Cette classe hérite de Renderer, elle dessine des stations qui sont représentées par des points. Une fonction drawFilledCircle a été implémentée mais n’est pas utilisée et n’a pas été testée.\\
@@ -1269,7 +1295,7 @@ Pour le premier test, nous allons tester la borne minimale en créant deux traje
 		
 		\subsection{Courbes de Bézier}
 		Il y a une erreur dans le calcul du point de contrôle, la courbe n'est pas parfaitement
-		symétrique en sont milieu.
+		symétrique en son milieu.
 		
 	\newpage
 	\section{Les difficultés rencontrées}
@@ -1289,11 +1315,37 @@ Pour le premier test, nous allons tester la borne minimale en créant deux traje
 	simple et performant. Cela nous a valu de changer le code et de faire des tests pour savoir
 	si les performances étaient présente.
 	
+		\subsection{Implémentation de l’interface graphique}	
+		L’existant propose de filtrer les trajets et stations en manipulant des intervalles de valeurs, via des sliders à deux poignées. Qt propose ce genre de widget avec le module \textit{QtQuick}. Nous l’avons découvert relativement tard son existence, et cela nous a pris du temps pour comprendre comment l'intégrer. Nous avons ainsi perdu du temps à tenter d’implémenter en C++ ce widget, sans succès.\\
+	
+		Une fois son intégration réussie, un nouveau problème se posait : suite à un rendez-vous avec le client, nous avons découvert qu’il ne disposait pas du module nécessaire, et qu’il ne souhaitait pas l’installer. De plus, son comportement était instable, notamment lorsqu’on relâchait une poignée, elle revenait à sa position d’origine.\\
+	
+		La solution a donc était d’utiliser une \textit{spinbox}.
+	
 	\newpage
 	\section{Critiques et améliorations possible} \label{ameliorations}
 	Les ralentissements que cela occasionne nous a contraint à réduire l’interactivité de
 	notre application en mettant à jour les trajets sélectionnés dans la timelinematrix qu’une
 	fois que l’utilisateur ait relâché le bouton gauche de la souris.
+	
+		\subsection{Représentation des données à afficher} 
+		Un structure ou classe \textit{Vertex} aurait dû être implémentée. Dans notre cas,
+		lors de la construction des données à afficher (calculs des positions et couleurs), nous
+		mettons ces données représentées par des flottants, dans un QVector.
+	
+		\subsection{Performances}
+		Par rapport à l’existant, on s'aperçoit vite que le programme est mal optimisé, avec notamment un temps pour filtrer les trajets beaucoup trop long.\\
+	
+		L’architecture est en cause, notamment parce que le contrôleur entretient les identifiants des données, et que les fonctions de filtrage prennent en paramètre des données. Il faut ainsi récupérer les données à partir de leurs identifiants pour filtrer, et vice-versa (récupérer les données à partir de leurs identifiants) après filtrage. Cela est coûteux dans le sens où il faut itérer sur chacune des données, et allouer des conteneurs intermédiaires.\\
+	
+		Une solution consiste à faire en sorte que les fonctions de filtrage prennent en paramètre les identifiants des données à filtrer, ainsi que la table d’indexation des données. Ces fonctions retournent ainsi non plus des données mais les identifiants des données filtrées. Il n’y aurait donc plus d’opérations aussi coûteuses d’allocation de conteneurs intermédiaires.\\
+	
+		Une autre solution, qui changerait davantage l’architecture, serait d’oublier ce système d’indexation des données par leurs identifiants, et d’utiliser des pointeurs.
+	
+		\subsection{Implémentation du contrôleur}
+		La classe \textit{MainWindow}, qui joue le rôle de contrôleur, fait communiquer la vue et le modèle. Le problème est qu’elle accumule les fonctionnalités, donc les fonctions. Elle contient donc trop de fonctions et est difficilement maintenable et lisible (les bugs en témoignent ces problèmes).\\
+	
+		Pour l’instant, aucune solution n’a été pensée, bien que la solution proposée plus haut pour éviter les conversions données/identifiants des données supprimerait de nombreuses lignes de code, ainsi que deux fonctions.
 	
 	\newpage
 	\section{Conclusion}
