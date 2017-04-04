@@ -132,7 +132,7 @@
 		que l'utilisateur a créé et qui permettra d'afficher les trajets des stations
 		sélectionnés. La sélection décrite ici est fait dans la fenêtre du milieu que l'on
 		appellera \textbf{\textit{timelinematrix}} pour la suite. Aussi, nous appellerons
-		un glyph, un élément de cette vue. Il représente tout les trajets d'une seule station
+		un glyphe, un élément de cette vue. Il représente tout les trajets d'une seule station
 		comprise dans un intervalle de temps d'une heure. Cela peut vulgairement être interprété
 		comme une étoile.
 		
@@ -146,7 +146,7 @@
 		de l'affluence de chaque celles-ci.
 	
 \newpage
-	\section{Étude de l’existant}	
+	\section{Étude de l’existant}	\label{etude_de_lexistant}
 	\begin{figure}[!h]
 	\begin{center}
 	\includegraphics[scale=.3]{screenshot_article.png}
@@ -159,7 +159,7 @@
 	stations et les trajets sélectionnés par l’utilisateur à partir de la fenêtre centrale.
 	Cette dernière, est une matrice qui contient les trajets pour chaque station, sur une
 	intervalle de temps, 24 heures ici. Elle permet de sélectionner avec la souris un
-	ensemble de trajets pour une station donnée et une heure donnée, que nous appellerons glyphs.
+	ensemble de trajets pour une station donnée et une heure donnée, que nous appellerons glyphes.
 	ce qui permet de sélectionner une plage horaire ou tous les trajets d'une station par exemple.
 	La troisième fenêtre, située à droite, met a disposition un ensemble de filtre modifiable
 	par des tirettes ou des cases à cocher. \\
@@ -283,7 +283,7 @@
 		beaucoup de données à charger, on peut estimer ce délai à quelques secondes voire
 		quelques minutes. \\
 		
-		Lors de l’application des divers filtres, le délai dois être assez court car 
+		Lors de l’application des divers filtres, le délai dois être assez court car l'utilisation
 		de ces filtres est assez récurrente.
 		Lors du déplacement sur la carte et donc du rafraîchissement des données de celle-ci,
 		le programme doit tourner en temps réel et on ne doit pas sentir de latence lors du
@@ -464,7 +464,7 @@
 		(Modèle/Vue/Contrôleur).\\
 		
 		\textbf{Le Modèle}\\
-		Anciennement appelé “Model”, il a été renommé en “Data”, car cette classe ne fait
+		Cette classe ne fait
 		que contenir des données (les stations et les trajets), avec la possibilité de les
 		charger à partir de fichiers texte, et les décharger. C’est elle qui gère
 		l’allocation mémoire de ces données, ainsi que leur accès en lecture seule.\\
@@ -672,13 +672,6 @@
 		\begin{itemize}
 			\item[•] représentation simple, similaire à celle utilisée en base données.
 			\item[•] évite l'utilisation des pointeurs, l’allocation avec l’opérateur \textit{new}, et donc les memory leaks (fuites de mémoire)
-			\item[•] pour déboguer il est plus facile de lire un entier qu’une adresse
-			en hexadécimal.
-			\item[•] certains sujets sur Internet, qui traitent de la comparaison entre
-			une indexation par rapport à l’utilisation des pointeurs, estiment
-			cette approche plus efficace en terme de performance
-			\sloppy
-			\url{(http://stackoverflow.com/questions/8145449/how-come-my-array-index-is-faster-than-pointer}).\\
 		\end{itemize}
 			
 		\textbf{Inconvénients}:
@@ -776,13 +769,17 @@
 	
 	\newpage
 	\section{Stockage des données}
-	Une fois les données chargées, elles sont stockées au sein de la classe \textit{Data}, dans des \textit{QVector}, classe générique qui joue le rôle de conteneur extensible similaire au \textit{std::vector} de la librairie standard. C’est le conteneur de premier choix, selon la documentation de Qt.
-Les données y sont contenues de manière contiguë. L’ajout se fait en passant en paramètre l’item à insérer à la méthode \textit{append}. Cette méthode est équivalente au \textit{pushback} du vecteur de la librairie standard (ajout en fin de liste, en incrémentant la taille). La méthode réserve spécifie une taille (passée en paramètre) préférentielle, qui est utile lorsque l’on connaît à l’avance la taille du conteneur.\\
+	Une fois les données chargées, elles sont stockées au sein de la classe \textit{Data}, dans des \textit{QVector}, classe générique qui joue le rôle de conteneur extensible similaire au \textit{std::vector} de la librairie standard. C'est le conteneur de premier choix, selon la documentation de Qt qui explique que son allocation contiguë de la mémoire permet un accès plus performant que les autres conteneurs.
+	L’ajout se fait en passant en paramètre l’item à insérer à la méthode \textit{append}. Cette méthode est équivalente au \textit{pushback} du vecteur de la librairie standard (ajout en fin de liste, en incrémentant la taille). La méthode réserve spécifie une taille (passée en paramètre) préférentielle, qui est utile lorsque l’on connaît à l’avance la taille du conteneur.\\
 
 	Ces données sont accessibles au contrôleur (pour permettre les opération de filtrages, tris et sélection) en lecture seule, afin d’éviter qu’il ne les errone par erreur.\\
 
-	\newpage
+\newpage
 	\section{Nettoyage des données}
+	Le nettoyage de données permet à l'utilisateur de décharger les données et ainsi nettoyer
+	les éléments dessinés sur les différentes fenêtre d'affichage. Cela permet de charger 
+	d'autres jeux de données sans tenir compte des données précédemment chargées.\\
+	
 	\begin{figure}[!h]
 	\begin{center}
 	\includegraphics[scale=1]{dia_sequence_clear.png}
@@ -876,14 +873,22 @@ Dans notre cas, nous avons utilisé vingt-quatre heure, mais ce nombre est param
 	
 		
 		\subsection{Classe MapGLWidget}
-		Elle permet d’afficher les trajets ainsi que les stations en utilisant les fonctions d’OpenGL. Lorsque les données sont chargées dans la mémoire, le contrôleur (\textit{MainWindow}) fait appel à la fonction \textit{loadTripsData} et \textit{loadStationsData} afin d’envoyer les positions des stations et des trajets à la carte graphique via les objets \textit{StationRenderer} et \textit{TripsRenderer}. (cf : Figure ? plus bas) Ces objets possèdent une fonction \textit{sendData} qui prend en paramètre
+		Elle permet d’afficher les trajets ainsi que les stations en utilisant les fonctions d’OpenGL. Lorsque les données sont chargées dans la mémoire, le contrôleur (\textit{MainWindow}) fait appel à la fonction \textit{loadTripsData} et \textit{loadStationsData} afin d’envoyer les positions des stations et des trajets à la carte graphique via les objets \textit{StationRenderer} et \textit{TripsRenderer}. (cf : Figure \ref{fig:dia_class_renderer} plus bas) Ces objets possèdent une fonction \textit{sendData} qui prend en paramètre
 		un tableau contenant les positions des trajets et stations. Cette fait appel à la fonction
 		\textit{glBufferData}, une fonction OpenGL qui envoie les données à la carte graphique.\\
 
 		Une fois les données chargées, le contrôleur va aussi appelé une fonction de centrage afin que l’utilisateur ai une vue sur l’intégralité des éléments dessinés avec un zoom adapté.
 Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant une boîte englobante de ces points. L’étape suivante consiste à trouver le centre de cette boîte, de sorte que, cx et cy, la position du centre de la boîte.\\
 
-	Avec le milieu de la boîte englobante, on peut indiquer la translation par un uniform qui enverra au shaders la position des vertices. Mais il faut aussi calculer la valeur du zoom pour que l’utilisateur puisse voir tous les éléments correctement.\\
+	Avec le milieu de la boîte englobante, on peut indiquer la translation en utilisant une variable
+	\textit{uniform} à laquelle le shader calculera la position des vertices. Mais il faut aussi calculer la valeur du zoom pour que l’utilisateur puisse voir tous les éléments correctement.\\
+	
+	Les variables \textit{uniform}, sont des variables globales propres aux shaders. On les utilises
+	pour envoyer des données de la mémoire physique aussi appelée RAM, vers la mémoire de la carte
+	graphique.\\
+	
+	Les shaders sont des programmes, proches du langage C, qui sont exécutés par la carte graphique. Il
+	en existe de différents types, chacun ont une fonction propre.\\
 
 	Pour calculer ce zoom, il faut prendre la plus grande valeur entre la hauteur et la largeur de la boîte englobante, puis diviser deux par cette valeur maximale.\\
 
@@ -896,24 +901,37 @@ Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant 
 	Cette classe gère les événement de la souris comme l’utilisation de la molette pour zoomer ou dé-zoomer mais aussi lorsque l’utilisateur presse et relâche les boutons de sa souris pour effectuer des translation de la carte.
 		
 		\subsection{Classe MatrixGLWidget}		
-		Cette classe a pour rôle d’afficher les glyphs pour chaque stations et pour chaque heures. De plus, elle doit permettre d’interagir avec la matrice, comme monter et descendre avec la souris ainsi que de pouvoir sélectionner un ensemble de glyphs.\\
+		Cette classe a pour rôle d’afficher les glyphes pour chaque stations et pour chaque heures. De plus, elle doit permettre d’interagir avec la matrice de chronologie des trajets, comme défiler en
+		haut et en bas avec la souris, ainsi que pouvoir sélectionner un ensemble de glyphes.\\
 
-		L'implémentation du scroll est assez simple puisque qui consiste à récupérer l'événement de souris et envoyer au shader cette valeur pour l’affichage.\\
+		L'implémentation du défilement est assez simple, puisqu'elle consiste à récupérer la valeur
+		du défilement grâce à l'instance de la classe \textit{QWheelEvent} et envoyer au shader cette valeur pour l’affichage.\\
 
-		Au moment de la sélection des glyphs, il faut récupérer l'événement de la souris pour connaître la position au moment du clique et une autre position lorsqu’il relâche. Ainsi, cela peut former un rectangle que l’on se contente d’afficher, cela est fait grâce à l’objet \textit{SelectorRenderer} (cf Figure ? plus bas). Avec les coordonnées du rectangle on peut aussi savoir quels glyphs sont à l'intérieur du rectangle. Il suffira ensuite de récupérer les indices des stations et l’intervalle des heures pour émettre un signal est dessiner sur la carte les trajets et stations.\\
+		Au moment de la sélection des glyphes, il faut récupérer l'événement de la souris pour connaître sa position au moment du click et une autre position lors du relâchement de la souris. Ainsi, cela peut former un rectangle que l’on se contente d’afficher. Cela est fait grâce à l’objet \textit{SelectorRenderer} (cf Figure \ref{fig:dia_class_renderer} plus bas). Avec les coordonnées du rectangle, on peut aussi savoir quels glyphes sont à l'intérieur du rectangle. Il suffira ensuite de récupérer les indices des stations et l’intervalle des heures pour émettre un signal est dessiner sur la carte les trajets sélectionnés\\
 
-		Le rendu des glyphs en eux même s’est avéré assez complexe et long à implémenter, puisque pour chaque glyphs, il faut dessiner une multitude de lignes avec un certain angle de rotation pour chacune de ces lignes. Pour chaque trajets, sa direction (de 0 à 360 degrés) est calculée. Cette direction permet de définir l'orientation	de chaque segments dessinés dans la \textit{timelinematrix}.
+		Le rendu des glyphes en eux-même s’est avéré assez complexe et long à implémenter, puisque pour chaque glyphes, il faut dessiner une multitude de lignes avec un certain angle de rotation pour chacune de ces lignes. Pour chaque trajets, son azimut (de 0 à 360 degrés) est calculée. Cette direction permet de définir l'orientation de chaque segments dessinés dans la \textit{timelinematrix}.
 		
+\clearpage
 		\subsection{Classes Renderer}
-		Classe abstraite dont chaque objet qui se chargent de dessiner hérite. Elle possède un VAO et VBO, ainsi que le nombre vertices à afficher. La méthode draw est virtuelle pure, c’est à dire que la classe qui hérite de \textit{Renderer} doit obligatoirement réimplementer celle-ci.\\
+		
+		\begin{figure}[!h]
+		\begin{center}
+		\includegraphics[scale=.7]{dia_class_renderer.png}
+		\caption{Diagramme de classe de rendu graphique}
+		\label{fig:dia_class_renderer}
+		\end{center}
+		\end{figure}		
+		
+		Le \textit{Renderer} est une classe abstraite dont chaque objet de rendu en hérite. Elle possède
+		un \textit{VertexArrayObject} (VAO) et un \textit{VertexBufferObject} (VBO), ainsi que le nombre vertices à afficher.\\
+		
+		Les VBO peuvent être vus comme des tableaux peuvent contenir des positions ou des indices par exemples, dans notre cas ils stockent des positions.\\
 
-		De plus, elle contient une fonction pour envoyer les données à la carte graphique avec \textit{glBufferData}. La fonction \textit{createVAO} crée un VAO ainsi qu’un VBO, ils doivent obligatoirement être créés et bindés (ce que fait cette fonction).\\
+		Les VAO, permettent d’optimiser le temps d’affichage (très légèrement) en encapsulant les données qui lui sont associées. Il garde une référence sur les VBO.\\
+		
+		La méthode \textit{draw} est virtuelle pure, c’est à dire que la classe qui hérite de \textit{Renderer} doit obligatoirement implementer celle-ci.\\
 
-		Les VertexBufferObject (VBO) peuvent vus comme des tableaux peuvent contenir des positions ou des indices par exemples, dans notre cas ils stockent des positions.\\
-
-		Les VertexArrayObject (VAO), permettent d’optimiser le temps d’affichage (très légèrement) en encapsulant les données qui lui sont associées. Il garde une référence sur les VBO.\\
-
-		\url{http://www.openglsuperbible.com/2013/12/09/vertex-array-performance/}\\ \\
+		Elle contient une fonction, \textit{sendData} pour envoyer les données à la carte graphique avec \textit{glBufferData}. La fonction \textit{createVAO} créé et active le VAO et VBO.\\		
 		
 		Les classes filles sont relativement simples:\\
 		
@@ -924,7 +942,7 @@ Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant 
 		Cette classe hérite de Renderer, elle dessine des trajets par des lignes. \\
 
 		\textbf{GlyphRenderer}\\
-		Cette classe hérite de Renderer, elle dessine des glyphs par des lignes. \\
+		Cette classe hérite de Renderer, elle dessine des glyphes par des lignes. \\
 		
 		\textbf{SelectorRenderer}\\
 		Cette classe hérite de Renderer, elle dessine un rectangle coloré par deux triangles.
@@ -1012,7 +1030,7 @@ Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant 
 	    	    
 	    \subsection{Courbes de Bézier}
 		Les courbes de Bézier sont évaluées dans les Geometry shaders. Les Geometry shaders
-		permettent de modifiés les primitives tel que des lignes des points ou des triangles
+		permettent de modifiés les primitives tel que des lignes, les points ou les triangles
 		en générant des nouveaux vertices. Nous avons fait le choix d'implementer cette 
 		fonctionnalité dans un shader (cela aurait très bien pu être fait par le processeur)
 		car théoriquement cela devrait être plus performant. En effet, la carte graphique
@@ -1038,9 +1056,9 @@ Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant 
 	    de pouvoir comparer le nombres de points générés. Selon nous, 20 points semble un bon être
 	    un bon compromis.\\
 	    
-		\subsection{Affichage des glyphs}
+		\subsection{Affichage des glyphes}
 		Dans la mesure où le temps d'affichage des trajets et des stations avec des \textit{QPainter}
-		était déraisonnable, nous n'avons pas pris le temps coder l'affiche de glyphs. Cela serait 
+		était déraisonnable, nous n'avons pas pris le temps coder l'affiche de glyphes. Cela serait 
 		une perte de temps et les performances serait clairement inacceptable.
 		
 		\begin{center}
@@ -1257,7 +1275,7 @@ Pour le premier test, nous allons tester la borne minimale en créant deux traje
 		Pour réaliser cette analyse, nous avons compilé en mode “Release” afin d’avoir
 		un code optimisé et le plus rapide possible à l’exécution.
 		Sur cette analyse on peut voir que les fonctions les plus lourdes sont les fonctions
-		parallélisées notamment drawGlyphsOnMatrix. L’allocation des QVector<QVector<int>>
+		parallélisées notamment \textit{drawGlyphsOnMatrix}. L’allocation des QVector<QVector<int>>
 		prend aussi beaucoup de temps . On notera aussi QDateTime::time.
 		
 		\subsection{Fuite de mémoire}
@@ -1289,9 +1307,10 @@ Pour le premier test, nous allons tester la borne minimale en créant deux traje
 	\section{Bugs présents}		
 		\subsection{Sélection dans la timelinematrix}
 		La sélection des heures et des stations se fait avec le rectangle bleu dessiné par
-		l'utilisateur grâce à sa souris. Les indices des stations sont incorrectes.
-		Le problème vient de la fonction \textit{MatrixGLWidget::stationIntervalSelected}. Jusqu'ici
-		nous n'avons pas réussi à corriger l'erreur.
+		l'utilisateur grâce à sa souris. Le problème vient des indices des stations qui
+		sont incorrectes.
+		La fonction \textit{MatrixGLWidget::stationIntervalSelected} renvoie de mauvaise valeurs
+		. Jusqu'ici, par manque de temps, nous n'avons pas réussi à corriger l'erreur.
 		
 		\subsection{Courbes de Bézier}
 		Il y a une erreur dans le calcul du point de contrôle, la courbe n'est pas parfaitement
@@ -1299,7 +1318,8 @@ Pour le premier test, nous allons tester la borne minimale en créant deux traje
 		
 	\newpage
 	\section{Les difficultés rencontrées}
-	Pour réaliser ce projet nous devions nous appuyer sur le document rédigé par le groupe de
+		\subsection{Compréhension du sujet et fonctionnalités}
+		Pour réaliser ce projet nous devions nous appuyer sur le document rédigé par le groupe de
 	chercheurs, ainsi que la vidéo. Pour réaliser notre cahier des besoins, il nous a été
 	difficile de définir certains besoins car il nous manquait des informations ou précisions.
 	De même pour l’application montrée dans la vidéo, nous ne pouvions pas la tester car nous
@@ -1315,38 +1335,60 @@ Pour le premier test, nous allons tester la borne minimale en créant deux traje
 	simple et performant. Cela nous a valu de changer le code et de faire des tests pour savoir
 	si les performances étaient présente.
 	
+	
+		\subsection{Implémentation du programme}
+		Le projet est destiné à visualiser et traiter via des filtres une grande quantité de données (environ un million de trajets). Il est donc facile de rendre le programme peut interactif au niveau utilisateur ou de mal utiliser les ressources de mémoire vive.\\
+
+Le point crucial, face à ce défi, a donc été de choisir correctement les structures de données pour représenter les trajets et stations, les prototypes de fonctions qui les manipulent, ainsi que l’utilisation du parallélisme. Cela a impliqué de devoir rechercher sur Internet des sujets (principalement StackOverflow, en complément de la documentation de Qt) qui traitent de l’efficacité des conteneurs ainsi que d’autres possibilités d’optimisations de construction, stockage et traitement de ces données.
+		
+		
 		\subsection{Implémentation de l’interface graphique}	
 		L’existant propose de filtrer les trajets et stations en manipulant des intervalles de valeurs, via des sliders à deux poignées. Qt propose ce genre de widget avec le module \textit{QtQuick}. Nous l’avons découvert relativement tard son existence, et cela nous a pris du temps pour comprendre comment l'intégrer. Nous avons ainsi perdu du temps à tenter d’implémenter en C++ ce widget, sans succès.\\
 	
 		Une fois son intégration réussie, un nouveau problème se posait : suite à un rendez-vous avec le client, nous avons découvert qu’il ne disposait pas du module nécessaire, et qu’il ne souhaitait pas l’installer. De plus, son comportement était instable, notamment lorsqu’on relâchait une poignée, elle revenait à sa position d’origine.\\
 	
-		La solution a donc était d’utiliser une \textit{spinbox}.
+		Une solution a donc était d’utiliser une spinbox, un widget disponible dans le module \textit{Widget} de Qt, qui permet de réaliser les mêmes choses qu’un slider, à savoir modifier une valeur sur un intervalle. Chaque slider à deux poignées a donc été remplacé par deux spinbox.
 	
 	\newpage
-	\section{Critiques et améliorations possible} \label{ameliorations}
-	Les ralentissements que cela occasionne nous a contraint à réduire l’interactivité de
-	notre application en mettant à jour les trajets sélectionnés dans la timelinematrix qu’une
-	fois que l’utilisateur ait relâché le bouton gauche de la souris.
-	
+	\section{Critiques et améliorations possible} \label{ameliorations}	
 		\subsection{Représentation des données à afficher} 
-		Un structure ou classe \textit{Vertex} aurait dû être implémentée. Dans notre cas,
+		Un structure ou classe \textit{Vertex} aurait dû être implémentée, elle contiendrait un vecteur
+		à 2 dimensions pour les positions 2D et un vecteur à 3 dimensions pour stocker les trois
+		composantes rouge, vert et bleu.
+		Dans notre cas,
 		lors de la construction des données à afficher (calculs des positions et couleurs), nous
-		mettons ces données représentées par des flottants, dans un QVector.
+		mettons ces données représentées par des flottants, dans un \textit{QVector}.
 	
 		\subsection{Performances}
 		Par rapport à l’existant, on s'aperçoit vite que le programme est mal optimisé, avec notamment un temps pour filtrer les trajets beaucoup trop long.\\
 	
 		L’architecture est en cause, notamment parce que le contrôleur entretient les identifiants des données, et que les fonctions de filtrage prennent en paramètre des données. Il faut ainsi récupérer les données à partir de leurs identifiants pour filtrer, et vice-versa (récupérer les données à partir de leurs identifiants) après filtrage. Cela est coûteux dans le sens où il faut itérer sur chacune des données, et allouer des conteneurs intermédiaires.\\
+		
+		Ainsi, pour exemple, le prototype de la fonction chargée de filtrer les trajets ne serait plus
+\textit{QVector<Trip> TripsFilter::filter(QVector<Trip> trips)} serait remplacé par 
+\textit{QVector<int> TripsFilter::filter(QVector<int> tripsIds, QVector<Trip> trips)}. Le premier prototype traite directement les trajets, tandis que le deuxième nécessite un accés indexé sur une lookup-table. La deuxième approche est moins élégante, mais améliorerait fortement l’efficacité des méthodes qui filtrer les trajets. Il en vaut de même pour les méthodes de filtrage et tri des stations, ainsi que sélection des trajets.\\
 	
 		Une solution consiste à faire en sorte que les fonctions de filtrage prennent en paramètre les identifiants des données à filtrer, ainsi que la table d’indexation des données. Ces fonctions retournent ainsi non plus des données mais les identifiants des données filtrées. Il n’y aurait donc plus d’opérations aussi coûteuses d’allocation de conteneurs intermédiaires.\\
 	
-		Une autre solution, qui changerait davantage l’architecture, serait d’oublier ce système d’indexation des données par leurs identifiants, et d’utiliser des pointeurs.
+		Une autre solution, qui changerait davantage l’architecture, serait d’oublier ce système d’indexation des données par leurs identifiants, et d’utiliser des pointeurs. Cela implique de parfaitement connaître le lieu (dans le code) et l’instant (à l'exécution) d’allocation des données, ainsi que le lieu et l’instant de leur désallocation, sous peine de provoquer des fuites mémoires.
 	
+		\subsection{Interactivité : sélection des glyphes}
+		\textbf{A PRECISER}\\
+		Les ralentissements que cela occasionne nous a contraint à réduire l’interactivité de
+	notre application en mettant à jour les trajets sélectionnés dans la \textit{timelinematrix} qu’une
+	fois que l’utilisateur ait relâché le bouton gauche de la souris.
+		
 		\subsection{Implémentation du contrôleur}
 		La classe \textit{MainWindow}, qui joue le rôle de contrôleur, fait communiquer la vue et le modèle. Le problème est qu’elle accumule les fonctionnalités, donc les fonctions. Elle contient donc trop de fonctions et est difficilement maintenable et lisible (les bugs en témoignent ces problèmes).\\
 	
 		Pour l’instant, aucune solution n’a été pensée, bien que la solution proposée plus haut pour éviter les conversions données/identifiants des données supprimerait de nombreuses lignes de code, ainsi que deux fonctions.
-	
+		
+		\subsection{Perspectives}
+		Il serait tout à fait possible de reprendre l'article \ref{Oli16} afin d’étendre le programme
+		en ajoutant d'autres modes de visualisations. Par exemple on pourrait afficher les stations
+		qui serait vides ou pleines en fonction de l'heure de la journée. Bien sûr, il faudrait trouver
+		les différentes sources de données permettant cela.
+		
 	\newpage
 	\section{Conclusion}
 
@@ -1355,20 +1397,27 @@ Pour le premier test, nous allons tester la borne minimale en créant deux traje
 	\begin{itemize}
 		\item[]\textbf{BSS} : bike sharing system, système de vélos en libre service\\
 		\item[]\textbf{CSV} : CSV : Comma Separated Value, c'est un format de fichier\\
-		\item[]\textbf{XML} :\\
+		\item[]\textbf{XML} : Extensible Markup Language, c'est un langage de balisage.\\
 		\item[]\textbf{JSON} : Java Script Object Notation, format de fichier\\
 		\item[]\textbf{Qt} : Est un framework très populaire pour le développement
 		d'interfaces graphiques\\
 		\item[]\textbf{Valgrind} : framework permettant de faire de l'analyse de programmes\\
-		\item[]\textbf{Test en boite blanche} : \\
-		\item[]\textbf{Test en boite noire} :  \\
+		\item[]\textbf{Tests en boites blanche} : Testes qui visent à regarder l’implémentation même 
+		des fonctions, contrairement aux tests boites noire, on regarde le fonctionnement des objets.\\
+		\item[]\textbf{Test en boite noire} : Vise tester le comportement de l'application et nom pas 
+		les objets ou fonctions.\\
 		\item[]\textbf{Doxygene} : Outil permettant de générer de la documentation,
 		au format html ou en Latex par exemple.\\
-		\item[]\textbf{Glyph} : Un glyph est un élément de la timelinematrix, elle
+		\item[]\textbf{Glyphe} : Un glyphe est un élément de la \textit{timelinematrix}, elle
 		représente un ensemble de trajet d'une station donnée est d'une heure donnée.\\
 		\item[]\textbf{Shared pointer} :\\
-		\item[]\textbf{Parsing} : \\
+		\item[]\textbf{Parsing} : Analyse d'une chaîne de symboles.\\
 		\item[]\textbf{QML} : Qt Modeling Language\\
+		\item[]\textbf{OpenGL} : Ensemble de fonctions permettant d'écrire des applications graphique.
+		Elle est disponible sous de nombreuses plateformes comme Linux, Windows ou MacOS par exmple.
+		\item[]\textbf{GLSL} : OpenGL Shader Language, langage pour écrire des Shaders avec OpenGL\\
+		\item[]\textbf{Shader} : C'est un programme écrit en GLSL (proche du langage C), qui sera
+		exécuté par la carte graphique.\\
 	\end{itemize}
 	
 	\newpage
