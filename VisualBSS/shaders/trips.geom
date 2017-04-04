@@ -7,7 +7,7 @@ in vec3 vColor[2];
 out vec3 gColor;
 
 // Nomber of points generated, more there is more the curve is smooth
-int generatedPointsNb = 25;
+int generatedPointsNb = 20;
 
 vec3 evalQuadraticBezier(vec3 v[3], float t)
 {
@@ -25,14 +25,14 @@ void main()
     // The position of the point on the middle of the segment
     vec3 midLinePos = (gl_in[0].gl_Position.xyz + gl_in[1].gl_Position.xyz) / 2.f;
 
-    // Calculate control point
+    // Calculate control point (wrong way to calculate CP)
     vec3 posCP;
     posCP.x = midLinePos.x - (gl_in[1].gl_Position.y - gl_in[0].gl_Position.y);
     posCP.y = midLinePos.y;
 
 /// A
 /// |
-/// |-C   distance from segment is dist(A, B) / 3
+/// |-C   distance from segment is dist(A, B) / 2
 /// |
 /// B
 
