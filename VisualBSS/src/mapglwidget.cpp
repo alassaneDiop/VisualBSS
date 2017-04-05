@@ -237,7 +237,7 @@ void MapGLWidget::calculateZoom()
         // OpenGL coordinates system from -1 to 1
         const int coordinateSystemLength = 2;
 
-        // FIXME: Centering doesn't work very well
+        // FIXME: Centering doesn't work well
         // Cette valeur permet de reduire le zoom et affiche toute la bounding box
         const float debugValue = 2.f;
         m_zoom = coordinateSystemLength / x / debugValue;

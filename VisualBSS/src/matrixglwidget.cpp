@@ -274,7 +274,7 @@ QPair<int, int> MatrixGLWidget::timeIntervalSelected() const
 }
 
 
-// FIXME : doesn't return correct values
+// FIXME : Doesn't return corrects values
 QPair<int, int> MatrixGLWidget::stationIntervalSelected() const
 {
     const int glyphIntervalY = bss::GLYPH_HEIGHT + bss::SPACE_BETWEEN_GLYPHS;
