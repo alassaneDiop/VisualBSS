@@ -53,10 +53,11 @@
 	Nous tout d'abord tenons à remercier Mr. Boris Mansencal notre chargé de TD, pour nous avoir guidé tout au long du projet, et pour ses précieux conseils techniques, ainsi que notre client Mr. Romain Giot, pour le temps qu'il nous a consacré.	
 	
 \newpage
-\section*{Résumé}
+\section*{Abstrait}
+	L’étude des systèmes de vélos en libre service constitue un intérêt grandissant, avec pour objectif de satisfaire les besoins des usagers, et d’améliorer l'accès à ces systèmes. Ce document traite d’une façon d’implémenter un programme de visualisation de l’utilisation de systèmes de vélos pour lesquels les données des usagers sont disponibles. Il s’agit d’implémenter une application de bureau performante permettant de visualiser de manière statistique et géographique les trajets des usagers.
 
-\section*{Summary}
-
+\section*{Abstract}
+	Bike sharing systems studying represents an increasingly matter, in perspective to satisfy commuters needs, and to improve access to these systems. This paper provides a way to implement a bike sharing system visualization program for which commuters data are available to. This topic treats an implementation of a high performance desktop application allowing to visualize commuters trips with statistical and geographic approaches.
 
 \newpage
 \tableofcontents
@@ -75,7 +76,7 @@
 
 	L’application doit charger un ensemble de données via des fichiers aux différents formats. Ce sont ces données que l'application traitera afin de les visualiser dans les différentes fenêtres prévues à cet effet.\\
 	
-	Une fois ces données chargées, l'utilisateur dispose d'une multitude d'intéractions
+	Une fois ces données chargées, l'utilisateur dispose d'une multitude d’interactions
 	possible afin de définir quels trajets il veut afficher sur la carte de la ville sélectionnée.\\		
 	L'élément important est le système de filtre que le logiciel offre, il permet d'afficher
 	les trajets et stations que l’on souhaite. Il peut également filtrer sur les heures ou
@@ -97,58 +98,15 @@
 	de traiter des millions de trajets. C’est la raison pour laquelle 
 	le projet consiste à développer une application de bureau avec le langage C++ et OpenGL.
 	
-		\subsection{Affichage de la carte} \label{interactions_et_affichages}
-		La fenêtre de gauche affiche la carte d'une ville. De la même manière que
-		\textit{Google Map}, on peut voir les noms des rues par exemple. Elle est interactive,
-		puisqu'elle autorise de zoomer et d'effectuer des translations de gauche à droite et 
-		de haut en bas avec la souris.
-		
-		\subsection{Visualisation des stations}
-		Les stations sont représentées par des cercles sur la même fenêtre que celle de la carte.
-		Les cercles sont de couleurs différentes et peuvent variées selon l'affluence des stations.
-		Aussi, pour chaque stations, l'utilisateur pourra cliquer sur l'une d'elle afin de mettre
-		en surbrillance dans une autre vue (celle des filtres) le nom de la station sélectionnée.
-		
-		\subsection{Visualisation des trajets}
-		Tout comme les stations, les trajets seront affichés dans la même fenêtre que la carte et
-		les stations. Les trajets sont connectés à leurs stations et sont dessinés par des courbes
-		de couleurs en fonction d'un départ ou d'une arrivée. Si le trajet d'une station donnée est
-		un départ, alors la courbe sera d'une couleur interpolée allant du cyan (station d'origine)
-		vers le bleu (station d'arrivée). De la même manière, si c'est une arrivée par rapport à la
-		station donnée, la courbe sera interpolée du rouge (station de départ) vers le jaune
-		(station d'arrivée).\\
-		Pour le cas des trajets cycliques, c'est-à-dire lorsque la station d'arrivée est la même que la station de départ, ils sont représentés
-		par des cercles de couleur grise, centrés sur leurs stations.
-	
-		\subsection{Sélection des trajets souhaités}
-		Pour que l'utilisateur puisse choisir les trajets qu'il souhaite, il peut à l'aide de la
-		souris sélectionner un ensemble de trajets dans un intervalle d'heure précise (à une
-		heure prés). Pour cela, il sélectionne avec sa souris par un clique, puis en la 
-		déplaçant pour que cela forme un rectangle transparent. Ce rectangle délimite la zone
-		que l'utilisateur a créé et qui permettra d'afficher les trajets des stations
-		sélectionnées. La sélection décrite ici est fait dans la fenêtre du milieu que l'on
-		appellera \textbf{\textit{timelinematrix}} pour la suite. Aussi, nous appellerons
-		un glyphe, un élément de cette vue. Il représente tout les trajets d'une seule station
-		comprise dans un intervalle de temps d'une heure. Cela peut vulgairement être interprété
-		comme une étoile.
-		
-		\subsection{Les filtres}
-		Il est possible de pousser la sélection des trajets encore plus loin, puisque l'utilisateur
-		peut trier les trajets en fonction de plusieurs critères. Il peut choisir les intervalles
-		des distances, des durées, des directions des trajets ou encore du nombre des
-		départs/arrivées des stations. Ce panneau des filtres est placé au niveau de la partie gauche
-		de l'application.\\
-		De plus, en bas de ce panneau, il y a une liste ordonnée de stations en fonction
-		de l'affluence de celles-ci.
-	
 \newpage
 	\section{Étude de l’existant}	\label{etude_de_lexistant}
 	\begin{figure}[!h]
 	\begin{center}
-	\includegraphics[scale=.3]{screenshot_article.png}
-	\caption{Les différentes visualisations extraite de l'article \cite{Oli16}}
+	\includegraphics[scale=.3]{existant_trips.png}
+	\caption{Impression écran du logiciel proposé par les chercheurs, visualisation des trajets}
+	\label{fig:trips_screen}
 	\end{center}
-	\end{figure}
+	\end{figure}	
 	
 	L’application proposée par les chercheurs est divisée en trois fenêtres principales.
 	La première permet de naviguer sur la carte d’une ville. Elle permet de voir les
@@ -160,27 +118,22 @@
 	La troisième fenêtre, située à droite, met a disposition un ensemble de filtre modifiable
 	par des tirettes ou des cases à cocher. \\
 	
-	Les fonctionnalités et la manière de les utiliser ont été introduite dans la section
-	d'introduction \ref{introduction}.\\
-
 	Ce lien montre de quelle manière ils utilisent leur application pour afficher des trajets et
 	des stations avec leur jeu de données. Cette vidéo est portée plus spécifiquement sur la manière
 	de sélectionner des trajets.\\
 	\url{https://drive.google.com/file/d/0B3aeg8yMfRj0MWFmUHZ6ZlR4MzA/view}\\
-	Une impression écran a été faite à la figure \ref{fig:trips_screen}\\
-	
+	Une impression écran a été faite à la figure \ref{fig:trips_screen}.\\
+
 	\begin{figure}[!h]
 	\begin{center}
-	\includegraphics[scale=.3]{existant_trips.png}
-	\caption{Impression écran du logiciel proposé par les chercheurs, visualisation des trajets}
-	\label{fig:trips_screen}
+	\includegraphics[scale=.3]{screenshot_article.png}
+	\caption{Les différentes visualisations extraite de l'article \cite{Oli16}}
 	\end{center}
 	\end{figure}
 	
-	Ce lien montre l'utilisation de
 	Ces fonctionnalités ne feront développées dans notre application.\\
 	\url{https://drive.google.com/file/d/0B3aeg8yMfRj0R3VKQjdtX1htUUU/view}\\
-	Une impression écran a été faite à la figure \ref{fig:station_screen}\\
+	Une impression écran a été faite à la figure \ref{fig:station_screen}.\\
 	
 	\begin{figure}[!h]
 	\begin{center}
@@ -201,6 +154,50 @@
 	Comme expliqué précédemment, notre application a pour but de reprendre les
 	fonctionnalités de cette application.
 	
+		\subsection{Affichage de la carte} \label{interactions_et_affichages}
+		La fenêtre de gauche affiche la carte d'une ville. De la même manière que
+		\textit{Google Map}, on peut voir les noms des rues par exemple. Elle est interactive,
+		puisqu'elle autorise de zoomer et d'effectuer des translations de gauche à droite et 
+		de haut en bas avec la souris.
+		
+		\subsection{Visualisation des stations}
+		Les stations sont représentées par des cercles sur la même fenêtre que celle de la carte.
+		Les cercles sont de couleurs différentes et peuvent variées selon l'affluence des stations.
+		Aussi, pour chaque stations, l'utilisateur pourra clic sur l'une d'elle afin de mettre
+		en surbrillance dans une autre vue (celle des filtres) le nom de la station sélectionnée.
+		
+		\subsection{Visualisation des trajets}
+		Tout comme les stations, les trajets seront affichés dans la même fenêtre que la carte et
+		les stations. Les trajets sont connectés à leurs stations et sont dessinés par des courbes
+		de couleurs en fonction d'un départ ou d'une arrivée. Si le trajet d'une station donnée est
+		un départ, alors la courbe sera d'une couleur interpolée allant du cyan (station d'origine)
+		vers le bleu (station d'arrivée). De la même manière, si c'est une arrivée par rapport à la
+		station donnée, la courbe sera interpolée du rouge (station de départ) vers le jaune
+		(station d'arrivée).\\
+		Pour le cas des trajets cycliques, c'est-à-dire lorsque la station d'arrivée est la même que la station de départ, ils sont représentés
+		par des cercles de couleur grise, centrés sur leurs stations.
+	
+		\subsection{Sélection des trajets souhaités}
+		Pour que l'utilisateur puisse choisir les trajets qu'il souhaite, il peut à l'aide de la
+		souris sélectionner un ensemble de trajets dans un intervalle d'heure précise (à une
+		heure prés). Pour cela, il sélectionne avec sa souris par un clic, puis en la 
+		déplaçant pour que cela forme un rectangle transparent. Ce rectangle délimite la zone
+		que l'utilisateur a créé et qui permettra d'afficher les trajets des stations
+		sélectionnées. La sélection décrite ici est faite dans la fenêtre du milieu que l'on
+		appellera \textbf{\textit{timelinematrix}} pour la suite. Aussi, nous appellerons
+		un glyphe, un élément de cette vue. Il représente tout les trajets d'une seule station
+		comprise dans un intervalle de temps d'une heure. Cela peut vulgairement être interprété
+		comme une étoile.
+		
+		\subsection{Les filtres}
+		Il est possible de pousser la sélection des trajets encore plus loin, puisque l'utilisateur
+		peut trier les trajets en fonction de plusieurs critères. Il peut choisir les intervalles
+		des distances, des durées, des directions des trajets ou encore du nombre des
+		départs/arrivées des stations. Ce panneau des filtres est placé au niveau de la partie gauche
+		de l'application.\\
+		De plus, en bas de ce panneau, il y a une liste ordonnée de stations en fonction
+		de l'affluence de celles-ci.
+	
 \newpage
 	\section{Bibliographie}
 		\begin{itemize}
@@ -209,25 +206,25 @@
 			de consommation de carburant pour les véhicules faisant la navette pour
 			rééquilibrer les stations de vélos. On peut y puiser une grande source
 			d'informations pour réaliser notre interface graphique. C'est le document sur
-			lequel nous nous sommes basés.
+			lequel nous nous sommes basés.\\
 
 			\item L'article \cite{Ali14} explique comment détecter les stations les plus
-			connectées. Il donne un aperçu sur l'utilisation des filtres (date, lieu, heure...).
+			connectées. Il donne un aperçu sur l'utilisation des filtres (date, lieu, heure...).\\
 
 			\item \cite{BC16} est un article sur les systèmes de partage de vélos. Il parle
 			de l'application FunFEM qui permet de visualiser des données afin de juger de
-			l'efficacité de ces systèmes.
+			l'efficacité de ces systèmes.\\
 
 			\item \cite{BSM17} est une application en ligne, qui permet de visualiser en
-			temps réel des statistiques sur des bornes disponible dans une ville
+			temps réel des statistiques sur des bornes disponibles dans une ville
 			sélectionnée.  Elle indique également le nombre de vélos disponibles dans le
-			monde en temps réel.
+			monde en temps réel.\\
 
 			\item L'article \cite{BW} de Ben Wellington, nous donne un bel aperçu sur la
 			manière dont l'analyse statistique des données sur les utilisateurs du système de
 			vélos en libre service peut être utilisée. Il montre comment les sociétés qui
 			mettent à disposition les vélos dans la ville de New York pourraient augmenter
-			leurs revenus grâce à une analyse des trajets des utilisateurs.
+			leurs revenus grâce à une analyse des trajets des utilisateurs.\\
 
 			\item \cite{JL} Recherches réalisées sur la manière d'optimiser l'équilibrage
 			des stations de vélos en libre service. Un des problèmes avec les stations de vélos
@@ -235,42 +232,34 @@
 			comment prédire à l'aide de données un épuisement de vélos dans certaines stations.
 			Ainsi, à l'aide d'analyses d'une multitude de données sur la météo ou l'âge des
 			utilisateurs par exemple, il est possible d'optimiser la répartition des vélos et
-			de faire des prédictions.
+			de faire des prédictions.\\
 
 			\item Vidéo postée par Oliveira G \cite{state_station}, qui présente l'interface
 			graphique de l'application web. Les différentes visualisations sont principalement
-			portées sur l'analyse statistique des stations dans une ville donnée.
+			portées sur l'analyse statistique des stations dans une ville donnée.\\
 
 			\item Vidéo postée par Oliveira G \cite{trips}, qui présente cette fois une
 			interface portée sur l'analyse des trajets. On peut sélectionner différents types
-			de filtres.
+			de filtres.\\
 
 		\end{itemize}
 
 \newpage
 \part{L'analyse des besoins}
 	\section{Besoins non fonctionnels}
-		\subsection{Interfaces}
+		\subsection{Interface}
 		Le texte de l’interface graphique est en anglais.
 
 		\subsection{Affichage des trajets}
-		Les trajets sont affichés sur la carte par des courbes depuis le points de départ du
-		trajet jusqu’à son point d’arrivée.
+		Les trajets sont affichés sur la carte par des courbes depuis le point de départ du
+		trajet jusqu’à son point d’arrivée. Pour une station donnée, si le trajet est un départ
+		la couleur de la courbe sera interpolée du cyan vers le bleu. Pour une arrivée, elle sera
+		interpolée du rouge vers le jaune.
 
 		\subsection{Performances}
-		Afin d’assurer la fiabilité du logiciel, des tests unitaires on été réalisés avec
-		Banditcpp.\\
-		"Bandit est un framework pour C++ 11 développé pour faire des tests unitaires. Bandit est
-		l’en-tête seulement, donc il n’est pas nécessaire de compilation supplémentaire avant de
-		pouvoir commencer à l’utiliser. Bandit a été testé avec les compilateurs suivants :
-		GCC 4.5, GCC 4.6, GCC 4.7, GCC 4.8, Clang 3.2, VS2012.
-		Il est sous licence libre MIT. \\
-		Bandit est livré avec un projet cmake pour générer des auto-tests bandit."
-		(\url{http ://www.banditcpp.org/})\\
-	
 		L’application doit, en priorité, tourner sur une carte NVIDIA et,
 		sur demande du client, s’exécuter également sur une carte graphique Quadro K2000M. Ne 
-		disposant pas de ce genre de carte, l'application a été sur une machine 
+		disposant pas de ce genre de carte, l'application a été testée sur une machine 
 		disposant d'une carte graphique NVIDIA, puis sur la machine personnelle du client. \\
 		
 		On peut distinguer plusieurs attentes de rapidité en fonction des fonctionnalités :
@@ -282,8 +271,8 @@
 		de ces filtres est représente le principal cas d'utilisation de ce programme.
 		Lors du déplacement sur la carte et donc du rafraîchissement des données de celle-ci,
 		le programme doit tourner en temps réel et on ne doit pas sentir de latence lors du
-		déplacement sur la carte. Le délai doit donc être très court (dans l’ordre des
-		millisecondes).\\
+		déplacement sur la carte. Le délai doit donc être très court (de l'ordre de 33ms, ce qui
+		correspond à 30 images par seconde).\\
 		Le code a été documenté avec Doxygen, avec des commentaires rédigées dans le style de la Javadoc.
 		"Doxygen est l’outil standard de facto pour générer de la documentation à partir de
 		sources C++ annotées.\\
@@ -304,12 +293,23 @@
 		Ainsi, aucune fonction obsolète n'a été utilisée.\\
 		Le code C++ est compilable avec le compilateur g++ 4.9.
 		
+		\subsection{Robustesse}
+		Afin d’assurer la fiabilité du logiciel, des tests unitaires on été réalisés avec
+		Banditcpp.\\
+		"Bandit est un framework pour C++ 11 développé pour faire des tests unitaires. Bandit est
+		l’en-tête seulement, donc il n’est pas nécessaire de compilation supplémentaire avant de
+		pouvoir commencer à l’utiliser. Bandit a été testé avec les compilateurs suivants :
+		GCC 4.5, GCC 4.6, GCC 4.7, GCC 4.8, Clang 3.2, VS2012.
+		Il est sous licence libre MIT. \\
+		Bandit est livré avec un projet cmake pour générer des auto-tests bandit."
+		(\url{http ://www.banditcpp.org/})\\
+		
 	\newpage
 	\section{Besoins fonctionnels}
 		\subsection{Visualisation de la carte de la ville}
 		Une fenêtre sur la partie gauche est dédiée à la visualisation des trajets de
 		manière géographique avec une carte.\\
-		La carte d’une ville pourra être chargée avec OpenStreetMap\\
+		La carte d’une ville pourra être chargée avec OpenStreetMap.\\
 		La carte affiche uniquement les stations de la ville lorsqu’il y a des stations
 		sélectionnées dans la matrice de chronologie, elle n’affiche que celles-ci (ainsi
 		que les trajets qui y sont associés).\\
@@ -372,35 +372,6 @@
 			\item[•]direction (en degrés)
 			\item[•]flux d’origine-destination
 		\end{itemize}
-	
-	\newpage
-	\section{Scénarios}
-	
-	\newpage
-	\section{Prototype}
-	Pour la remise de la 1ere version, nous avons voulu rendre un programme qui permettait
-	d'afficher des stations et des trajets ainsi qu'un aperçu de ce que cela pourrait rendre
-	dans la timelinematrix. Ayant un temps très court pour réaliser cela, nous avons testé
-	d'afficher ces éléments avec les objets que \href{https://www.qt.io/}{Qt5}
-	nous met à disposition.\\
-	
-
-	\begin{figure}[!h]
-	\begin{center}
-	\includegraphics[scale=0.2]{prototype1_screen_shot.png}
-	\caption{Prototype de la première version}
-	\end{center}
-	\end{figure}		
-	
-	Ce prototype nous a permis de nous rendre compte que l’utilisation des objets
-	\href{https://www.qt.io/}{Qt} pour dessiner les trajets et stations
-	ne satisfera pas les attentes des besoins non fonctionnels. C’est la raison pour
-	laquelle, malgré les difficultés rencontrées nous avons quand même utilisé
-	\href{https://www.khronos.org/registry/OpenGL-Refpages/gl4/}{OpenGL}
-	pour le rendu.\\
-	
-	Des tests de performances ont été réalisées sur ce prototype et se trouvent plus bas à la
-	section \ref{tests_performances} sur les tests\.\\
 
 \newpage
 \part{L'architecture}
@@ -434,7 +405,7 @@
 		fait en lecture seule)\\
 		
 		\item Le modèle accède aux données. Ici, le modèle ne fait que parser des fichiers,
-		sans les modifier. Le fichiers sont refermés une fois l’opération de parsing
+		sans les modifier. Les fichiers sont refermés une fois l’opération de parsing
 		terminée. Le modèle charge les données en initialisant une liste pour les trajets,
 		une autre pour les stations. Cela se fait à chaque fois que l’utilisateur
 		souhaite charger un fichier.\\
@@ -504,78 +475,122 @@
 \newpage
 \part{Code}
 	\section{Interface graphique}
-	L’interface graphique a été créée avec designer intégré à Qt Creator : le QtDesigner. Il permet de créer rapidement une interface d’application desktop avec le drag and drop (c’est le principe d’un éditeur WYSIWIG : “what you see is what you get”). Au départ, l’éditeur présente une fenêtre principale vide. L’interface se construit en y ajoutant les widgets : les composants de l’interface.
+	L’interface graphique a été créée avec designer intégré à QtCreator : le \textit{QtDesigner}. Il permet de créer rapidement une interface d’application desktop avec le drag and drop (c’est le principe d’un éditeur \textbf{WYSIWIG} : “what you see is what you get”). Au départ, l’éditeur présente une fenêtre principale vide. L’interface se construit en y ajoutant les widgets : les composants de l’interface.\\
 
-	L’interface utilisateur est composée de 3 fenêtres :\\
+	La figure \ref{fig:screen_final} ci-dessous présente une capture d’écran du programme en exécution, afin de montrer l’interface graphique :\\
+
+	\begin{figure}[!h]
+	\begin{center}
+	\includegraphics[scale=.25]{screen_final_2.png}
+	\caption{Capture d’écran du programme en utilisation}
+	\label{fig:screen_final}
+	\end{center}
+	\end{figure}
+	
+	\clearpage
+	L’interface graphique se décompose en 3 parties distinctes, celle du milieu étant la plus large, celles des extrémités étant de largeur à peu près égales :\\
+
 	\begin{itemize}
-	\item[•] la fenêtre à gauche permet, après le chargement des données, d’obtenir une représentation géographique des trajets.
-	\item[•] la fenêtre au milieu permet de voir les trajets de manière statistique, représentés sous la forme de matrice.
-	\item[•] la fenêtre à droite est celle des contrôles. Elle permet d’appliquer des filtres sur les trajets selon différents paramètres comme la date, la distance, etc, et de trier les stations.
+	\item[•] la fenêtre à gauche permet, après le chargement des données, d’obtenir une représentation géographique des trajets. Les trajets sélectionnés sont affichés par des courbes dont la couleur est interpolée du bleu vers le cyan, pour les départs. Il est possible de défiler la map avec la souris, et de modifier le zoom avec la molette.
+	\item[•] la fenêtre au milieu permet de voir les trajets de manière statistique, représentés sous la forme de matrice. C’est la matrice de chronologie des trajets. Elle dessine les “glyphes” (terme utilisé par l’article pour désigner un ensemble de petits traits, dirigés selon l’azimut du trajet). Un glyphe représente l’ensemble des trajets filtrés pour une stations donnée (la ligne) pour une heure donnée (la colonne). Au dessus de la matrice, il y a un label pour indiquer l’axe du temps, par intervalle de trois heure, allant de 0 à 24h. Il est possible de défiler sur les deux axes, ainsi que de sélectionner des trajets avec la souris (avec un mouse-drag classique). Le rectangle de sélection est dessiné en bleu.
+	\item[•] la fenêtre à droite est celle des contrôles pour traiter les données. Il est possible de filtrer les trajets sur leur date de départ avec des menus déroulants (tout en haut). Les cases à cocher juste en dessous permettent de spécifier des paramètres d’affichage des trajets selon leur type (arrivées, départs, cycles). Le menu déroulant, plus bas, permet de trier les stations. Puis, les quatre tirettes (ou sliders) à deux poignées définissent des intervalles pour filtrer les trajets (pour les trois premiers sliders) et filtrer les stations (pour celui tout en bas). Enfin, la section “Ranking” affiche les premières (à gauche) et dernières (à droite) stations après les avoir trié selon une propriété.\\
 	\end{itemize}
 	
-		\subsection{Premier prototype}
+	
+	Il faut également noter la présence d’un barre de menu, juste au dessus de la map, avec la section “File” qui permet d’ouvrir et fermer des fichier données.\\
+
+	Il faut aussi noter que les contrôles sont désactivés et que le curseur de la souris est modifié lorsqu’une opération estimée coûteuse est en cours d'exécution. Ils sont rétablis lorsqu’elle prend fin.\\
+
+	Enfin, chaque widget affiche une infobulle pour guider l’utilisateur (en anglais) lorsque la souris flotte sur le widget.
+	
+	\clearpage
+	\subsection{Sliders à deux poignées} \label{probleme_sliders}
 		\begin{figure}[!h]
 		\begin{center}
-		\includegraphics[scale=1]{dia_proto-interface_1.png}
-		\caption{Premier prototype d’interface graphique}
+		\includegraphics[scale=.6]{interface_sliders.png}
+		\caption{Diagramme de classe du contrôleur, avec ses fonctions et usages principaux}
+		\label{fig:screen_sliders}
 		\end{center}
 		\end{figure}
-		
-		La figure ci-dessus illustre un premier prototype d’interface graphique. Il décompose l’interface en 3 parties distinctes, celle du milieu étant la plus large, celles des extrémités étant de largeur à peu près égales.
-		
-		\subsection{Second prototype}
+	
+	\clearpage
 		\begin{figure}[!h]
 		\begin{center}
-		\includegraphics[scale=.5]{dia_proto-interface_2.png}
-		\caption{Second prototype d’interface graphique}
-		\label{fig:proto_int_2}
+		\includegraphics[scale=.6]{interface_spinboxes.png}
+		\caption{Diagramme de classe du contrôleur, avec ses fonctions et usages principaux}
+		\label{fig:screen_spinbox}
 		\end{center}
 		\end{figure}
-		
-		La figure \ref{fig:proto_int_2} montre une évolution de l’interface, notamment :\\
-		\begin{itemize}
-		\item[•] la fenêtre de gauche contient une map (en l'occurrence celle de Bordeaux), avec représentées en bleu les stations (celles-ci sont fictives).
-		\item[•] la fenêtre au centre représente une matrice (tableau bi-dimensionnel) de disques. L’axe horizontal représente le temps en heure, l’axe vertical celui des stations. Ces disques sont composés de trajets (chaque trajet formant une ligne de couleur bleue ou rouge, dessiné dans la direction du trajet). Il y a de nombreux trajets à représenter ce qui explique pourquoi ils sont représentés ainsi. Un disque montre donc tous les trajets pour une stations donnée, pour une heure de départ donnée. Enfin, il faut noter la présence d’une barre de défilement sur la droite, afin de parcourir les stations sur l’axe vertical.
-		\item[•] la fenêtre de droite est découpée en trois parties.
-		\end{itemize}
-		
-		
-		\subsection{Release non-finale}
-		
-		Dans cette version non-finale de l’interface graphique (cf. Figure \ref{fig:screen_final_1}), on peut voir apparaître : \\
-		
-		\begin{figure}[!h]
-		\begin{center}
-		\includegraphics[scale=.25]{screen_final_1.png}
-		\caption{Capture d’écran du programme en utilisation}
-		\label{fig:screen_final_1}
-		\end{center}
-		\end{figure}
-		
-		\begin{itemize}
-		\item[•] sur la fenêtre de gauche, les trajets sélectionnés sont affichés par des courbes dont la couleur est interpolée du bleu vers le cyan, pour les départs. Il est possible de défiler la map avec la souris, et de modifier le zoom avec la molette.
-		\item[•] sur la fenêtre au centre, la matrice de chronologie des trajets dessine les “glyphes” (terme utilisé par l’article pour désigner un ensemble de petits traits, dirigés selon l’azimut du trajet). Un glyphe représente l’ensemble des trajets filtrés pour une stations donnée (la ligne) pour une heure donnée (la colonne). Au dessus de la matrice, il y a un label pour indiquer l’axe du temps, par intervalle de trois heure, allant de 0 à 24h. Il est possible de défiler sur les deux axes, ainsi que de sélectionner des trajets avec la souris (avec un mouse-drag classique). Le rectangle de sélection est dessiné en bleu
-		\item[•] sur la fenêtre à droite, les contrôles pour traiter les données. Il est possible de filtrer les trajets sur leur date de départ avec des menus déroulants (tout en haut). Les cases à cocher juste en dessous permettent de spécifier des paramètres d’affichage des trajets selon leur type (arrivées, départs, cycles). Le menu déroulant, plus bas, permet de trier les stations. Puis, les quatre tirettes (ou sliders) à deux poignées définissent des intervalles pour filtrer les trajets (pour les trois premiers sliders) et filtrer les stations (pour celui tout en bas). Enfin, la section “Ranking” affiche les premières (à gauche) et dernières (à droite) stations après les avoir trié selon une propriété
-		\end{itemize}
-		
-		Il faut également noter la présence d’un barre de menu, juste au dessus de la carte, avec la section “File” qui permet d’ouvrir et fermer des fichier données.\\
+	
+	Figure \ref{fig:screen_sliders}, illustrant les contrôles de l’interface graphique avec les sliders à deux poignées.\\
+	Figure \ref{fig:screen_spinbox} (illustrant les contrôles de l’interface avec des spinboxes.\\
 
-		Il faut aussi noter que les contrôles sont désactivés lorsqu’une opération estimée coûteuse est en cours d'exécution. Il sont rétablis lorsqu’elle prend fin.\\
 
-		Enfin, chaque widget affiche une infobulle pour guider l’utilisateur lorsque la souris flotte sur le widget.
+	L’interface est sensiblement similaire à celle de la version finale, excepté que les sliders à deux poignées ont été remplacées par des spinboxes. La raison est que les sliders à deux poignées sont implémentés avec \textit{QtQuick} 2.0 (une librairie de widgets) et \textit{QML} (Qt Modeling Language, proche du CSS), depuis Qt 5.7. Leur utilisation nécessite donc des dépendances de librairies supplémentaires. Cela a été problématique pour le client qui n’avait pas installé ce module. De plus, le comportement de ces sliders était instable et buggé. Une autre solution aurait été d'implémenter le slider à deux poignées avec C++, mais nous n’avions pas le temps ni les compétences nécessaires.	
+	
+	\newpage
+	
+	\section{Conventions de codage}	
+	Nous avons utilisé les conventions de Qt, avec quelque spécificités.
+	\url{https://wiki.qt.io/Coding_Conventions}
+	\url{https://wiki.qt.io/Qt_Coding_Style}
 
-		\subsection{Release finale}
-		
-		\begin{figure}[!h]
-		\begin{center}
-		\includegraphics[scale=.25]{screen_final_2.png}
-		\caption{Capture d’écran de la version finale du programme}
-		\end{center}
-		\end{figure}
-		
-		L’interface est sensiblement similaire à celle de la version finale, excepté que les sliders à deux poignées ont été remplacées par des spinboxes. La raison est que les sliders à deux poignées sont implémentés avec QtQuick (une librairie de widgets) et QML (Qt Modeling Language, proche du CSS). Leur utilisation nécessite donc des dépendances de librairies supplémentaires. Cela a été problématique pour le client qui n’avait pas installé ce module. De plus, le comportement de ces sliders était instable et buggé. Une autre solution aurait d'implémenter le slider à deux poignées avec C++ et OpenGL, mais nous n’avions pas le temps ni les compétences nécessaires.
-		
+	\textbf{Syntaxe} :\\
+	les test sur les pointeurs nuls se font ainsi : (\textit{myPtr}) plutôt que (\textit{myPtr != nullptr})\\
 
+	\textbf{Pointeurs et références:}\\
+	\begin{itemize}
+	\item[•] utiliser les références tant que possible, les pointeurs uniquement s’il le faut
+    \item[•] étoile (\*) et ampersand (\&) accolés au type,
+    par exemple T\*\_t et T\&\_t
+    plutôt que T\_\*\_t
+	ou T\_\*t.\\
+	\end{itemize}
+	
+	
+	\textbf{Indentation} :\\
+	
+	Retourner à la ligne pour débuter un bloc de structure de contrôle :
+	\begin{verbatim}
+	while (i <= 10)
+	{
+	<instruction>
+	}
+	plutôt que :
+	if (<condition>) {
+	<instruction>
+	}		
+	\end{verbatim}
+	
+	Ne pas mettre une seule ligne de code entre accolades :
+	\begin{verbatim}
+	if (<condition>)
+		<instruction>
+	\end{verbatim}
+	
+	
+	plutôt que
+	\begin{verbatim}
+	if (<condition>)
+	{
+		<instruction>
+	}
+	\end{verbatim}	
+	
+	Privilégier les boucles \textit{foreach} de C++11 lorsque possible, pour itérer sur un tableau:
+	ex:
+	\begin{verbatim}
+	for (const T t : array)
+		<instruction>
+	\end{verbatim}
+	
+	
+	Nous avons également appliqué les règles de base en C++, à savoir :
+	ne pas utiliser le \textit{using namespace}, afin d’éviter les conflits à la compilation
+	les variables membres privées et protégées sont préfixées
+	par "m\_", par exemple "m\_name"
+
+	
 	\newpage
 	\section{Implémentation}
 		\subsection{Le contrôleur (classe \textit{MainWindow})}
@@ -587,7 +602,7 @@
 		\end{center}
 		\end{figure}
 					
-		C’est la classe principale. C’est un \textit{QObject} en héritant de la classe \textit{QMainWindow}.Elle implémente donc les fonctionnalités de réception et d’émission de signaux. C’est elle qui commande le modèle et la vue, en étant composée d’un objet de type \textit{Data}, et de l’ensemble des widgets de l’interface graphique. Elle dispose de nombreuses fonctions, notamment celle qui réagissent aux signaux émis par la vue et le modèle. Elle fait également usage des objets permettant le traitement des données, à savoir un \textit{StationsSorter} pour trier les stations et un \textit{StationsFilter} pour les filtrer, selon les propriétés de station, un \textit{TripsFilter} pour trier les trajets et un \textit{TripsSelector} pour les sélectionner, selon les propriétés des trajets (cf. Figure \ref{fig:dia_controleur}).\\
+		C’est la classe principale. C’est un \textit{QObject} en héritant de la classe \textit{QMainWindow}.Elle implémente donc les fonctionnalités de réception et d’émission de signaux, qui est le moyen privilégié en Qt pour faire communiquer les objets, et qui est similaire au patron de conception \textbf{Observateur}. C’est elle qui commande le modèle et la vue, en étant composée d’un objet de type \textit{Data}, et de l’ensemble des widgets de l’interface graphique. Elle dispose de nombreuses fonctions, notamment celle qui réagissent aux signaux émis par la vue et le modèle. Elle fait également usage des objets permettant le traitement des données, à savoir un \textit{StationsSorter} pour trier les stations et un \textit{StationsFilter} pour les filtrer, selon les propriétés de station, un \textit{TripsFilter} pour trier les trajets et un \textit{TripsSelector} pour les sélectionner, selon les propriétés des trajets (cf. Figure \ref{fig:dia_controleur}).\\
 	
 	Enfin, il n’est pas indiqué sur le schéma que \textit{MainWindow} entretient les listes des identifiants des données traitées (dans des \textit{QVector}) : un conteneur des identifiants des trajets filtrés, un autre pour ceux qui sont sélectionnés, et enfin un dernier pour les identifiants des stations filtrées et triées. Il est important de noter que l’ensemble des trajets sélectionnés doit appartenir à l’ensemble des trajets filtrés : la sélection se fait parmi les trajets filtrés.
 		
@@ -771,8 +786,8 @@
 \newpage
 	\section{Nettoyage des données}
 	Le nettoyage de données permet à l'utilisateur de décharger les données et ainsi nettoyer
-	les éléments dessinés sur les différentes fenêtre d'affichage. Cela permet de charger 
-	d'autres jeux de données sans tenir compte des données précédemment chargées.\\
+	les éléments dessinés sur les différentes fenêtres d'affichage. Cela permet de charger 
+	un autre jeu de données.\\
 	
 	\begin{figure}[!h]
 	\begin{center}
@@ -841,7 +856,8 @@ dessus de la \textit{MatrixGLWidget}.
 	
 		\subsection{Classe TimelineWidget}
 		Pour réaliser l’affichage d’une ligne de temps à intervalle d’une heure, nous avons utilisé un \textit{QWidget} dont la fonction \textit{paintEvent} a été réimplémentée. La manière de réaliser cela est assez simple, nous avons utilisé un \textit{QPainter} pour tracer les lignes. Une longue ligne horizontale représente la ligne temps sur laquelle les heures sont définies, et les petits traits verticaux à chaque fois que l’on veut y faire afficher une heure.\\
-Dans notre cas, nous avons utilisé vingt-quatre heure, mais ce nombre est paramétrable dans un fichier. De plus, la largeur des intervalles est re-calculée à chaque fois que le widget est redimensionné
+Dans notre cas, nous avons utilisé vingt-quatre heures, mais ce nombre est paramétrable dans le 
+fichier \textit{config.h}. De plus, la largeur des intervalles est re-calculée à chaque fois que le widget est redimensionné
 (cf Figure : \ref{fig:timeline_widget_1} et \ref{fig:timeline_widget_2}).
 
 
@@ -868,10 +884,10 @@ Dans notre cas, nous avons utilisé vingt-quatre heure, mais ce nombre est param
 		
 		\subsection{Classe MapGLWidget}
 		Elle permet d’afficher les trajets ainsi que les stations en utilisant les fonctions d’OpenGL. Lorsque les données sont chargées dans la mémoire, le contrôleur (\textit{MainWindow}) fait appel à la fonction \textit{loadTripsData} et \textit{loadStationsData} afin d’envoyer les positions des stations et des trajets à la carte graphique via les objets \textit{StationRenderer} et \textit{TripsRenderer}. (cf : Figure \ref{fig:dia_class_renderer} plus bas) Ces objets possèdent une fonction \textit{sendData} qui prend en paramètre
-		un tableau contenant les positions des trajets et stations. Cette xxx fait appel à la fonction
+		un tableau contenant les positions des trajets et stations. Cette fonction appel 
 		\textit{glBufferData}, une fonction OpenGL qui envoie les données à la carte graphique.\\
 
-		Une fois les données chargées, le contrôleur va aussi appeler une fonction de centrage afin que l’utilisateur ai une vue sur l’intégralité des éléments dessinés avec un zoom adapté.
+		Une fois les données chargées, le contrôleur va aussi appeler une fonction de centrage afin que l’utilisateur ait une vue sur l’intégralité des éléments dessinés avec un zoom adapté.
 Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant une boîte englobante de ces points. L’étape suivante consiste à trouver le centre de cette boîte, de sorte que, cx et cy, la position du centre de la boîte.\\
 
 	Avec le milieu de la boîte englobante, on peut indiquer la translation en utilisant une variable
@@ -890,9 +906,9 @@ Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant 
 
 	Le 2 vient du fait que les coordonnées OpenGL vont de -1 à 1, donc la distance vaut 2.
 
-	Ainsi, nous avons le zoom et la translation. Une fois ces derniers envoyés au shaders, nous aurons un affichage correcte et approprié.\\
+	Ainsi, nous avons le zoom et la translation. Une fois ces derniers envoyés au shaders, nous aurons un affichage correct et approprié.\\
 
-	Cette classe gère les événements de la souris comme l’utilisation de la molette pour zoomer ou dé-zoomer mais aussi lorsque l’utilisateur presse et relâche les boutons de la souris pour effectuer des translation de la carte.
+	Cette classe gère les événements de la souris comme l’utilisation de la molette pour zoomer ou dé-zoomer mais aussi lorsque l’utilisateur presse et relâche les boutons de la souris pour effectuer des translations de la carte.
 		
 		\subsection{Classe MatrixGLWidget}		
 		Cette classe a pour rôle d’afficher les glyphes pour chaque stations et pour chaque heure. De plus, elle doit permettre d’interagir avec la matrice de chronologie des trajets, comme défiler en
@@ -901,9 +917,9 @@ Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant 
 		L'implémentation du défilement est assez simple, puisqu'elle consiste à récupérer la valeur
 		du défilement grâce à l'instance de la classe \textit{QWheelEvent} et envoyer au shader cette valeur pour l’affichage.\\
 
-		Au moment de la sélection des glyphes, il faut récupérer l'événement de la souris pour connaître sa position au moment du clique et une autre position lors du relâchement de la souris. Ainsi, cela peut former un rectangle que l’on se contente d’afficher. Cela est fait grâce à l’objet \textit{SelectorRenderer} (cf Figure \ref{fig:dia_class_renderer} plus bas). Avec les coordonnées du rectangle, on peut aussi savoir quels glyphes sont à l'intérieur du rectangle. Il suffira ensuite de récupérer les indices des stations et l’intervalle des heures pour émettre un signal et dessiner sur la carte les trajets sélectionnés\\
+		Au moment de la sélection des glyphes, il faut récupérer l'événement de la souris pour connaître sa position au moment du clic et une autre position lors du relâchement de la souris. Ainsi, cela peut former un rectangle que l’on se contente d’afficher. Cela est fait grâce à l’objet \textit{SelectorRenderer} (cf Figure \ref{fig:dia_class_renderer} plus bas). Avec les coordonnées du rectangle, on peut aussi savoir quels glyphes sont à l'intérieur du rectangle. Il suffira ensuite de récupérer les indices des stations et l’intervalle des heures pour émettre un signal et dessiner sur la carte les trajets sélectionnés\\
 
-		Le rendu des glyphes en eux-même s’est avéré assez complexe et long à implémenter, puisque pour chaque glyphes, il faut dessiner une multitude de lignes avec un certain angle de rotation pour chacune de ces lignes. Pour chaque trajets, son azimut (de 0 à 360 degrés) est calculée. Cette direction permet de définir l'orientation de chaque segments dessinés dans la \textit{timelinematrix}.
+		Le rendu des glyphes en eux-mêmes s’est avéré assez complexe et long à implémenter, puisque pour chaque glyphe, il faut dessiner une multitude de lignes avec un certain angle de rotation pour chacune de ces lignes. Pour chaque trajet, son azimut (de 0 à 360 degrés) est calculé. Cette direction permet de définir l'orientation de chaque segment dessiné dans la \textit{timelinematrix}.
 		
 \clearpage
 		\subsection{Classes Renderer}
@@ -925,7 +941,8 @@ Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant 
 		
 		La méthode \textit{draw} est virtuelle pure, c’est à dire que la classe qui hérite de \textit{Renderer} doit obligatoirement implementer celle-ci.\\
 
-		Elle contient une fonction, \textit{sendData} pour envoyer les données à la carte graphique avec \textit{glBufferData}. La fonction \textit{createVAO} créé et active le VAO et VBO.\\		
+		Elle contient une fonction, \textit{sendData} pour envoyer les données à la carte graphique avec \textit{glBufferData}. La fonction \textit{createVAO} créé et active le VAO et VBO, ainsi le VBO se
+		retrouve associé au VAO.\\		
 		
 		Les classes filles sont relativement simples:\\
 		
@@ -959,9 +976,40 @@ Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant 
 		\end{verbatim}
 		Cela nous a installé la version 4.9.2 de \textit{gcc}.
 		
-
+		\subsection{Valgrind}
+		Les paquets Valgrind ont été installés de la manière suivante:
+		\begin{verbatim}
+		sudo apt-get install valgrind
+		\end{verbatim}
+		Nous disposons de la version 3.10.0.
+		
 \newpage
 \part{Les tests}
+	\section{Prototype}
+	Pour la remise de la 1ere version, nous avons voulu rendre un programme qui permettait
+	d'afficher des stations et des trajets ainsi qu'un aperçu de ce que cela pourrait rendre
+	dans la timelinematrix. Ayant un temps très court pour réaliser cela, nous avons testé
+	d'afficher ces éléments avec les objets que \href{https://www.qt.io/}{Qt5}
+	nous met à disposition.\\
+	
+
+	\begin{figure}[!h]
+	\begin{center}
+	\includegraphics[scale=0.2]{prototype1_screen_shot.png}
+	\caption{Prototype de la première version}
+	\end{center}
+	\end{figure}		
+	
+	Ce prototype nous a permis de nous rendre compte que l’utilisation des objets
+	\href{https://www.qt.io/}{Qt} pour dessiner les trajets et stations
+	ne satisfera pas les attentes des besoins non fonctionnels. C’est la raison pour
+	laquelle, malgré les difficultés rencontrées nous avons quand même utilisé
+	\href{https://www.khronos.org/registry/OpenGL-Refpages/gl4/}{OpenGL}
+	pour le rendu.\\
+	
+	Des tests de performances ont été réalisées sur ce prototype et se trouvent plus bas à la
+	section \ref{tests_performances} sur les tests\.\\
+
 	\section{Les tests de performances} \label{tests_performances}
 		\subsection{Conditions de tests}
 		Les tests ont été réalisés sur un système d’exploitation Linux Debian 8.7 avec
@@ -995,10 +1043,10 @@ Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant 
 		
 		Le fichier contient 843 416 trajets et 329 stations. \\
 		
-		Chacun des tests ont été réalisés plusieurs fois (20 fois), ce
+		Chacun des tests ont a réalisés plusieurs fois (20 fois), ce
 		sont les valeurs montrant les meilleures performances qui ont été
-		sélectionnées (Si un test montre 20 images par secondes et un autre en montre
-		10, c'est celui à 20 image par secondes qui sera sélectionné).
+		sélectionnées (Si un test montre 20 images par seconde et un autre en montre
+		10, c'est celui à 20 images par seconde qui sera sélectionné).
 	    
 		\subsection{Chargement des fichiers en mémoire}		
 		\begin{center}
@@ -1009,6 +1057,11 @@ Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant 
 			Parallèle & à tester \\ \hline
 		    \end{tabular}
 	    \end{center}
+	    
+	    Le temps de chargement en séquentiel est long mais reste raisonnable pour une fichier
+	    contenant presque un million de lignes.\\
+	    Nous devions réaliser des tests avec la méthode parallèle et un nombre de cœur différent,
+	    mais nous manquions de temps.
 		
 		\subsection{Affichage des trajets et des stations}
 		\begin{center}
@@ -1020,12 +1073,15 @@ Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant 
 		    \end{tabular}
 	    \end{center}
 	    
-	    Le nombre de points généré ici est de 20 pour les courbes de Bézier.\\
+	    Le nombre de points généré pour ce test est de 20 pour les courbes de Bézier.\\
 	    	    
 	    \subsection{Courbes de Bézier}
 		Les courbes de Bézier sont évaluées dans les Geometry shaders. Les Geometry shaders
 		permettent de modifier les primitives telles que des lignes, les points ou les triangles
-		en générant des nouveaux vertices. Nous avons fait le choix d'implementer cette 
+		en générant des nouveaux vertices. L'utilisation des Geometry shaders n'est pas incompatible
+		avec l'utilisation de la version 3.3 d'OpenGL ou supérieur. Ils sont disponibles depuis la 
+		version 3.2.\\
+		Nous avons fait le choix d'implementer cette 
 		fonctionnalité dans un shader (cela aurait très bien pu être fait par le processeur)
 		car théoriquement cela devrait être plus performant. En effet, la carte graphique
 		traite les vertices de manière parallèle. Nous n'avons pas fait des tests
@@ -1047,12 +1103,12 @@ Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant 
 	    \end{center}
 	    
 	    Un ensemble d'impressions écran se trouve dans les annexes (cf section \ref{}) afin
-	    de pouvoir comparer le nombre de points générés. Selon nous, 20 points semble un bon être
+	    de pouvoir comparer le nombre de points générés. Selon nous, 20 points semblent être
 	    un bon compromis.\\
 	    
 		\subsection{Affichage des glyphes}
 		Dans la mesure où le temps d'affichage des trajets et des stations avec des \textit{QPainter}
-		était déraisonnable, nous n'avons pas pris le temps coder l'affiche de glyphes. Cela aurait été 
+		était déraisonnable, nous n'avons pas pris le temps de coder l'affiche de glyphes. Cela aurait été 
 		une perte de temps et les performances auraient clairement été inacceptables.
 		
 		\begin{center}
@@ -1076,7 +1132,7 @@ Pour calculer le centrage, on parcourt tous les points à dessiner en cherchant 
 		\subsection{Classe StationFilter}
 		Pour tester la classe, on peut commencer par définir son comportement au sein de l’application.\\
 
-		Lors de sa construction), elle reçoit en paramètre \textit{StationsFilterParams}, qui permet de régler les bornes. La fonction \textit{filter} reçoit un \textit{QVector} de stations pour lesquelles elle filtre l’attribut \textit{tripsFlow} en fonction des paramètres que nous avons préalablement réglé. Elle renvoie ensuite un \textit{QVector} des stations après application du filtre. Ces paramètres nous permettent de régler un minimum et un maximum. Pour tester cette fonction, nous avons testé si les bornes étaient bien réglées. Pour cela nous avons créé des stations, pour lesquelles nous initialisons la variable \textit{tripsFlow}.\\
+		Lors de sa construction, elle reçoit en paramètre \textit{StationsFilterParams}, qui permet de régler les bornes. La fonction \textit{filter} reçoit un \textit{QVector} de stations pour lesquelles elle filtre l’attribut \textit{tripsFlow} en fonction des paramètres que nous avons préalablement réglés. Elle renvoie ensuite un \textit{QVector} des stations après application du filtre. Ces paramètres nous permettent de régler un minimum et un maximum. Pour tester cette fonction, nous avons testé si les bornes étaient bien réglées. Pour cela nous avons créé des stations, pour lesquelles nous initialisons la variable \textit{tripsFlow}.\\
 
 		\textbf{TRIPS FLOW MIN} :\\
 		Pour tester la borne minimum de cette propriété, on initialise la variable \textit{minTripsFlow} de \textit{StationsFilterParams} à 51.\\
@@ -1260,7 +1316,7 @@ Pour le premier test, nous allons tester la borne minimale en créant deux traje
 	
 		\begin{figure}[!h]
 		\begin{center}
-		\includegraphics[scale=.38]{callgrind_analyse.png}
+		\includegraphics[scale=.3]{callgrind_analyse_avec_numero.png}
 		\caption{Analyse de fonctions avec Callgrind}
 		\label{fig:callgrind}
 		\end{center}
@@ -1294,15 +1350,41 @@ Pour le premier test, nous allons tester la borne minimale en créant deux traje
 		En revanche, nous n'avons pas trouvé de fuite de mémoire venant de notre code.\\
 		
 		Vous trouverez dans les annexes (cf: Figure \ref{fig:autres_exemples_fuites_memoire}) une
-		impression écran avec des exemples de fuites mémoire que généré le programme.
+		impression écran avec des exemples de fuites mémoire que génère le programme.
+
+
+\clearpage
+\newpage
+\part{Structure du projet}
+	Le répertoire du projet est constitué des éléments suivants :\\
+	\begin{itemize}
+	\item[•] \textit{répertoire  include }: contient les fichiers d’en-tête\\
+	\item[•] \textit{répertoire  src} : contient le code source\\
+	\item[•] \textit{répertoire test }: contient le code permettant de tester le programme (ici, il ne s’agit que de tests en boîte blanche)\\
+	\item[•] \textit{répertoire bandit} : nécessaire à l'exécution des tests unitaires\\
+	\item[•] \textit{répertoire shaders} : contient les fichiers shaders nécessaire au rendu graphique via OpenGL\\
+	\item[•] \textit{fichier README.txt} : il décrit brièvement, en anglais, le titre et l’objet du projet, et indique les configurations nécessaires à la compilation et exécution du programme\\
+	\item[•] fichier AUTHORS.txt : contient la liste des auteurs, et leurs adresses électroniques\\
+	\item[•] fichier LICENSE.txt : copyright réservé à l’Université de Bordeaux\\
+	\item[•] fichiers COPYING.txt et COPYING.LESSER.txt : ajoutés dans le répertoires tel que recommandé par le site du projet Gnu (https://www.gnu.org/licenses/gpl-howto.en.html) pour définir la licence d’un projet. En l’occurrence, la licence choisie est la LGPL. Elle est plus restrictive que la GPL.
+	\end{itemize}
 	
+	\begin{figure}[!h]
+	\begin{center}
+	\includegraphics[scale=.6]{screen_hierarchie_projet.png}\\
+	\caption{Capture d'écran de la hiérarchie du projet}
+	\end{center}
+	\end{figure}
+
+		
+\clearpage
 \newpage
 \part{Bilan}
 	\section{Bugs présents}		
 		\subsection{Sélection dans la timelinematrix}
 		La sélection des heures et des stations se fait avec le rectangle bleu dessiné par
 		l'utilisateur grâce à sa souris. Le problème vient des indices des stations qui
-		sont incorrectes.
+		sont incorrects.
 		La fonction \textit{MatrixGLWidget::stationIntervalSelected} renvoie de mauvaise valeurs
 		. Jusqu'ici, par manque de temps, nous n'avons pas réussi à corriger l'erreur.
 		
@@ -1318,20 +1400,18 @@ Pour le premier test, nous allons tester la borne minimale en créant deux traje
 	difficile de définir certains besoins car il nous manquait des informations ou précisions.
 	De même pour l’application montrée dans la vidéo, nous ne pouvions pas la tester car nous
 	n'avions pas accès.\\
-
+	Notamment nous n'avons pas compris l'utilité de la case à cocher \textit{trip duration}. Donc, en
+	conséquence elle n'a pas été implémentée.
+	
+		\subsection{Implémentation de l'affichage avec OpenGL}
 	Concernant la réalisation de l’affiche avec OpenGL, nous somme resté bloqué plusieurs jours
 	sur un bug. Le problème venait des identifiants que nous passions aux VBO. Ces identifiants
-	était incorrecte et donc l'affichage était anarchique.
-	Cela nous a fait perdre beaucoup de temps.\\
-
-	Durant le phase de développement, nous avons perdu du temps également à cause de la
-	stratégie à adopter pour stocker les trajets et les stations. Nous avons essayé de faire
-	simple et performant. Cela nous a valu de changer le code et de faire des tests pour savoir
-	si les performances étaient présente.
+	étaient incorrects et donc l'affichage était anarchique.
+	Cela nous a fait perdre beaucoup de temps.
 	
 	
 		\subsection{Implémentation du programme}
-		Le projet est destiné à visualiser et traiter via des filtres une grande quantité de données (environ un million de trajets). Il est donc facile de rendre le programme peut interactif au niveau utilisateur ou de mal utiliser les ressources de mémoire vive.\\
+		Le projet est destiné à visualiser et traiter via des filtres une grande quantité de données (environ un million de trajets). Il est donc facile de rendre le programme peu interactif au niveau utilisateur ou de mal utiliser les ressources de mémoire vive.\\
 
 Le point crucial, face à ce défi, a donc été de choisir correctement les structures de données pour représenter les trajets et stations, les prototypes de fonctions qui les manipulent, ainsi que l’utilisation du parallélisme. Cela a impliqué de devoir rechercher sur Internet des sujets (principalement StackOverflow, en complément de la documentation de Qt) qui traitent de l’efficacité des conteneurs ainsi que d’autres possibilités d’optimisations de construction, stockage et traitement de ces données.
 		
@@ -1346,7 +1426,7 @@ Le point crucial, face à ce défi, a donc été de choisir correctement les str
 	\newpage
 	\section{Critiques et améliorations possible} \label{ameliorations}	
 		\subsection{Représentation des données à afficher} 
-		Un structure ou classe \textit{Vertex} aurait dû être implémentée, elle contiendrait un vecteur
+		Une structure ou classe \textit{Vertex} aurait dû être implémentée, elle contiendrait un vecteur
 		à 2 dimensions pour les positions 2D et un vecteur à 3 dimensions pour stocker les trois
 		composantes rouge, vert et bleu.
 		Dans notre cas,
@@ -1367,25 +1447,33 @@ Le point crucial, face à ce défi, a donc été de choisir correctement les str
 		Une autre solution, qui changerait davantage l’architecture, serait d’oublier ce système d’indexation des données par leurs identifiants, et d’utiliser des pointeurs. Cela implique de parfaitement connaître le lieu (dans le code) et l’instant (à l'exécution) d’allocation des données, ainsi que le lieu et l’instant de leur désallocation, sous peine de provoquer des fuites mémoires.
 	
 		\subsection{Interactivité : sélection des glyphes}
-		\textbf{A PRECISER}\\
-		Les ralentissements que cela occasionne nous a contraint à réduire l’interactivité de
-	notre application en mettant à jour les trajets sélectionnés dans la \textit{timelinematrix} qu’une
-	fois que l’utilisateur ait relâché le bouton gauche de la souris.
+		L'opération de sélection des trajets à partir de la matrice de chronologie fait partie des opérations coûteuses.
+		En conséquence l’interactivité de la sélection doit être réduite : ainsi les trajets sélectionnés sont affichés
+		sur la carte une fois la souris relâchée. 
+		
+		\subsection{Structure de donnée des trajets}
+		Les propriétés \textit{distance} et \textit{duration} des trajets sont codées sur des entiers signés de 64 bits.\\
+
+		Des entiers signés de 32 bits auraient été plus adaptés : comme la valeur maximale d’un entier signé 32 bits est d’environ 2 milliards, et que la distance est en mètres et la durée en secondes, on aurait eu tout de même des valeurs difficilement atteignables en pratique (environ 2 millions de kilomètres pour la distance et environ 555 000 heures pour la durée). \\
+
+		Cela permettrait d’économiser 64 bits par trajet, soit 8 octets par trajet, soit environ 8 mégaoctets pour 1 million de trajets. Cela est négligeable pour les matériels modernes mais reste une optimisation à prendre en compte.		
+		
 		
 		\subsection{Implémentation du contrôleur}
-		La classe \textit{MainWindow}, qui joue le rôle de contrôleur, fait communiquer la vue et le modèle. Le problème est qu’elle accumule les fonctionnalités, donc les fonctions. Elle contient donc trop de fonctions et est difficilement maintenable et lisible (les bugs en témoignent ces problèmes).\\
+		La classe \textit{MainWindow}, qui joue le rôle de contrôleur, fait communiquer la vue et le modèle. Le problème est qu’elle accumule les fonctionnalités, donc les fonctions. Elle contient donc trop de fonctions et est difficilement maintenable et lisible (les bugs en témoignent de ces problèmes).\\
 	
 		Pour l’instant, aucune solution n’a été pensée, bien que la solution proposée plus haut pour éviter les conversions données/identifiants des données supprimerait de nombreuses lignes de code, ainsi que deux fonctions.
 		
-		\subsection{Perspectives}
-		Il serait tout à fait possible de reprendre l'article \ref{Oli16} afin d’étendre le programme
-		en ajoutant d'autres modes de visualisations. Par exemple on pourrait afficher les stations
-		qui serait vides ou pleines en fonction de l'heure de la journée. Bien sûr, il faudrait trouver
-		les différentes sources de données permettant cela.
+		\subsection{Limites de chargement des données}
+		Il a été précédemment décrit que les trajets et stations sont associés via des identifiants (entiers signés sur 32 bits). L’identifiant d’une donnée correspond à son indice dans le conteneur qui la contient. A la création d’une donnée, cela correspond à la taille actuelle du conteneur qui va la contenir, c’est-à-dire la propriété size (ou count, par équivalence). Cette propriété est, de manière classique, codée sur un entier signé de 32 bits. Donc le nombre maximum de trajets pouvant être chargé est donc la valeur maximale d'un entier signé 32 bits, soit environ 2 milliards.		
 		
-	\newpage
-	\section{Conclusion}
-
+		\subsection{Perspectives}
+		Il serait tout à fait possible de reprendre l'article \cite{Oli16} afin d’étendre le programme
+		en ajoutant d'autres modes de visualisations. Par exemple on pourrait afficher les stations
+		qui seraient vides ou pleines en fonction de l'heure de la journée (cf: Figure
+		\ref{fig:station_screen}). Bien sûr, il faudrait
+		trouver	les différentes sources de données permettant cela.
+	
 	\newpage
 	\section{Lexique}
 	\begin{itemize}
@@ -1393,24 +1481,27 @@ Le point crucial, face à ce défi, a donc été de choisir correctement les str
 		\item[]\textbf{CSV} : CSV : Comma Separated Value, c'est un format de fichier\\
 		\item[]\textbf{XML} : Extensible Markup Language, c'est un langage de balisage.\\
 		\item[]\textbf{JSON} : Java Script Object Notation, format de fichier\\
-		\item[]\textbf{Qt} : Est un framework très populaire pour le développement
-		d'interfaces graphiques\\
-		\item[]\textbf{Valgrind} : framework permettant de faire de l'analyse de programmes\\
-		\item[]\textbf{Tests en boites blanche} : Testes qui visent à regarder l’implémentation même 
-		des fonctions, contrairement aux tests boites noire, on regarde le fonctionnement des objets.\\
-		\item[]\textbf{Test en boite noire} : Vise tester le comportement de l'application et nom pas 
+		\item[]\textbf{Qt} : Framework très populaire pour le développement
+		d'applications\\
+		\item[]\textbf{Valgrind} : Framework permettant de faire de l'analyse de programmes\\
+		\item[]\textbf{Tests en boites blanches} : Tests qui visent à regarder l’implémentation même 
+		des fonctions, contrairement aux tests boites noires, on regarde le fonctionnement des objets.\\
+		\item[]\textbf{Tests en boites noires} : Visent à tester le comportement de l'application et non
 		les objets ou fonctions.\\
 		\item[]\textbf{Doxygene} : Outil permettant de générer de la documentation,
 		au format html ou en Latex par exemple.\\
-		\item[]\textbf{Glyphe} : Un glyphe est un élément de la \textit{timelinematrix}, elle
+		\item[]\textbf{Glyphe} : Un glyphe est un élément de la \textit{timelinematrix}, il
 		représente un ensemble de trajet d'une station donnée est d'une heure donnée.\\
-		\item[]\textbf{Shared pointer} :\\
+		\item[]\textbf{Shared pointer} : En C++, c'est un pointeur intelligent qui partage l'adresse
+		d'un objet.\\
 		\item[]\textbf{Parsing} : Analyse d'une chaîne de symboles.\\
-		\item[]\textbf{QML} : Qt Modeling Language\\
-		\item[]\textbf{OpenGL} : Ensemble de fonctions permettant d'écrire des applications graphique.
-		Elle est disponible sous de nombreuses plateformes comme Linux, Windows ou MacOS par exmple.
+		\item[]\textbf{QML} : Qt Modeling Language, langage développé par Qt, proche du CSS, pour construire des
+		composants d'interface graphique\\
+		\item[]\textbf{OpenGL} : Ensemble de fonctions permettant d'écrire des applications graphiques.
+		La bibliothèque est disponible sous de nombreuses plateformes comme Linux, Windows ou MacOS par
+		exemple.
 		\item[]\textbf{GLSL} : OpenGL Shader Language, langage pour écrire des Shaders avec OpenGL\\
-		\item[]\textbf{Shader} : C'est un programme écrit en GLSL (proche du langage C), qui sera
+		\item[]\textbf{Shader} : Programme écrit en GLSL (proche du langage C), qui sera
 		exécuté par la carte graphique.\\
 	\end{itemize}
 	
@@ -1484,35 +1575,35 @@ Le point crucial, face à ce défi, a donc été de choisir correctement les str
 		\begin{figure}[!h]
 		\begin{center}
 		\includegraphics[scale=.60]{5_generated_points.png}
-		\caption{Courbes de Bézier avec 5 points généré}
+		\caption{Courbes de Bézier avec 5 points générés}
 		\end{center}
 		\end{figure}
 		
 		\begin{figure}[!h]
 		\begin{center}
 		\includegraphics[scale=.60]{10_generated_points.png}
-		\caption{Courbes de Bézier avec 10 points généré}
+		\caption{Courbes de Bézier avec 10 points générés}
 		\end{center}
 		\end{figure}
 		
 		\begin{figure}[!h]
 		\begin{center}
 		\includegraphics[scale=.60]{15_generated_points.png}
-		\caption{Courbes de Bézier avec 15 points généré}
+		\caption{Courbes de Bézier avec 15 points générés}
 		\end{center}
 		\end{figure}
 		
 		\begin{figure}[!h]
 		\begin{center}
 		\includegraphics[scale=.60]{20_generated_points.png}
-		\caption{Courbes de Bézier avec 20 points généré}
+		\caption{Courbes de Bézier avec 20 points générés}
 		\end{center}
 		\end{figure}
 		
 		\begin{figure}[!h]
 		\begin{center}
 		\includegraphics[scale=.60]{25_generated_points.png}
-		\caption{Courbes de Bézier avec 25 points généré}
+		\caption{Courbes de Bézier avec 25 points générés}
 		\end{center}
 		\end{figure}
 		\clearpage
@@ -1526,9 +1617,5 @@ Le point crucial, face à ce défi, a donc été de choisir correctement les str
 		\label{fig:autres_exemples_fuites_memoire}
 		\end{center}
 		\end{figure}
-		
-		\clearpage		
-		
-		\subsection{Manuel utilisateur}
  
 \end{document}
