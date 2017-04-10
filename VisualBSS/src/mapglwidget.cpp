@@ -85,25 +85,25 @@ void MapGLWidget::paintGL()
     glClear(GL_COLOR_BUFFER_BIT);
 
     /// BEGIN Used for performance tests
-    if (m_frameCount == 0)
-        m_time.start();
+//    if (m_frameCount == 0)
+//        m_time.start();
     /// END Used for performance tests
 
     drawStations();
     drawTrips();
 
     /// BEGIN Used for performance tests
-    m_frameCount++;
+//    m_frameCount++;
 
-    if (m_time.elapsed() - m_lastTime >= 1000)
-    {
-        qDebug() << "MapGLWidget drawn in:" << double(1000) / m_frameCount << "ms";
-        m_frameCount = 0;
-        m_lastTime++;
-    }
+//    if (m_time.elapsed() - m_lastTime >= 1000)
+//    {
+//        qDebug() << "MapGLWidget drawn in:" << double(1000) / m_frameCount << "ms";
+//        m_frameCount = 0;
+//        m_lastTime++;
+//    }
 
-    if (m_drawTrips || m_drawStations)
-        update();
+//    if (m_drawTrips || m_drawStations)
+//        update();
     /// END Used for performance tests
 }
 

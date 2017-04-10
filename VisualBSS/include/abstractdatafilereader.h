@@ -4,6 +4,8 @@
 #include <QString>
 #include <QVector>
 #include <QReadWriteLock>
+#include <QHash>
+
 
 namespace bss {
 class AbstractDataFileReader;
