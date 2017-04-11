@@ -554,12 +554,7 @@ void MainWindow::onTripsFilterParamsChanged(const TripsFilterParams& params)
 
 void MainWindow::onStationsSorterParamChanged(const bss::SortParam& param)
 {
-    QVector<int> stationsIds;
-    stationsIds.reserve(m_data->stationsCount());
-    for (int i = 0; i < m_data->stationsCount(); ++i)
-        stationsIds.append(i);
-
-    runAsync(QtConcurrent::run(this, &MainWindow::sortStations, stationsIds, param));
+    runAsync(QtConcurrent::run(this, &MainWindow::sortStations, m_stationsIds, param));
 }
 
 void MainWindow::onStationsFilterParamsChanged(const StationsFilterParams& params)

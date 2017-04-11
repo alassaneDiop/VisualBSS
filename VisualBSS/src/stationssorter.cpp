@@ -70,8 +70,11 @@ void StationsSorter::setSortParam(const bss::SortParam& param)
 
 QVector<Station> StationsSorter::sort(QVector<Station> stations) const
 {
-    // Qt recommends to use the std function instead of its own, and include QtAlgorithms
-    std::stable_sort(stations.begin(), stations.end(), m_greaterThan);
+    if (m_greaterThan)
+    {
+        // Qt recommends to use the std function instead of its own, and include QtAlgorithms
+        std::stable_sort(stations.begin(), stations.end(), m_greaterThan);
+    }
     return stations;
 }
 
@@ -80,7 +83,9 @@ QVector<int> StationsSorter::sort(const QVector<int>& stationsIds, const Data& d
     QVector<Station> stations;
     stations.reserve(stationsIds.size());
     for (const int id : stationsIds)
-        stations.append(data.station(id));
+        for (const Station s : data.stations())
+            if (s.id == id)
+                stations.append(s);
 
     stations = sort(stations);
 
