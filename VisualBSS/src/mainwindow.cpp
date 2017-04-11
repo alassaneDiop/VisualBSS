@@ -133,178 +133,203 @@ bool MainWindow::loadDataFromFiles(const QStringList& filenames, const bool& par
 
 
 
-void MainWindow::filterTrips(const QVector<Trip>& trips, const TripsFilterParams& params)
+void MainWindow::filterTrips(const QVector<int>& tripsIds, const TripsFilterParams& params)
 {
-    const TripsFilter filter = TripsFilter(params);
-    const QVector<Trip> filteredTrips = filter.filter(trips);
-    const QVector<int> filteredTripsIds = ids(filteredTrips);
-    if (m_tripsIds.toList().toSet() != filteredTripsIds.toList().toSet())
+    if (m_data)
     {
-        m_tripsIds = filteredTripsIds;
-        emit tripsChanged(filteredTripsIds);
+        const TripsFilter filter = TripsFilter(params);
+        const QVector<int> filteredTripsIds = filter.filter(tripsIds, *m_data);
+        if (m_tripsIds.toList().toSet() != filteredTripsIds.toList().toSet())
+        {
+            m_tripsIds = filteredTripsIds;
+            emit tripsChanged(filteredTripsIds);
+        }
     }
 }
 
-void MainWindow::filterStations(const QVector<Station>& stations, const StationsFilterParams& params)
+void MainWindow::filterStations(const QVector<int>& stationsIds, const StationsFilterParams& params)
 {
-    const StationsFilter filter = StationsFilter(params);
-    const QVector<Station> filteredStations = filter.filter(stations);
-    const QVector<int> filteredStationsIds = ids(filteredStations);
-    if (m_stationsIds.toList().toSet() != filteredStationsIds.toList().toSet())
-        sortStations(filteredStations, m_stationsSortParam);
+    if (m_data)
+    {
+        const StationsFilter filter = StationsFilter(params);
+        const QVector<int> filteredStationsIds = filter.filter(stationsIds, *m_data);
+        if (m_stationsIds.toList().toSet() != filteredStationsIds.toList().toSet())
+            sortStations(filteredStationsIds, m_stationsSortParam);
+    }
 }
 
-void MainWindow::sortStations(const QVector<Station>& stations, const bss::SortParam& param)
+void MainWindow::sortStations(const QVector<int>& stationsIds, const bss::SortParam& param)
 {
-    const StationsSorter sorter = StationsSorter(param);
-    const QVector<Station> sortedStations = sorter.sort(stations);
-    const QVector<int> sortedStationsIds = ids(sortedStations);
-    if (m_stationsIds != sortedStationsIds)
+    if (m_data)
     {
-        m_stationsIds = sortedStationsIds;
-        emit stationsOrderChanged(sortedStationsIds);
+        const StationsSorter sorter = StationsSorter(param);
+        const QVector<int> sortedStationsIds = sorter.sort(stationsIds, *m_data);
+        if (m_stationsIds != sortedStationsIds)
+        {
+            m_stationsIds = sortedStationsIds;
+            emit stationsOrderChanged(sortedStationsIds);
+        }
     }
 }
 
 void MainWindow::selectTrips(const int& fromHour, const int& toHour,
                              const int& fromStationIndex, const int& toStationIndex)
 {
-    const int len = (toStationIndex - fromStationIndex) + 1;
-
-    TripsSelectionParams selectionParams;
-    selectionParams.fromHour = fromHour;
-    selectionParams.toHour = toHour;
-    selectionParams.stationsIds = m_stationsIds.mid(fromStationIndex, len);
-
-    const TripsSelector selector = TripsSelector(selectionParams);
-    const QVector<Trip> selection = selector.selectFrom(m_data->trips(m_tripsIds));
-    const QVector<int> selectionIds = ids(selection);
-    if (m_selection.toList().toSet() != selectionIds.toList().toSet())
+    if (m_data)
     {
-        m_selection = selectionIds;
-        emit selectionChanged(selectionIds);
+        const int len = (toStationIndex - fromStationIndex) + 1;
+
+        TripsSelectionParams selectionParams;
+        selectionParams.fromHour = fromHour;
+        selectionParams.toHour = toHour;
+        selectionParams.stationsIds = m_stationsIds.mid(fromStationIndex, len);
+
+        const TripsSelector selector = TripsSelector(selectionParams);
+        const QVector<int> selectionIds = selector.selectFrom(m_tripsIds, *m_data);
+        if (m_selection.toList().toSet() != selectionIds.toList().toSet())
+        {
+            m_selection = selectionIds;
+            emit selectionChanged(selectionIds);
+        }
     }
 }
 
 
-void MainWindow::drawStationsOnMap(const QVector<Station>& stations)
+void MainWindow::drawStationsOnMap(const QVector<int>& stationsIds)
 {
-    buildStationsVertices(stations);
+    buildStationsVertices(stationsIds);
 }
 
-void MainWindow::drawSelectedTripsOnMap(const QVector<Trip>& selection)
+void MainWindow::drawSelectedTripsOnMap(const QVector<int>& selection)
 {
-    QVector<Trip> arrivals;
-    QVector<Trip> departures;
-    QVector<Trip> cycles;
+    QVector<int> arrivalsIds;
+    QVector<int> departuresIds;
+    QVector<int> cyclesIds;
 
-    for (const Trip t : selection)
+    for (const int tripId : selection)
     {
+        const Trip t = m_data->trip(tripId);
         if (t.isCyclic && m_tripsDisplayParams.shouldShowCycles)
-            cycles.append(t);
+            cyclesIds.append(tripId);
         else
         {
             for (const int stationId : m_stationsIds)
             {
                 if ((stationId == t.startStationId) && m_tripsDisplayParams.shouldShowDepartures)
-                    departures.append(t);
+                    departuresIds.append(tripId);
 
                 if ((stationId == t.endStationId) && m_tripsDisplayParams.shouldShowArrivals)
-                    arrivals.append(t);
+                    arrivalsIds.append(tripId);
             }
         }
     }
 
-    buildTripsVertices(arrivals, departures, cycles);
+    buildTripsVertices(arrivalsIds, departuresIds, cyclesIds);
 }
 
-void MainWindow::drawGlyphsOnMatrix(const QVector<Station>& stations, const TripsDisplayParams& params)
+void MainWindow::drawGlyphsOnMatrix(const QVector<int>& stationsIds, const TripsDisplayParams& params)
 {
-    const int glyphsCount = (bss::NB_OF_HOURS * stations.count());
+    const int glyphsCount = (bss::NB_OF_HOURS * stationsIds.count());
 
-    QVector<QVector<Trip>> arrivals;
-    arrivals.reserve(glyphsCount);
+    QVector<QVector<int>> arrivalsIdsList;
     if (!params.shouldShowArrivals)
-        arrivals.fill(QVector<Trip>());
+        arrivalsIdsList = QVector<QVector<int>>(glyphsCount);
     else
     {
-        for (const Station s : stations)
+        arrivalsIdsList.reserve(glyphsCount);
+        for (const int stationId : stationsIds)
         {
             for (int hour = 0; hour < bss::NB_OF_HOURS; ++hour)
             {
+                const Station s = m_data->station(stationId);
                 const auto filter = [this, &hour](const int& id)
                 { return (m_data->trip(id).startDateTime.time().hour() == hour); };
-                arrivals.append(m_data->trips(QtConcurrent::blockingFiltered(s.arrivalsIds, filter)));
+                arrivalsIdsList.append(QtConcurrent::blockingFiltered(s.arrivalsIds, filter));
             }
         }
     }
 
-    QVector<QVector<Trip>> departures;
-    departures.reserve(glyphsCount);
+    QVector<QVector<int>> departuresIdsList;
     if (!params.shouldShowDepartures)
-        departures.fill(QVector<Trip>());
+        departuresIdsList = QVector<QVector<int>>(glyphsCount);
     else
     {
-        for (const Station s : stations)
+        departuresIdsList.reserve(glyphsCount);
+        for (const int stationId : stationsIds)
         {
             for (int hour = 0; hour < bss::NB_OF_HOURS; ++hour)
             {
+                const Station s = m_data->station(stationId);
                 const auto filter = [this, &hour](const int& id)
                 { return (m_data->trip(id).startDateTime.time().hour() == hour); };
-                departures.append(m_data->trips(QtConcurrent::blockingFiltered(s.departuresIds, filter)));
+                departuresIdsList.append(QtConcurrent::blockingFiltered(s.departuresIds, filter));
             }
         }
     }
 
-    QVector<QVector<Trip>> cycles;
-    cycles.reserve(glyphsCount);
+    QVector<QVector<int>> cyclesIdsList;
     if (!params.shouldShowCycles)
-        cycles.fill(QVector<Trip>());
+        cyclesIdsList = QVector<QVector<int>>(glyphsCount);
     else
     {
-        for (const Station s : stations)
+        cyclesIdsList.reserve(glyphsCount);
+        for (const int stationId : stationsIds)
         {
             for (int hour = 0; hour < bss::NB_OF_HOURS; ++hour)
             {
+                const Station s = m_data->station(stationId);
                 const auto filter = [this, &hour](const int& id)
                 { return (m_data->trip(id).startDateTime.time().hour() == hour); };
-                cycles.append(m_data->trips(QtConcurrent::blockingFiltered(s.cyclesIds, filter)));
+                cyclesIdsList.append(QtConcurrent::blockingFiltered(s.cyclesIds, filter));
             }
         }
     }
 
-    buildGlyphsVertices(arrivals, departures, cycles, params.shouldShowDistance);
+    buildGlyphsVertices(arrivalsIdsList, departuresIdsList, cyclesIdsList, params.shouldShowDistance);
 }
 
 
 
-void MainWindow::buildStationsVertices(const QVector<Station>& stations)
+void MainWindow::buildStationsVertices(const QVector<int>& stationsIds)
 {
-    const StationsVerticesBuilder stationsVerticesBuilder;
-    const QVector<float> stationsVertices = stationsVerticesBuilder.build(stations);
-    emit stationsVerticesBuilt(stationsVertices);
+    if (m_data)
+    {
+        const StationsVerticesBuilder stationsVerticesBuilder;
+        const QVector<float> stationsVertices = stationsVerticesBuilder.build(stationsIds, *m_data);
+        emit stationsVerticesBuilt(stationsVertices);
+    }
 }
 
-void MainWindow::buildTripsVertices(const QVector<Trip>& arrivals,
-                                    const QVector<Trip>& departures,
-                                    const QVector<Trip>& cycles)
+void MainWindow::buildTripsVertices(const QVector<int>& arrivalsIds,
+                                    const QVector<int>& departuresIds,
+                                    const QVector<int>& cyclesIds)
 {
-    const TripsVerticesBuilder tripsVerticesBuilder;
-    const QVector<Station> stations = m_data->stations(m_stationsIds);
-    const QVector<float> tripsVertices = tripsVerticesBuilder.build(stations, arrivals, departures, cycles);
-    emit tripsVerticesBuilt(tripsVertices);
+    if (m_data)
+    {
+        QVector<int> stationsIds;
+        stationsIds.reserve(m_data->stationsCount());
+        for (int i = 0; i < m_data->stationsCount(); ++i)
+            stationsIds.append(i);
+
+        const TripsVerticesBuilder tripsVerticesBuilder;
+        const QVector<float> tripsVertices = tripsVerticesBuilder.build(stationsIds, arrivalsIds, departuresIds, cyclesIds, *m_data);
+        emit tripsVerticesBuilt(tripsVertices);
+    }
 }
 
-void MainWindow::buildGlyphsVertices(const QVector<QVector<Trip>>& arrivals,
-                                     const QVector<QVector<Trip>>& departures,
-                                     const QVector<QVector<Trip>>& cycles,
+void MainWindow::buildGlyphsVertices(const QVector<QVector<int>>& arrivalsIds,
+                                     const QVector<QVector<int>>& departuresIds,
+                                     const QVector<QVector<int>>& cyclesIds,
                                      const bool& showDistance)
 {
-    const GlyphsVerticesBuilder glyphsVerticesBuilder;
-    const int height = m_view->timelinematrixwidget->height();
-    const int width = m_view->timelinematrixwidget->width();
-    const QVector<float> glyphsVertices = glyphsVerticesBuilder.build(height, width, arrivals, departures, cycles, showDistance);
-    emit glyphsVerticesBuilt(glyphsVertices);
+    if (m_data)
+    {
+        const GlyphsVerticesBuilder glyphsVerticesBuilder;
+        const int height = m_view->timelinematrixwidget->height();
+        const int width = m_view->timelinematrixwidget->width();
+        const QVector<float> glyphsVertices = glyphsVerticesBuilder.build(height, width, arrivalsIds, departuresIds, cyclesIds, *m_data, showDistance);
+        emit glyphsVerticesBuilt(glyphsVertices);
+    }
 }
 
 
@@ -354,24 +379,6 @@ int MainWindow::maxTripsFlow(const QVector<Station>& stations)
         maxFlow = qMax(maxFlow, s.tripsFlow);
 
     return maxFlow;
-}
-
-QVector<int> MainWindow::ids(const QVector<Trip>& trips)
-{
-    QVector<int> ids;
-    for (const Trip t : trips)
-        ids.append(t.id);
-
-    return ids;
-}
-
-QVector<int> MainWindow::ids(const QVector<Station>& stations)
-{
-    QVector<int> ids;
-    for (const Station s : stations)
-        ids.append(s.id);
-
-    return ids;
 }
 
 
@@ -482,15 +489,15 @@ void MainWindow::onDataCleared()
 void MainWindow::onTripsChanged(const QVector<int>& trips)
 {
     Q_UNUSED(trips);
-    runAsync(QtConcurrent::run(this, &MainWindow::drawGlyphsOnMatrix, m_data->stations(m_stationsIds), m_tripsDisplayParams));
+    runAsync(QtConcurrent::run(this, &MainWindow::drawGlyphsOnMatrix, m_stationsIds, m_tripsDisplayParams));
 }
 
 void MainWindow::onSelectionChanged(const QVector<int>& selection)
 {
     if (selection.isEmpty())
-        drawStationsOnMap(m_data->stations(m_stationsIds));
+        drawStationsOnMap(m_stationsIds);
     else
-        runAsync(QtConcurrent::run(this, &MainWindow::drawSelectedTripsOnMap, m_data->trips(selection)));
+        runAsync(QtConcurrent::run(this, &MainWindow::drawSelectedTripsOnMap, selection));
 }
 
 void MainWindow::onStationsOrderChanged(const QVector<int>& stationsIds)
@@ -513,11 +520,10 @@ void MainWindow::onStationsOrderChanged(const QVector<int>& stationsIds)
 
 
 
-    const QVector<Station> stations = m_data->stations(stationsIds);
-    runAsync(QtConcurrent::run(this, &MainWindow::drawGlyphsOnMatrix, stations, m_tripsDisplayParams));
+    runAsync(QtConcurrent::run(this, &MainWindow::drawGlyphsOnMatrix, stationsIds, m_tripsDisplayParams));
 
     if (m_selection.isEmpty())
-        drawStationsOnMap(stations);
+        drawStationsOnMap(stationsIds);
     else
     {
         m_selection.clear();
@@ -533,22 +539,37 @@ void MainWindow::onHighlightChanged(const int& highlight)
 
 void MainWindow::onTripsDisplayParamsChanged(const TripsDisplayParams &params)
 {
-    runAsync(QtConcurrent::run(this, &MainWindow::drawGlyphsOnMatrix, m_data->stations(m_stationsIds), params));
+    runAsync(QtConcurrent::run(this, &MainWindow::drawGlyphsOnMatrix, m_stationsIds, params));
 }
 
 void MainWindow::onTripsFilterParamsChanged(const TripsFilterParams& params)
 {
-    runAsync(QtConcurrent::run(this, &MainWindow::filterTrips, m_data->trips(), params));
+    QVector<int> tripsIds;
+    tripsIds.reserve(m_data->tripsCount());
+    for (int i = 0; i < m_data->tripsCount(); ++i)
+        tripsIds.append(i);
+
+    runAsync(QtConcurrent::run(this, &MainWindow::filterTrips, tripsIds, params));
 }
 
 void MainWindow::onStationsSorterParamChanged(const bss::SortParam& param)
 {
-    runAsync(QtConcurrent::run(this, &MainWindow::sortStations, m_data->stations(m_stationsIds), param));
+    QVector<int> stationsIds;
+    stationsIds.reserve(m_data->stationsCount());
+    for (int i = 0; i < m_data->stationsCount(); ++i)
+        stationsIds.append(i);
+
+    runAsync(QtConcurrent::run(this, &MainWindow::sortStations, stationsIds, param));
 }
 
 void MainWindow::onStationsFilterParamsChanged(const StationsFilterParams& params)
 {
-    runAsync(QtConcurrent::run(this, &MainWindow::filterStations, m_data->stations(), params));
+    QVector<int> stationsIds;
+    stationsIds.reserve(m_data->stationsCount());
+    for (int i = 0; i < m_data->stationsCount(); ++i)
+        stationsIds.append(i);
+
+    runAsync(QtConcurrent::run(this, &MainWindow::filterStations, stationsIds, params));
 }
 
 void MainWindow::onMatrixSelectionChanged(const int& fromHour, const int& toHour,

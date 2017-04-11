@@ -23,6 +23,7 @@ struct TripsSelectionParams
 
 
 struct Trip;
+class Data;
 
 /**
  * The TripsSelector class select trips from selection parameters.
@@ -43,7 +44,17 @@ public:
      */
     QVector<Trip> selectFrom(const QVector<Trip>& trips) const;
 
+    /**
+     * Selects trips ids from a specified original trips set, according to the selection parameters.
+     * @param tripsIds The trips ids from which the selection will be made.
+     * @param data The data object that contains all the trips.
+     * @return The ids of the trips that match the selection parameters
+     */
+    QVector<int> selectFrom(const QVector<int>& tripsIds, const Data& data) const;
+
 private:
+    bool keep(const Trip& t) const;
+
     /// The parameters according to which trips will be selected.
     TripsSelectionParams m_params;
 };

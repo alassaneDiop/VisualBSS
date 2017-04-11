@@ -22,7 +22,7 @@
 #include <QtAlgorithms>
 
 #include "station.h"
-
+#include "data.h"
 
 StationsSorter::StationsSorter(const bss::SortParam& param) :
     m_sortParam((bss::SortParam) -1)
@@ -73,4 +73,21 @@ QVector<Station> StationsSorter::sort(QVector<Station> stations) const
     // Qt recommends to use the std function instead of its own, and include QtAlgorithms
     std::stable_sort(stations.begin(), stations.end(), m_greaterThan);
     return stations;
+}
+
+QVector<int> StationsSorter::sort(const QVector<int>& stationsIds, const Data& data) const
+{
+    QVector<Station> stations;
+    stations.reserve(stationsIds.size());
+    for (const int id : stationsIds)
+        stations.append(data.station(id));
+
+    stations = sort(stations);
+
+    QVector<int> sortedStationsIds;
+    sortedStationsIds.reserve(stations.size());
+    for (const Station s : stations)
+        sortedStationsIds.append(s.id);
+
+    return sortedStationsIds;
 }

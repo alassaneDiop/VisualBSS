@@ -16,6 +16,7 @@ struct StationsFilterParams
 };
 
 struct Station;
+class Data;
 
 /**
  * The StationsFilter class filters stations by their <i>tripsFlow</i> property.
@@ -36,7 +37,17 @@ public:
      */
     QVector<Station> filter(QVector<Station> stations) const;
 
+    /**
+     * Filters the specified stations ids from the specified data object.
+     * @param stationsIds The ids of the stations to filter.
+     * @param data The data object that contains all the stations.
+     * @return The ids of the filtered stations.
+     */
+    QVector<int> filter(const QVector<int>& stationsIds, const Data& data) const;
+
 private:
+    bool keep(const Station& s) const;
+
     StationsFilterParams m_params;
 };
 

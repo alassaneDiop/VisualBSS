@@ -17,6 +17,7 @@ enum SortParam
 }
 
 struct Station;
+class Data;
 
 /**
  * @brief The StationsSorter class sorts stations by a specified property.
@@ -37,6 +38,14 @@ public:
      * @return The sorted stations.
      */
     QVector<Station> sort(QVector<Station> stations) const;
+
+    /**
+     * @brief sort Sorts the specified stations ids by a parameter.
+     * @param ids The ids of the stations to sort.
+     * @param data The object that contains all the stations.
+     * @return The ids of the sorted stations.
+     */
+    QVector<int> sort(const QVector<int>& stationsIds, const Data& data) const;
 
 private:
     bss::SortParam m_sortParam;

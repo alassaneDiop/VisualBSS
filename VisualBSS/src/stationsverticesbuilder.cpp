@@ -19,13 +19,14 @@
 #include "stationsverticesbuilder.h"
 
 #include "station.h"
+#include "data.h"
 
 StationsVerticesBuilder::StationsVerticesBuilder()
 {
 
 }
 
-QVector<float> StationsVerticesBuilder::build(const QVector<Station>& stations) const
+QVector<float> StationsVerticesBuilder::build(const QVector<int>& stationsIds, const Data& data) const
 {
     // x and y;
     const unsigned short positionTupleSize = 2;
@@ -33,13 +34,15 @@ QVector<float> StationsVerticesBuilder::build(const QVector<Station>& stations) 
     const unsigned short colorTupleSize = 3;
 
     QVector<float> stationsVertices;
-    const int stationsVerticesCount = stations.size();
+    const int stationsVerticesCount = stationsIds.size();
     stationsVertices.reserve(stationsVerticesCount * positionTupleSize * colorTupleSize);
 
-    for (const Station s : stations)
+    for (const int stationId : stationsIds)
     {
         const float maxLongitude = 180.f;
         const float maxLatitude = 90.f;
+
+        const Station s = data.station(stationId);
 
         stationsVertices.append(s.longitude / maxLongitude);
         stationsVertices.append(s.latitude / maxLatitude);

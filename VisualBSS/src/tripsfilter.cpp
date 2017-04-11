@@ -21,7 +21,7 @@
 #include <QtConcurrent>
 
 #include "trip.h"
-
+#include "data.h"
 
 TripsFilter::TripsFilter(const TripsFilterParams& params) :
     m_params(params)
@@ -31,17 +31,24 @@ TripsFilter::TripsFilter(const TripsFilterParams& params) :
 
 QVector<Trip> TripsFilter::filter(const QVector<Trip>& trips) const
 {
-    const auto filter = [this](const Trip& t)
-    {
-        return (t.startDateTime.date() >= params().fromPeriod)
-            && (t.endDateTime.date() <= params().toPeriod)
-            && (t.direction <= params().maxDirection)
-            && (t.direction >= params().minDirection)
-            && (t.distance <= params().maxDistance)
-            && (t.distance >= params().minDistance)
-            && (t.duration <= params().maxDuration)
-            && (t.duration >= params().minDuration);
-    };
-
+    const auto filter = [this](const Trip& t) { return keep(t); };
     return QtConcurrent::blockingFiltered(trips, filter);
+}
+
+QVector<int> TripsFilter::filter(const QVector<int>& tripsIds, const Data& data) const
+{
+    const auto filter = [this, &data](const int& tripId) { return keep(data.trip(tripId)); };
+    return QtConcurrent::blockingFiltered(tripsIds, filter);
+}
+
+bool TripsFilter::keep(const Trip& t) const
+{
+    return (t.startDateTime.date() >= params().fromPeriod)
+        && (t.endDateTime.date() <= params().toPeriod)
+        && (t.direction <= params().maxDirection)
+        && (t.direction >= params().minDirection)
+        && (t.distance <= params().maxDistance)
+        && (t.distance >= params().minDistance)
+        && (t.duration <= params().maxDuration)
+        && (t.duration >= params().minDuration);
 }

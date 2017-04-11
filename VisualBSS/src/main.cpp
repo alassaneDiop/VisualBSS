@@ -20,7 +20,7 @@
 #include <QApplication>
 #include <bandit/bandit.h>
 #include <QSurfaceFormat>
-
+#include "trip.h"
 static void setDefaultOpenGLSurfaceFormat()
 {
   QSurfaceFormat format;

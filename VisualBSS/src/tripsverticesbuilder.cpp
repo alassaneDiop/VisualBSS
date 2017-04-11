@@ -21,6 +21,7 @@
 #include "trip.h"
 #include "station.h"
 #include "config.h"
+#include "data.h"
 
 TripsVerticesBuilder::TripsVerticesBuilder()
 {
@@ -30,10 +31,11 @@ TripsVerticesBuilder::TripsVerticesBuilder()
 
 
 
-QVector<float> TripsVerticesBuilder::build(const QVector<Station>& stations,
-                                           const QVector<Trip>& arrivals,
-                                           const QVector<Trip>& departures,
-                                           const QVector<Trip>& cycles) const
+QVector<float> TripsVerticesBuilder::build(const QVector<int>& stationsIds,
+                     const QVector<int>& arrivalsIds,
+                     const QVector<int>& departuresIds,
+                     const QVector<int>& cyclesIds,
+                     const Data& data) const
 {
     // x and y;
     const unsigned short positionTupleSize = 2;
@@ -43,24 +45,25 @@ QVector<float> TripsVerticesBuilder::build(const QVector<Station>& stations,
     const unsigned short colorTupleSize = 3;
 
     QVector<float> tripsVertices;
-    const int arrivalsVertices = arrivals.size() * pointPerTrip * positionTupleSize * colorTupleSize;
-    const int departuresVertices = departures.size() * pointPerTrip * positionTupleSize * colorTupleSize;
-    const int cyclesVertices = cycles.size() * positionTupleSize * colorTupleSize;
+    const int arrivalsVertices = arrivalsIds.size() * pointPerTrip * positionTupleSize * colorTupleSize;
+    const int departuresVertices = departuresIds.size() * pointPerTrip * positionTupleSize * colorTupleSize;
+    const int cyclesVertices = cyclesIds.size() * positionTupleSize * colorTupleSize;
 
     tripsVertices.reserve(arrivalsVertices + departuresVertices + cyclesVertices);
 
     int tripsVerticesCount = 0;
 
-    const auto drawTrips = [this, &stations](  const QVector<Trip>& trips,
+    const auto drawTrips = [this, &stationsIds, &data](const QVector<int>& tripsIds,
             QVector<float>& tripsVertices,
             int &verticesCount,
             const QVector<float>& originColor,
             const QVector<float>& destinationColor)
     {
-        for (const Trip t : trips)
+        for (const int tripId : tripsIds)
         {
+            const Trip t = data.trip(tripId);
             const int startStationId = t.startStationId;
-            const Station startStation = stations.at(startStationId);
+            const Station startStation = data.station(startStationId);
 
             const float maxLongitude = 180.f;
             const float maxLatitude = 90.f;
@@ -71,7 +74,7 @@ QVector<float> TripsVerticesBuilder::build(const QVector<Station>& stations,
 
 
             const int endStationId = t.endStationId;
-            const Station endStation = stations.at(endStationId);
+            const Station endStation = data.station(endStationId);
 
             tripsVertices.append((float) (endStation.longitude / maxLongitude));
             tripsVertices.append((float) (endStation.latitude / maxLatitude));
@@ -81,8 +84,8 @@ QVector<float> TripsVerticesBuilder::build(const QVector<Station>& stations,
         }
     };
 
-    drawTrips(arrivals, tripsVertices, tripsVerticesCount, bss::ARRIVAL_ORIGIN_COLOR, bss::ARRIVAL_DESTINATION_COLOR);
-    drawTrips(departures, tripsVertices, tripsVerticesCount, bss::DEPARTURE_ORIGIN_COLOR, bss::DEPARTURE_DESTINATION_COLOR);
+    drawTrips(arrivalsIds, tripsVertices, tripsVerticesCount, bss::ARRIVAL_ORIGIN_COLOR, bss::ARRIVAL_DESTINATION_COLOR);
+    drawTrips(departuresIds, tripsVertices, tripsVerticesCount, bss::DEPARTURE_ORIGIN_COLOR, bss::DEPARTURE_DESTINATION_COLOR);
 
     return tripsVertices;
 }

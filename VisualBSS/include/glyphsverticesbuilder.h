@@ -10,6 +10,7 @@ class GlyphsVerticesBuilder;
 
 
 struct Trip;
+class Data;
 class GlyphsVerticesBuilder
 {
 public:
@@ -17,9 +18,10 @@ public:
 
     QVector<float> build(const int& timelineMatrixHeight,
                          const int& timelineMatrixWidth,
-                         const QVector<QVector<Trip>>& arrivals,
-                         const QVector<QVector<Trip>>& departures,
-                         const QVector<QVector<Trip>>& cycles,
+                         const QVector<QVector<int>>& arrivalsIdsList,
+                         const QVector<QVector<int>>& departuresIdsList,
+                         const QVector<QVector<int>>& cyclesIdsList,
+                         const Data& data,
                          const bool& showDistance) const;
 
 private:
@@ -33,7 +35,8 @@ private:
 
     QVector<float> buildGlyphsVertices(const int& timelineMatrixHeight,
                              const int& timelineMatrixWidth,
-                             const QVector<Trip>& trips,
+                             const QVector<int>& tripsIds,
+                             const Data& data,
                              float posX, float posY,
                              const QVector<float>& color) const;
 };

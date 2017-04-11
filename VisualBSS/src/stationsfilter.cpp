@@ -21,7 +21,7 @@
 #include <QtConcurrent>
 
 #include "station.h"
-
+#include "data.h"
 
 StationsFilter::StationsFilter(const StationsFilterParams& params) :
     m_params(params)
@@ -31,11 +31,19 @@ StationsFilter::StationsFilter(const StationsFilterParams& params) :
 
 QVector<Station> StationsFilter::filter(QVector<Station> stations) const
 {
-    const auto filter = [this](const Station& s)
-    {
-        return (s.tripsFlow <= params().maxTripsFlow)
-            && (s.tripsFlow >= params().minTripsFlow);
-    };
-
+    const auto filter = [this](const Station& s) { return keep(s); };
     return QtConcurrent::blockingFiltered(stations, filter);
 }
+
+QVector<int> StationsFilter::filter(const QVector<int>& stationsIds, const Data& data) const
+{
+    const auto filter = [this, &data](const int& stationId) { return keep(data.station(stationId)); };
+    return QtConcurrent::blockingFiltered(stationsIds, filter);
+}
+
+bool StationsFilter::keep(const Station& s) const
+{
+    return (s.tripsFlow <= params().maxTripsFlow)
+        && (s.tripsFlow >= params().minTripsFlow);
+}
+

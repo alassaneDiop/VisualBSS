@@ -22,7 +22,7 @@
 
 #include "trip.h"
 #include "config.h"
-
+#include "data.h"
 
 GlyphsVerticesBuilder::GlyphsVerticesBuilder()
 {
@@ -30,13 +30,14 @@ GlyphsVerticesBuilder::GlyphsVerticesBuilder()
 }
 
 QVector<float> GlyphsVerticesBuilder::build(const int& timelineMatrixHeight,
-                                            const int& timelineMatrixWidth,
-                                            const QVector<QVector<Trip>>& arrivals,
-                                            const QVector<QVector<Trip>>& departures,
-                                            const QVector<QVector<Trip>>& cycles,
-                                            const bool& showDistance) const
+                     const int& timelineMatrixWidth,
+                     const QVector<QVector<int>>& arrivalsIdsList,
+                     const QVector<QVector<int>>& departuresIdsList,
+                     const QVector<QVector<int>>& cyclesIdsList,
+                     const Data& data,
+                     const bool& showDistance) const
 {
-    Q_UNUSED(cycles);
+    Q_UNUSED(cyclesIdsList);
     Q_UNUSED(showDistance);
 
     const float glyphIntervalX = timelineMatrixWidth / (bss::NB_OF_HOURS * 1.f);
@@ -47,21 +48,21 @@ QVector<float> GlyphsVerticesBuilder::build(const int& timelineMatrixHeight,
     const int positionTupleSize = 2;
     const int colorTupleSize = 3;
 
-    const int arrivalsVerticesCount = arrivals.size() * pointPerTrips * positionTupleSize * colorTupleSize;
-    const int departuresVerticesCount = departures.size() * pointPerTrips * positionTupleSize * colorTupleSize;
-    const int cyclesVerticesCount = cycles.size() * pointPerTrips * positionTupleSize * colorTupleSize;
+    const int arrivalsVerticesCount = arrivalsIdsList.size() * pointPerTrips * positionTupleSize * colorTupleSize;
+    const int departuresVerticesCount = departuresIdsList.size() * pointPerTrips * positionTupleSize * colorTupleSize;
+    const int cyclesVerticesCount = cyclesIdsList.size() * pointPerTrips * positionTupleSize * colorTupleSize;
     glyphsVertices.reserve(arrivalsVerticesCount + departuresVerticesCount + cyclesVerticesCount);
 
     int i = 0;
     int stationIndex = 0;
-    for (const QVector<Trip> t : arrivals)
+    for (const QVector<int> arrivalsIds : arrivalsIdsList)
     {
         const float posX = (bss::TIMELINE_OFFSET_X + (i * glyphIntervalX));
         const float posY = stationIndex * glyphIntervalY;
 
         glyphsVertices.append(buildGlyphsVertices(timelineMatrixHeight,
                                                   timelineMatrixWidth,
-                                                  t, posX, posY,
+                                                  arrivalsIds, data, posX, posY,
                                                   bss::GLYPH_ARRIVAL_COLOR));
 
         i++;
@@ -74,14 +75,14 @@ QVector<float> GlyphsVerticesBuilder::build(const int& timelineMatrixHeight,
 
     i = 0;
     stationIndex = 0;
-    for (const QVector<Trip> t : departures)
+    for (const QVector<int> departuresIds : departuresIdsList)
     {
         const float posX = (bss::TIMELINE_OFFSET_X + (i * glyphIntervalX));
         const float posY = stationIndex * glyphIntervalY;
 
         glyphsVertices.append(buildGlyphsVertices(timelineMatrixHeight,
                                                   timelineMatrixWidth,
-                                                  t, posX, posY,
+                                                  departuresIds, data, posX, posY,
                                                   bss::GLYPH_DEPARTURE_COLOR));
 
         i++;
@@ -172,13 +173,17 @@ QVector<float> GlyphsVerticesBuilder::buildTripVertices(const int& timelineMatri
 
 QVector<float> GlyphsVerticesBuilder::buildGlyphsVertices(const int& timelineMatrixHeight,
                                                           const int& timelineMatrixWidth,
-                                                          const QVector<Trip>& trips,
+                                                          const QVector<int>& tripsIds,
+                                                          const Data& data,
                                                           float posX, float posY,
                                                           const QVector<float>& color) const
 {
     QVector<float> glyph;
-    for (const Trip t : trips)
+    for (const int tripId : tripsIds)
+    {
+        const Trip t = data.trip(tripId);
         glyph.append(buildTripVertices(timelineMatrixHeight, timelineMatrixWidth, t, posX, posY, color));
+    }
 
     return glyph;
 }

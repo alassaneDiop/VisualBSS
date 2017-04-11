@@ -21,7 +21,7 @@
 #include <QtConcurrent>
 
 #include "trip.h"
-
+#include "data.h"
 
 TripsSelector::TripsSelector(const TripsSelectionParams& params) :
     m_params(params)
@@ -33,16 +33,22 @@ TripsSelector::TripsSelector(const TripsSelectionParams& params) :
 
 QVector<Trip> TripsSelector::selectFrom(const QVector<Trip>& trips) const
 {
+    const auto select = [this](const Trip& t) { return keep(t); };
+    return QtConcurrent::blockingFiltered(trips, select);
+}
+
+QVector<int> TripsSelector::selectFrom(const QVector<int>& tripsIds, const Data& data) const
+{
+    const auto select = [this, &data](const int& tripId) { return keep(data.trip(tripId)); };
+    return QtConcurrent::blockingFiltered(tripsIds, select);
+}
+
+bool TripsSelector::keep(const Trip& t) const
+{
     const QTime fromTime = QTime(params().fromHour, 0, 0);
     const QTime toTime = QTime(params().toHour, 0, 0);
-
-    const auto select = [this, &fromTime, &toTime](const Trip& t)
-    {     
-        return (t.startDateTime.time() >= fromTime)
-            && (t.endDateTime.time() <= toTime)
-            && ((params().stationsIds.contains(t.startStationId))
-            || (params().stationsIds.contains(t.endStationId)));
-    };
-
-    return QtConcurrent::blockingFiltered(trips, select);
+    return (t.startDateTime.time() >= fromTime)
+        && (t.endDateTime.time() <= toTime)
+        && ((params().stationsIds.contains(t.startStationId))
+        || (params().stationsIds.contains(t.endStationId)));
 }

@@ -29,6 +29,7 @@ struct TripsFilterParams
 
 
 struct Trip;
+class Data;
 
 /**
  * The TripsFilter class filters trips according to its filter parameters.
@@ -43,13 +44,22 @@ public:
     inline void setParams(const TripsFilterParams& params) { m_params = params; }
 
     /**
-     * Filters an the specified trips set according to the filtering parameters.
+     * Filters the specified trips set according to the filtering parameters.
      * @param trips The original trips set to filter from.
      * @return All the filters from the specified set that match the parameters.
      */
     QVector<Trip> filter(const QVector<Trip>& trips) const;
 
+    /**
+     * Filters the specified trips ids contained in the specified data object.
+     * @param tripsIds The trips ids to filter from.
+     * @param data The data object that contains all the trips.
+     */
+    QVector<int> filter(const QVector<int>& tripsIds, const Data& data) const;
+
 private:
+    bool keep(const Trip& t) const;
+
     TripsFilterParams m_params;
 };
 

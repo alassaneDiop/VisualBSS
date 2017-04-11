@@ -75,32 +75,32 @@ private:
     /**
      * Filters the specified trips according to the specified filtering parameters.
      * If the newly filtered trips are differents from the current ones, then the timeline matrix and the selection should be refreshed.
-     * @param trips The trips to filter.
+     * @param tripsIds The ids of the trips to filter.
      * @param params The filtering parameters.
      * @see TripsFilter::filter
      */
-    void filterTrips(const QVector<Trip>& trips, const TripsFilterParams& params);
+    void filterTrips(const QVector<int>& tripsIds, const TripsFilterParams& params);
 
     /**
      * Filters the specified stations according to the specified filtering parameters.
      * If the newly filtered stations are differents from the current ones, then they should be sorted.
      * If the newly sorted stations are differents from the current ones, then the timeline matrix should be refreshed,
      * and if there is no selected trips, then the map should also be refreshed.
-     * @param stations The stations to filter.
+     * @param stations The ids of the stations to filter.
      * @param params The filtering parameters.
      * @see StationsFilter::filter
      */
-    void filterStations(const QVector<Station>& stations, const StationsFilterParams& params);
+    void filterStations(const QVector<int>& stationsIds, const StationsFilterParams& params);
 
     /**
      * Sorts the specified stations according to the spcified sorting parameter.
      * If the newly sorted stations are differents from the current ones, then the timeline matrix should be refreshed,
      * and if there is no selected trips, then the map should also be refreshed.
-     * @param stations The stations to sort.
+     * @param stations The ids of the stations to sort.
      * @param param The sorting parameter.
      * @see StationsSorter::sort
      */
-    void sortStations(const QVector<Station>& stations, const bss::SortParam& param);
+    void sortStations(const QVector<int>& stationsIds, const bss::SortParam& param);
 
 
     /**
@@ -116,20 +116,20 @@ private:
                      const int& fromStationIndex, const int& toStationIndex);
 
 
-    void drawStationsOnMap(const QVector<Station>& stations);
-    void drawSelectedTripsOnMap(const QVector<Trip>& selection);
-    void drawGlyphsOnMatrix(const QVector<Station>& stations, const TripsDisplayParams& params);
+    void drawStationsOnMap(const QVector<int>& stationsIds);
+    void drawSelectedTripsOnMap(const QVector<int>& selection);
+    void drawGlyphsOnMatrix(const QVector<int>& stations, const TripsDisplayParams& params);
 
 
-    void buildStationsVertices(const QVector<Station>& stations);
+    void buildStationsVertices(const QVector<int>& stationsIds);
 
-    void buildTripsVertices(const QVector<Trip>& arrivals,
-                                const QVector<Trip>& departures,
-                                const QVector<Trip>& cycles);
+    void buildTripsVertices(const QVector<int>& arrivalsIds,
+                            const QVector<int>& departuresIds,
+                            const QVector<int>& cyclesIds);
 
-    void buildGlyphsVertices(const QVector<QVector<Trip>>& arrivals,
-                            const QVector<QVector<Trip>>& departures,
-                            const QVector<QVector<Trip>>& cycles,
+    void buildGlyphsVertices(const QVector<QVector<int>>& arrivalsIds,
+                            const QVector<QVector<int>>& departuresIds,
+                            const QVector<QVector<int>>& cyclesIds,
                             const bool& showDistance);
 
 
@@ -138,9 +138,6 @@ private:
     static qint64 maxDuration(const QVector<Trip>& trips);
     static qint64 maxDistance(const QVector<Trip>& trips);
     static int maxTripsFlow(const QVector<Station>& stations);
-
-    static QVector<int> ids(const QVector<Trip>& trips);
-    static QVector<int> ids(const QVector<Station>& stations);
 
     /**
      * A flag to indicate wheter or not the application can exit.
